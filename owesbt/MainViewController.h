@@ -1,5 +1,5 @@
 //
-//  ViewController.h
+//  MainViewController.m
 //  owesbt
 //
 //  Created by Вячеслав Живетьев on 02.01.2018.
@@ -7,9 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <GoogleSignIn/GoogleSignIn.h>
+#import <Firebase.h>
 
-@interface VMZMainViewController : UIViewController
 
+@interface MainViewController : UIViewController <GIDSignInUIDelegate>
 
 @end
 
