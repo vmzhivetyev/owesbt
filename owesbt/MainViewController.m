@@ -11,10 +11,20 @@
 
 @interface MainViewController ()
 
+@property (nonatomic, strong) GIDSignInButton *googleSignInButton;
+
 @end
 
 
 @implementation MainViewController
+
+
+#pragma mark - IBActions
+
+- (void)loginButtonClicked:(UIButton*)button
+{
+    [[GIDSignIn sharedInstance] signIn];
+}
 
 
 #pragma mark - GIDSignInUIDelegate
@@ -22,6 +32,11 @@
 - (void)signInWillDispatch:(GIDSignIn *)signIn error:(NSError *)error
 {
     self.view.backgroundColor =  error ? [UIColor redColor] : [UIColor greenColor];
+    
+    if (error)
+    {
+        NSLog(@"%@", error.localizedDescription);
+    }
 }
 
 
@@ -33,8 +48,11 @@
     
     self.view.backgroundColor = [UIColor yellowColor];
     
+    self.googleSignInButton = [[GIDSignInButton alloc] initWithFrame:CGRectMake(80.0, 210.0, 120.0, 40.0)];
+    [self.view addSubview:self.googleSignInButton];
+    
     [GIDSignIn sharedInstance].uiDelegate = self;
-    [[GIDSignIn sharedInstance] signIn];
+    //[[GIDSignIn sharedInstance] signIn];
 }
 
 

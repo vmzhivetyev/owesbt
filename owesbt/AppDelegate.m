@@ -47,7 +47,8 @@ didSignInForUser:(GIDGoogleUser *)user
     }
     else
     {
-        // ...
+        // TODO
+        @throw error;
     }
 }
 
