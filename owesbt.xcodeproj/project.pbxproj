@@ -13,6 +13,7 @@
 		131E76881FFAAEDD00F8FA71 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 131E76861FFAAEDD00F8FA71 /* LaunchScreen.storyboard */; };
 		131E768B1FFAAEDD00F8FA71 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 131E768A1FFAAEDD00F8FA71 /* main.m */; };
 		131E76941FFADAF900F8FA71 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 131E76931FFADAF900F8FA71 /* GoogleService-Info.plist */; };
+		131E769A1FFD3B2E00F8FA71 /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 131E76981FFD3B2E00F8FA71 /* DataModel.xcdatamodeld */; };
 		9A6D641767896D3658626337 /* libPods-owesbt.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5E1D06296C3086E2EDF00CF /* libPods-owesbt.a */; };
 /* End PBXBuildFile section */
 
@@ -27,6 +28,7 @@
 		131E76891FFAAEDD00F8FA71 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		131E768A1FFAAEDD00F8FA71 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		131E76931FFADAF900F8FA71 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		131E76991FFD3B2E00F8FA71 /* DataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DataModel.xcdatamodel; sourceTree = "<group>"; };
 		25308D0FBE45B45C3EA65635 /* Pods-owesbt.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-owesbt.release.xcconfig"; path = "Pods/Target Support Files/Pods-owesbt/Pods-owesbt.release.xcconfig"; sourceTree = "<group>"; };
 		2BBB001AA2F4B164C73B1C61 /* Pods-owesbt.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-owesbt.debug.xcconfig"; path = "Pods/Target Support Files/Pods-owesbt/Pods-owesbt.debug.xcconfig"; sourceTree = "<group>"; };
 		F5E1D06296C3086E2EDF00CF /* libPods-owesbt.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-owesbt.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -70,6 +72,7 @@
 				131E767C1FFAAEDD00F8FA71 /* AppDelegate.m */,
 				131E767E1FFAAEDD00F8FA71 /* MainViewController.h */,
 				131E767F1FFAAEDD00F8FA71 /* MainViewController.m */,
+				131E76981FFD3B2E00F8FA71 /* DataModel.xcdatamodeld */,
 				131E76841FFAAEDD00F8FA71 /* Assets.xcassets */,
 				131E76861FFAAEDD00F8FA71 /* LaunchScreen.storyboard */,
 				131E76891FFAAEDD00F8FA71 /* Info.plist */,
@@ -225,6 +228,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				131E76801FFAAEDD00F8FA71 /* MainViewController.m in Sources */,
+				131E769A1FFD3B2E00F8FA71 /* DataModel.xcdatamodeld in Sources */,
 				131E768B1FFAAEDD00F8FA71 /* main.m in Sources */,
 				131E767D1FFAAEDD00F8FA71 /* AppDelegate.m in Sources */,
 			);
@@ -400,6 +404,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		131E76981FFD3B2E00F8FA71 /* DataModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				131E76991FFD3B2E00F8FA71 /* DataModel.xcdatamodel */,
+			);
+			currentVersion = 131E76991FFD3B2E00F8FA71 /* DataModel.xcdatamodel */;
+			path = DataModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 131E76701FFAAEDD00F8FA71 /* Project object */;
 }
