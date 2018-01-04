@@ -9,9 +9,10 @@
 #import <UIKit/UIKit.h>
 #import <GoogleSignIn/GoogleSignIn.h>
 #import <Firebase.h>
+#import "VMZOwe.h"
 
 
-@interface MainViewController : UIViewController <GIDSignInUIDelegate>
+@interface MainViewController : UIViewController <GIDSignInUIDelegate, VMZOweDelegate>
 
 @end
 

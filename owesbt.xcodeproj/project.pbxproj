@@ -14,6 +14,7 @@
 		131E768B1FFAAEDD00F8FA71 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 131E768A1FFAAEDD00F8FA71 /* main.m */; };
 		131E76941FFADAF900F8FA71 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 131E76931FFADAF900F8FA71 /* GoogleService-Info.plist */; };
 		131E769A1FFD3B2E00F8FA71 /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 131E76981FFD3B2E00F8FA71 /* DataModel.xcdatamodeld */; };
+		131E769D1FFEBCAF00F8FA71 /* VMZOwe.m in Sources */ = {isa = PBXBuildFile; fileRef = 131E769C1FFEBCAF00F8FA71 /* VMZOwe.m */; };
 		9A6D641767896D3658626337 /* libPods-owesbt.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5E1D06296C3086E2EDF00CF /* libPods-owesbt.a */; };
 /* End PBXBuildFile section */
 
@@ -29,6 +30,8 @@
 		131E768A1FFAAEDD00F8FA71 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		131E76931FFADAF900F8FA71 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		131E76991FFD3B2E00F8FA71 /* DataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DataModel.xcdatamodel; sourceTree = "<group>"; };
+		131E769B1FFEBCAF00F8FA71 /* VMZOwe.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VMZOwe.h; sourceTree = "<group>"; };
+		131E769C1FFEBCAF00F8FA71 /* VMZOwe.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VMZOwe.m; sourceTree = "<group>"; };
 		25308D0FBE45B45C3EA65635 /* Pods-owesbt.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-owesbt.release.xcconfig"; path = "Pods/Target Support Files/Pods-owesbt/Pods-owesbt.release.xcconfig"; sourceTree = "<group>"; };
 		2BBB001AA2F4B164C73B1C61 /* Pods-owesbt.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-owesbt.debug.xcconfig"; path = "Pods/Target Support Files/Pods-owesbt/Pods-owesbt.debug.xcconfig"; sourceTree = "<group>"; };
 		F5E1D06296C3086E2EDF00CF /* libPods-owesbt.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-owesbt.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -72,6 +75,8 @@
 				131E767C1FFAAEDD00F8FA71 /* AppDelegate.m */,
 				131E767E1FFAAEDD00F8FA71 /* MainViewController.h */,
 				131E767F1FFAAEDD00F8FA71 /* MainViewController.m */,
+				131E769B1FFEBCAF00F8FA71 /* VMZOwe.h */,
+				131E769C1FFEBCAF00F8FA71 /* VMZOwe.m */,
 				131E76981FFD3B2E00F8FA71 /* DataModel.xcdatamodeld */,
 				131E76841FFAAEDD00F8FA71 /* Assets.xcassets */,
 				131E76861FFAAEDD00F8FA71 /* LaunchScreen.storyboard */,
@@ -230,6 +235,7 @@
 				131E76801FFAAEDD00F8FA71 /* MainViewController.m in Sources */,
 				131E769A1FFD3B2E00F8FA71 /* DataModel.xcdatamodeld in Sources */,
 				131E768B1FFAAEDD00F8FA71 /* main.m in Sources */,
+				131E769D1FFEBCAF00F8FA71 /* VMZOwe.m in Sources */,
 				131E767D1FFAAEDD00F8FA71 /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -363,6 +369,9 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.vmz.owesbt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = iphoneos11.2;
+				SWIFT_VERSION = 3.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -378,6 +387,9 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.vmz.owesbt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = iphoneos11.2;
+				SWIFT_VERSION = 3.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
