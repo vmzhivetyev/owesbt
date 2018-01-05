@@ -8,7 +8,7 @@
 
 #import "AppDelegate.h"
 #import "MainViewController.h"
-
+#import "VMZOwe.h"
 
 @interface AppDelegate ()
 
@@ -36,19 +36,12 @@ didSignInForUser:(GIDGoogleUser *)user
         
         [[FIRAuth auth] signInWithCredential:credential
                                   completion:^(FIRUser *user, NSError *error) {
-                                      if (error)
-                                      {
-                                          // ...
-                                          return;
-                                      }
-                                      // User successfully signed in. Get user data from the FIRUser object
-                                      // ...
+                                      [[VMZOwe sharedInstance] FIRAuthDidSignInForUser:user withError:error];
                                   }];
     }
     else
     {
-        // TODO
-        @throw error;
+        [[VMZOwe sharedInstance] FIRAuthDidSignInForUser:nil withError:error];
     }
 }
 
