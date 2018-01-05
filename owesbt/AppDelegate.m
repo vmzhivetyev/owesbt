@@ -36,12 +36,12 @@ didSignInForUser:(GIDGoogleUser *)user
         
         [[FIRAuth auth] signInWithCredential:credential
                                   completion:^(FIRUser *user, NSError *error) {
-                                      [[VMZOwe sharedInstance].delegate FIRAuthDidSignInForUser:user withError:error];
+                                      [[VMZOwe sharedInstance] FIRAuthDidSignInForUser:user withError:error];
                                   }];
     }
     else
     {
-        [[VMZOwe sharedInstance].delegate FIRAuthDidSignInForUser:nil withError:error];
+        [[VMZOwe sharedInstance] FIRAuthDidSignInForUser:nil withError:error];
     }
 }
 
