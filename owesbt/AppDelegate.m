@@ -7,8 +7,9 @@
 //
 
 #import "AppDelegate.h"
-#import "MainViewController.h"
+#import "VMZMainViewController.h"
 #import "VMZOwe.h"
+#import <Firebase.h>
 
 @interface AppDelegate ()
 
@@ -18,42 +19,6 @@
 @implementation AppDelegate
 
 
-#pragma mark - GIDSignInDelegate
-
-- (void)signIn:(GIDSignIn *)signIn
-didSignInForUser:(GIDGoogleUser *)user
-     withError:(NSError *)error
-{
-    // ...
-    if (error == nil)
-    {
-        GIDAuthentication *authentication = user.authentication;
-        FIRAuthCredential *credential =
-        [FIRGoogleAuthProvider credentialWithIDToken:authentication.idToken
-                                         accessToken:authentication.accessToken];
-        
-        // и теперь авторизуемся в firebase с помощью гугловкого credential
-        
-        [[FIRAuth auth] signInWithCredential:credential
-                                  completion:^(FIRUser *user, NSError *error) {
-                                      [[VMZOwe sharedInstance] FIRAuthDidSignInForUser:user withError:error];
-                                  }];
-    }
-    else
-    {
-        [[VMZOwe sharedInstance] FIRAuthDidSignInForUser:nil withError:error];
-    }
-}
-
-- (void)signIn:(GIDSignIn *)signIn
-didDisconnectWithUser:(GIDGoogleUser *)user
-     withError:(NSError *)error
-{
-    // Perform any operations when the user disconnects from app here.
-    // ...
-}
-
-
 #pragma mark - UIApplicationDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -61,11 +26,11 @@ didDisconnectWithUser:(GIDGoogleUser *)user
     [FIRApp configure];
     
     [GIDSignIn sharedInstance].clientID = [FIRApp defaultApp].options.clientID;
-    [GIDSignIn sharedInstance].delegate = self;
+    [GIDSignIn sharedInstance].delegate = [VMZOwe sharedInstance];
     
     
     self.window = [UIWindow new];
-    self.window.rootViewController = [MainViewController new];
+    self.window.rootViewController = [VMZMainViewController new];
     [self.window makeKeyAndVisible];
     
     return YES;

@@ -6,25 +6,33 @@
 //  Copyright © 2018 Вячеслав Живетьев. All rights reserved.
 //
 
-#import "MainViewController.h"
+#import <GoogleSignIn/GoogleSignIn.h>
+#import <Firebase.h>
 
-@interface MainViewController ()
+#import "MainViewController.h"
+#import "VMZOwe.h"
+
+@interface VMZMainViewController ()
 
 @property (nonatomic, strong) GIDSignInButton *googleSignInButton;
 
 @end
 
 
-@implementation MainViewController
+@implementation VMZMainViewController
 
 
 #pragma mark - VMZOweDelegate
 
-- (void)FIRAuthDidSignInForUser:(FIRUser *)user withError:(NSError *)error
+- (void)VMZAuthDidSignInForUser:(FIRUser *_Nullable)user withError:(NSError *_Nullable)error
 {
     self.view.backgroundColor = [UIColor blueColor];
 }
 
+- (void)VMZPhoneNumberCheckedWithResult:(BOOL)success
+{
+    self.view.backgroundColor = success ? [UIColor greenColor] : [UIColor redColor];
+}
 
 #pragma mark - LifeCycle
 
@@ -82,33 +90,21 @@
 {
     [super viewDidLoad];
     
-    self.view.backgroundColor = [UIColor yellowColor];
+    [VMZOwe sharedInstance].uiDelegate = self;
+    [GIDSignIn sharedInstance].uiDelegate = self;
+    //[[GIDSignIn sharedInstance] signIn];
     
-    [VMZOwe sharedInstance].delegate = self;
+    self.view.backgroundColor = [UIColor yellowColor];
     
     UILabel* label = [[UILabel alloc] initWithFrame:CGRectMake(80, 250, 220, 40)];
     label.textColor = UIColor.blackColor;
     [self.view addSubview:label];
     
-    //TODO unsubscribe
-    id handle = [[FIRAuth auth]
-                   addAuthStateDidChangeListener:^(FIRAuth *_Nonnull auth, FIRUser *_Nullable user) {
-                       label.text = (user!=nil ? user.displayName : @"nil");
-                       NSLog(@"%@", user);
-                       
-                       if(user)
-                       {
-                           [[VMZOwe sharedInstance] getMyPhoneWithCompletion:^(NSString * _Nullable phone) {
-                               label.text = phone;
-                           }];
-                       }
-                   }];
-    
-    [GIDSignIn sharedInstance].uiDelegate = self;
-    //[[GIDSignIn sharedInstance] signIn];
-    
     self.googleSignInButton = [[GIDSignInButton alloc] initWithFrame:CGRectMake(80.0, 210.0, 120.0, 40.0)];
     [self.view addSubview:self.googleSignInButton];
+    
+    //TODO unsubscribe
+    
 }
 
 - (void)didReceiveMemoryWarning

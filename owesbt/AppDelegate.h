@@ -7,11 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <Firebase.h>
-#import <GoogleSignIn/GoogleSignIn.h>
 
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate, GIDSignInDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 

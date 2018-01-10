@@ -6,18 +6,72 @@
 //  Copyright © 2018 Вячеслав Живетьев. All rights reserved.
 //
 
+#import <Firebase.h>
+#import <GoogleSignIn/GoogleSignIn.h>
+
 #import "VMZOwe.h"
+#import "VMZChangePhoneViewController.h"
+
+
+@interface VMZOwe ()
+
+@property (nonatomic, strong) id<NSObject> firebaseAuthStateDidChangeHandler;
+
+@end
+
 
 @implementation VMZOwe
 
 
+#pragma mark - GIDSignInDelegate
+
+- (void)signIn:(GIDSignIn *)signIn
+didSignInForUser:(GIDGoogleUser *)user
+     withError:(NSError *)error
+{
+    if (error == nil)
+    {
+        GIDAuthentication *authentication = user.authentication;
+        FIRAuthCredential *credential =
+        [FIRGoogleAuthProvider credentialWithIDToken:authentication.idToken
+                                         accessToken:authentication.accessToken];
+        
+        // и теперь авторизуемся в firebase с помощью гугловкого credential
+        
+        [[FIRAuth auth] signInWithCredential:credential completion:^(FIRUser *user, NSError *error) {
+                                      [self VMZAuthDidSignInForUser:user withError:error];
+                                  }];
+    }
+    else
+    {
+        [self VMZAuthDidSignInForUser:nil withError:error];
+    }
+}
+
+- (void)signIn:(GIDSignIn *)signIn
+didDisconnectWithUser:(GIDGoogleUser *)user
+     withError:(NSError *)error
+{
+    // Perform any operations when the user disconnects from app here.
+    // ...
+}
+
+
 #pragma mark - VMZOweDelegate
 
-- (void)FIRAuthDidSignInForUser:(FIRUser*)user withError:(NSError*)error
+- (void)VMZAuthDidSignInForUser:(FIRUser*)user withError:(NSError*)error
 {
-    if (self.delegate != self)
+    if ([self.uiDelegate respondsToSelector:@selector(VMZAuthDidSignInForUser::)])
     {
-        [self.delegate FIRAuthDidSignInForUser:user withError:error];
+        [self.uiDelegate VMZAuthDidSignInForUser:user withError:error];
+    }
+}
+
+- (void)VMZPhoneNumberCheckedWithResult:(BOOL)success
+{
+    if ([self.uiDelegate respondsToSelector:@selector(VMZPhoneNumberCheckedWithResult:)])
+    {
+        [self.uiDelegate VMZPhoneNumberCheckedWithResult:success];
     }
 }
 
@@ -36,6 +90,38 @@
     return sharedInstance;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if(self)
+    {
+        self.firebaseAuthStateDidChangeHandler =
+            [[FIRAuth auth] addAuthStateDidChangeListener:^(FIRAuth *_Nonnull auth, FIRUser *_Nullable user) {
+                NSLog(@"Auth state changed %@", user);
+                
+                if(user)
+                {
+                    [[VMZOwe sharedInstance] getMyPhoneWithCompletion:^(NSString * _Nullable phone) {
+                        NSLog(@"Got my phone: %@",phone);
+                        
+                        [self presentChangePhoneView];
+                    }];
+                }
+            }];
+    }
+    return self;
+}
+
+- (void)presentChangePhoneView
+{
+    UIViewController* view = [VMZChangePhoneViewController new];
+    [view setModalPresentationStyle:UIModalPresentationFullScreen];
+    [view setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
+    [self.uiDelegate presentViewController:view animated:YES completion:^{
+        NSLog(@"presentChangePhoneView completion");
+        [self VMZPhoneNumberCheckedWithResult:YES];
+    }];
+}
 
 #pragma mark - FirebaseNetworking
 
