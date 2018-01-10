@@ -61,7 +61,7 @@ didDisconnectWithUser:(GIDGoogleUser *)user
 
 - (void)VMZAuthDidSignInForUser:(FIRUser*)user withError:(NSError*)error
 {
-    if ([self.uiDelegate respondsToSelector:@selector(VMZAuthDidSignInForUser::)])
+    if ([self.uiDelegate respondsToSelector:@selector(VMZAuthDidSignInForUser:withError:)])
     {
         [self.uiDelegate VMZAuthDidSignInForUser:user withError:error];
     }
@@ -90,26 +90,49 @@ didDisconnectWithUser:(GIDGoogleUser *)user
     return sharedInstance;
 }
 
+- (void)setUiDelegate:(UIViewController<VMZOweUIDelegate> *)uiDelegate
+{
+    _uiDelegate = uiDelegate;
+    
+    self.firebaseAuthStateDidChangeHandler =
+    [[FIRAuth auth] addAuthStateDidChangeListener:^(FIRAuth *_Nonnull auth, FIRUser *_Nullable user) {
+        NSLog(@"Auth state changed %@", user);
+        
+        if(user)
+        {
+            [self getMyPhoneWithCompletion:^(NSString * _Nullable phone) {
+                NSLog(@"Got my phone: %@",phone);
+                
+                if ([phone isEqualToString:@"undefinedPhone"])
+                {
+                    [self presentChangePhoneView];
+                }
+                else
+                {
+                    //goto authorized view
+                }
+            }];
+        }
+        else
+        {
+            [self VMZAuthDidSignInForUser:nil withError:nil];
+        }
+    }];
+}
+
 - (instancetype)init
 {
     self = [super init];
     if(self)
     {
-        self.firebaseAuthStateDidChangeHandler =
-            [[FIRAuth auth] addAuthStateDidChangeListener:^(FIRAuth *_Nonnull auth, FIRUser *_Nullable user) {
-                NSLog(@"Auth state changed %@", user);
-                
-                if(user)
-                {
-                    [[VMZOwe sharedInstance] getMyPhoneWithCompletion:^(NSString * _Nullable phone) {
-                        NSLog(@"Got my phone: %@",phone);
-                        
-                        [self presentChangePhoneView];
-                    }];
-                }
-            }];
+        
     }
     return self;
+}
+
+- (void)dealloc
+{
+    [[FIRAuth auth] removeAuthStateDidChangeListener:self.firebaseAuthStateDidChangeHandler];
 }
 
 - (void)presentChangePhoneView
@@ -125,10 +148,30 @@ didDisconnectWithUser:(GIDGoogleUser *)user
 
 #pragma mark - FirebaseNetworking
 
-- (void)firebaseCloudFunctionCall:(NSString *_Nonnull)function completion:(_Nullable FirebaseRequestCallback)completion
+- (NSString*)firebaseUrlForFunction:(NSString *_Nonnull)function withParameters:(NSDictionary *_Nullable)parameters
 {
-    NSString *escapedParameters = [function stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLHostAllowedCharacterSet]];
-    NSString *url = [NSString stringWithFormat:@"https://us-central1-owe-ios.cloudfunctions.net/app/%@", escapedParameters];
+    if (parameters)
+    {
+        NSMutableString *resultUrl = [[NSMutableString alloc] initWithString:function];
+        [resultUrl appendString:@"?"];
+        for (NSString *param in parameters)
+        {
+            NSString *value = parameters[param];
+            NSString *escapedValue = [value stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLHostAllowedCharacterSet]];
+            [resultUrl appendString:[NSString stringWithFormat:@"%@=%@&", param, escapedValue]];
+        }
+        [resultUrl deleteCharactersInRange:NSMakeRange(resultUrl.length-1, 1)];
+        return [NSString stringWithString:resultUrl];
+    }
+    return function;
+}
+
+- (void)firebaseCloudFunctionCall:(NSString *_Nonnull)function
+                       parameters:(NSDictionary *_Nullable)parameters
+                       completion:(_Nullable FirebaseRequestCallback)completion
+{
+    NSString *functionWithEscapedParameters = [self firebaseUrlForFunction:function withParameters:parameters];
+    NSString *url = [NSString stringWithFormat:@"https://us-central1-owe-ios.cloudfunctions.net/app/%@", functionWithEscapedParameters];
    
     [[FIRAuth auth].currentUser getIDTokenWithCompletion:^(NSString * _Nullable token, NSError * _Nullable error) {
         NSMutableURLRequest *urlRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:url]];
@@ -180,7 +223,7 @@ didDisconnectWithUser:(GIDGoogleUser *)user
 
 - (void)getMyPhoneWithCompletion:(void(^_Nonnull)(NSString *_Nullable phone))completion
 {
-    [self firebaseCloudFunctionCall:@"getPhone" completion:^(NSDictionary *data, NSError *error) {
+    [self firebaseCloudFunctionCall:@"getPhone" parameters:nil completion:^(NSDictionary *data, NSError *error) {
         completion(error || data == nil ? nil : data[@"phone"]);
         if (error)
         {
@@ -191,8 +234,7 @@ didDisconnectWithUser:(GIDGoogleUser *)user
 
 - (void)setMyPhone:(NSString *_Nonnull)phone completion:(_Nullable FirebaseRequestCallback)completion
 {
-    NSString *functionWithParameters = [NSString stringWithFormat:@"setPhone?phone=%@", phone];
-    [self firebaseCloudFunctionCall:functionWithParameters completion:^(NSDictionary *data, NSError *error) {
+    [self firebaseCloudFunctionCall:@"setPhone" parameters:@{@"phone":phone} completion:^(NSDictionary *data, NSError *error) {
         completion(data, error);
         if (error)
         {

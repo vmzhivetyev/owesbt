@@ -10,10 +10,10 @@
 
 
 @protocol GIDSignInUIDelegate;
-@protocol VMZOweDelegate;
+@protocol VMZOweUIDelegate;
 
 
-@interface VMZMainViewController : UIViewController <GIDSignInUIDelegate, VMZOweDelegate>
+@interface VMZMainViewController : UIViewController <GIDSignInUIDelegate, VMZOweUIDelegate>
 
 @end
 

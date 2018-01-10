@@ -9,13 +9,14 @@
 /* Begin PBXBuildFile section */
 		131E767D1FFAAEDD00F8FA71 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 131E767C1FFAAEDD00F8FA71 /* AppDelegate.m */; };
 		131E76801FFAAEDD00F8FA71 /* VMZMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 131E767F1FFAAEDD00F8FA71 /* VMZMainViewController.m */; };
-		131E76851FFAAEDD00F8FA71 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 131E76841FFAAEDD00F8FA71 /* Assets.xcassets */; };
 		131E76881FFAAEDD00F8FA71 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 131E76861FFAAEDD00F8FA71 /* LaunchScreen.storyboard */; };
 		131E768B1FFAAEDD00F8FA71 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 131E768A1FFAAEDD00F8FA71 /* main.m */; };
 		131E76941FFADAF900F8FA71 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 131E76931FFADAF900F8FA71 /* GoogleService-Info.plist */; };
 		131E769A1FFD3B2E00F8FA71 /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 131E76981FFD3B2E00F8FA71 /* DataModel.xcdatamodeld */; };
 		131E769D1FFEBCAF00F8FA71 /* VMZOwe.m in Sources */ = {isa = PBXBuildFile; fileRef = 131E769C1FFEBCAF00F8FA71 /* VMZOwe.m */; };
 		13826B751FFFA5C900ACB7F2 /* VMZChangePhoneViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 13826B741FFFA5C900ACB7F2 /* VMZChangePhoneViewController.m */; };
+		13826B782006A71000ACB7F2 /* UIViewController+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 13826B772006A71000ACB7F2 /* UIViewController+Extension.m */; };
+		13826B7A2006CA6700ACB7F2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13826B792006CA6600ACB7F2 /* Assets.xcassets */; };
 		9A6D641767896D3658626337 /* libPods-owesbt.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5E1D06296C3086E2EDF00CF /* libPods-owesbt.a */; };
 /* End PBXBuildFile section */
 
@@ -25,7 +26,6 @@
 		131E767C1FFAAEDD00F8FA71 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		131E767E1FFAAEDD00F8FA71 /* VMZMainViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VMZMainViewController.h; sourceTree = "<group>"; };
 		131E767F1FFAAEDD00F8FA71 /* VMZMainViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VMZMainViewController.m; sourceTree = "<group>"; };
-		131E76841FFAAEDD00F8FA71 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		131E76871FFAAEDD00F8FA71 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		131E76891FFAAEDD00F8FA71 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		131E768A1FFAAEDD00F8FA71 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -35,6 +35,9 @@
 		131E769C1FFEBCAF00F8FA71 /* VMZOwe.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VMZOwe.m; sourceTree = "<group>"; };
 		13826B731FFFA5C800ACB7F2 /* VMZChangePhoneViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VMZChangePhoneViewController.h; sourceTree = "<group>"; };
 		13826B741FFFA5C900ACB7F2 /* VMZChangePhoneViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VMZChangePhoneViewController.m; sourceTree = "<group>"; };
+		13826B762006A71000ACB7F2 /* UIViewController+Extension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIViewController+Extension.h"; sourceTree = "<group>"; };
+		13826B772006A71000ACB7F2 /* UIViewController+Extension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+Extension.m"; sourceTree = "<group>"; };
+		13826B792006CA6600ACB7F2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		25308D0FBE45B45C3EA65635 /* Pods-owesbt.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-owesbt.release.xcconfig"; path = "Pods/Target Support Files/Pods-owesbt/Pods-owesbt.release.xcconfig"; sourceTree = "<group>"; };
 		2BBB001AA2F4B164C73B1C61 /* Pods-owesbt.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-owesbt.debug.xcconfig"; path = "Pods/Target Support Files/Pods-owesbt/Pods-owesbt.debug.xcconfig"; sourceTree = "<group>"; };
 		F5E1D06296C3086E2EDF00CF /* libPods-owesbt.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-owesbt.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -73,6 +76,7 @@
 		131E767A1FFAAEDD00F8FA71 /* owesbt */ = {
 			isa = PBXGroup;
 			children = (
+				13826B792006CA6600ACB7F2 /* Assets.xcassets */,
 				131E76931FFADAF900F8FA71 /* GoogleService-Info.plist */,
 				131E767B1FFAAEDD00F8FA71 /* AppDelegate.h */,
 				131E767C1FFAAEDD00F8FA71 /* AppDelegate.m */,
@@ -82,8 +86,9 @@
 				13826B741FFFA5C900ACB7F2 /* VMZChangePhoneViewController.m */,
 				131E769B1FFEBCAF00F8FA71 /* VMZOwe.h */,
 				131E769C1FFEBCAF00F8FA71 /* VMZOwe.m */,
+				13826B762006A71000ACB7F2 /* UIViewController+Extension.h */,
+				13826B772006A71000ACB7F2 /* UIViewController+Extension.m */,
 				131E76981FFD3B2E00F8FA71 /* DataModel.xcdatamodeld */,
-				131E76841FFAAEDD00F8FA71 /* Assets.xcassets */,
 				131E76861FFAAEDD00F8FA71 /* LaunchScreen.storyboard */,
 				131E76891FFAAEDD00F8FA71 /* Info.plist */,
 				131E768A1FFAAEDD00F8FA71 /* main.m */,
@@ -170,7 +175,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				131E76881FFAAEDD00F8FA71 /* LaunchScreen.storyboard in Resources */,
-				131E76851FFAAEDD00F8FA71 /* Assets.xcassets in Resources */,
+				13826B7A2006CA6700ACB7F2 /* Assets.xcassets in Resources */,
 				131E76941FFADAF900F8FA71 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -240,6 +245,7 @@
 				131E76801FFAAEDD00F8FA71 /* VMZMainViewController.m in Sources */,
 				131E769A1FFD3B2E00F8FA71 /* DataModel.xcdatamodeld in Sources */,
 				131E768B1FFAAEDD00F8FA71 /* main.m in Sources */,
+				13826B782006A71000ACB7F2 /* UIViewController+Extension.m in Sources */,
 				13826B751FFFA5C900ACB7F2 /* VMZChangePhoneViewController.m in Sources */,
 				131E769D1FFEBCAF00F8FA71 /* VMZOwe.m in Sources */,
 				131E767D1FFAAEDD00F8FA71 /* AppDelegate.m in Sources */,

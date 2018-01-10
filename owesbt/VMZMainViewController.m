@@ -9,12 +9,14 @@
 #import <GoogleSignIn/GoogleSignIn.h>
 #import <Firebase.h>
 
-#import "MainViewController.h"
 #import "VMZOwe.h"
+#import "VMZMainViewController.h"
+#import "UIViewController+Extension.h"
 
 @interface VMZMainViewController ()
 
 @property (nonatomic, strong) GIDSignInButton *googleSignInButton;
+@property (nonatomic, strong) UIImageView *spinnerImageView;
 
 @end
 
@@ -26,13 +28,39 @@
 
 - (void)VMZAuthDidSignInForUser:(FIRUser *_Nullable)user withError:(NSError *_Nullable)error
 {
-    self.view.backgroundColor = [UIColor blueColor];
+    [self showMessagePrompt:
+        [NSString stringWithFormat:@"Signed in for user: %@\nError: %@", user, error.localizedDescription]];
+    
+    if (!user)
+    {
+        self.spinnerImageView.hidden = YES;
+        
+        self.googleSignInButton = [[GIDSignInButton alloc] initWithFrame:CGRectMake(80.0, 210.0, 120.0, 40.0)];
+        [self.view addSubview:self.googleSignInButton];
+    }
 }
 
 - (void)VMZPhoneNumberCheckedWithResult:(BOOL)success
 {
-    self.view.backgroundColor = success ? [UIColor greenColor] : [UIColor redColor];
+    [self showMessagePrompt:[NSString stringWithFormat:@"Phone number checked successfully: %@", success ? @"YES" : @"NO"]];
 }
+
+
+#pragma mark - UI
+
+- (void)signOutButtonClicked:(UIButton*)button
+{
+    NSError *signOutError;
+    if([[FIRAuth auth] signOut:&signOutError])
+    {
+        [self showMessagePrompt:@"Signed out"];
+    }
+    else
+    {
+        [self showMessagePrompt:[NSString stringWithFormat:@"Sign out error: %@", signOutError.localizedDescription]];
+    }
+}
+
 
 #pragma mark - LifeCycle
 
@@ -94,17 +122,39 @@
     [GIDSignIn sharedInstance].uiDelegate = self;
     //[[GIDSignIn sharedInstance] signIn];
     
-    self.view.backgroundColor = [UIColor yellowColor];
+    self.view.backgroundColor = [UIColor whiteColor];
     
-    UILabel* label = [[UILabel alloc] initWithFrame:CGRectMake(80, 250, 220, 40)];
-    label.textColor = UIColor.blackColor;
-    [self.view addSubview:label];
+    UIImage* image = [UIImage imageNamed:@"Dual Ring"];
+    CGFloat x = CGRectGetMidX(self.view.bounds) - image.size.width/2;
+    CGFloat y = CGRectGetMidY(self.view.bounds) - image.size.height/2;
+    CGRect rect = CGRectMake(x, y, image.size.width, image.size.height);
+    self.spinnerImageView = [[UIImageView alloc] initWithFrame:rect];
+    self.spinnerImageView.image = image;
+    self.spinnerImageView.tintColor = [UIColor whiteColor];
+    self.spinnerImageView.opaque = YES;
+    self.spinnerImageView.contentMode = UIViewContentModeScaleToFill;
+    self.spinnerImageView.layer.anchorPoint = CGPointMake(0.5f, 0.5f);
+    [self.view addSubview:self.spinnerImageView];
     
-    self.googleSignInButton = [[GIDSignInButton alloc] initWithFrame:CGRectMake(80.0, 210.0, 120.0, 40.0)];
-    [self.view addSubview:self.googleSignInButton];
+    CABasicAnimation* animation = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
+    animation.fromValue = [NSNumber numberWithFloat:0.0f];
+    animation.toValue = [NSNumber numberWithFloat: 2*M_PI];
+    animation.duration = 1.0f;
+    animation.repeatCount = INFINITY;
+    [self.spinnerImageView.layer addAnimation:animation forKey:@"SpinAnimation"];
     
-    //TODO unsubscribe
     
+    //sign out button
+    UIButton* signOutButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
+    signOutButton.frame = CGRectMake(25, CGRectGetMaxY(self.view.bounds) - 25, 60, 25);
+    [signOutButton setTitle:@"Sign out" forState:UIControlStateNormal];
+    [signOutButton addTarget:self action:@selector(signOutButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:signOutButton];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [self.spinnerImageView.layer animationForKey:@"SpinAnimation"] ;
 }
 
 - (void)didReceiveMemoryWarning

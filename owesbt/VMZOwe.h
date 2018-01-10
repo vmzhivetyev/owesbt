@@ -9,7 +9,6 @@
 #import <Foundation/Foundation.h>
 
 
-@protocol VMZOweUIDelegate;
 @protocol GIDSignInDelegate;
 @class FIRUser;
 
