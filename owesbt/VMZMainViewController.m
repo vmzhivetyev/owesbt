@@ -12,6 +12,7 @@
 #import "VMZOwe.h"
 #import "VMZMainViewController.h"
 #import "VMZChangePhoneViewController.h"
+#import "VMZOweTabsViewController.h"
 #import "UIViewController+Extension.h"
 
 @interface VMZMainViewController ()
@@ -47,6 +48,13 @@
     {
         self.view.backgroundColor = [UIColor greenColor];
         //show view for authorized user
+        
+        UIViewController *tabbarView = [[VMZOweTabsViewController alloc] init];
+        UINavigationController *navigationController =
+            [[UINavigationController alloc] initWithRootViewController:tabbarView];
+        [self presentViewController:navigationController animated:YES completion:^{
+            
+        }];
     }
     else
     {
