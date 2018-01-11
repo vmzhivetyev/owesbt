@@ -31,14 +31,20 @@
             NSString* phone = [data objectForKey:@"phone"];
             NSString* errorText = [[data objectForKey:@"error"] objectForKey:@"message"];
             
-            if (phone)
+            if (!phone)
             {
                 [self showMessagePrompt:[NSString stringWithFormat:@"Error: %@", errorText]];
             }
             else
             {
-                [self dismissViewControllerAnimated:YES completion:nil];
+                [self dismissViewControllerAnimated:YES completion:^{
+                    [[VMZOwe sharedInstance] VMZPhoneNumberCheckedWithResult: YES];
+                }];
             }
+        }
+        else
+        {
+            [self showMessagePrompt:[NSString stringWithFormat:@"Error: %@", error.localizedDescription]];
         }
     }];
 }

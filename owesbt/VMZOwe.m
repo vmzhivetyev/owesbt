@@ -10,7 +10,6 @@
 #import <GoogleSignIn/GoogleSignIn.h>
 
 #import "VMZOwe.h"
-#import "VMZChangePhoneViewController.h"
 
 
 @interface VMZOwe ()
@@ -110,14 +109,7 @@ didDisconnectWithUser:(GIDGoogleUser *)user
                 [self getMyPhoneWithCompletion:^(NSString * _Nullable phone) {
                     NSLog(@"Got my phone: %@",phone);
                     
-                    if ([phone isEqualToString:@"undefinedPhone"])
-                    {
-                        [self presentChangePhoneView];
-                    }
-                    else
-                    {
-                        //goto authorized view
-                    }
+                    [self VMZPhoneNumberCheckedWithResult:![phone isEqualToString:@"undefinedPhone"]];
                 }];
             }
             else
@@ -141,21 +133,6 @@ didDisconnectWithUser:(GIDGoogleUser *)user
 - (void)dealloc
 {
     [[FIRAuth auth] removeAuthStateDidChangeListener:self.firebaseAuthStateDidChangeHandler];
-}
-
-- (void)presentChangePhoneView
-{
-    //TODO костыль для дисмиса алерта, который нужен для дебага, не будет алерта - не нужен dismiss
-    {
-        [self.uiDelegate dismissViewControllerAnimated:NO completion:nil];
-    }
-    UIViewController* view = [VMZChangePhoneViewController new];
-    [view setModalPresentationStyle:UIModalPresentationFullScreen];
-    [view setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
-    [self.uiDelegate presentViewController:view animated:YES completion:^{
-        NSLog(@"presentChangePhoneView completion");
-        [self VMZPhoneNumberCheckedWithResult:YES];
-    }];
 }
 
 #pragma mark - FirebaseNetworking
@@ -237,10 +214,6 @@ didDisconnectWithUser:(GIDGoogleUser *)user
 {
     [self firebaseCloudFunctionCall:@"getPhone" parameters:nil completion:^(NSDictionary *data, NSError *error) {
         completion(error || data == nil ? nil : data[@"phone"]);
-        if (error)
-        {
-            @throw error;
-        }
     }];
 }
 
@@ -248,10 +221,6 @@ didDisconnectWithUser:(GIDGoogleUser *)user
 {
     [self firebaseCloudFunctionCall:@"setPhone" parameters:@{@"phone":phone} completion:^(NSDictionary *data, NSError *error) {
         completion(data, error);
-        if (error)
-        {
-            @throw error;
-        }
     }];
 }
 

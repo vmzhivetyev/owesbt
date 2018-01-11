@@ -11,6 +11,7 @@
 
 #import "VMZOwe.h"
 #import "VMZMainViewController.h"
+#import "VMZChangePhoneViewController.h"
 #import "UIViewController+Extension.h"
 
 @interface VMZMainViewController ()
@@ -28,8 +29,13 @@
 
 - (void)VMZAuthDidSignInForUser:(FIRUser *_Nullable)user withError:(NSError *_Nullable)error
 {
-    [self showMessagePrompt:
-        [NSString stringWithFormat:@"Signed in for user: %@\nError: %@", user, error.localizedDescription]];
+    if (error)
+    {
+        [self showMessagePrompt: [NSString stringWithFormat:@"Error: %@", error.localizedDescription]];
+        return;
+    }
+    
+    [self showMessagePrompt: [NSString stringWithFormat:@"Signed in for user: %@", user]];
     
     self.spinnerImageView.hidden = !user;
     self.googleSignInButton.hidden = !!user;
@@ -37,7 +43,15 @@
 
 - (void)VMZPhoneNumberCheckedWithResult:(BOOL)success
 {
-    [self showMessagePrompt:[NSString stringWithFormat:@"Phone number checked successfully: %@", success ? @"YES" : @"NO"]];
+    if (success)
+    {
+        self.view.backgroundColor = [UIColor greenColor];
+        //show view for authorized user
+    }
+    else
+    {
+        [self presentChangePhoneView];
+    }
 }
 
 
@@ -54,6 +68,18 @@
     {
         [self showMessagePrompt:[NSString stringWithFormat:@"Sign out error: %@", signOutError.localizedDescription]];
     }
+}
+
+- (void)presentChangePhoneView
+{
+    //TODO костыль для дисмиса алерта, который нужен для дебага, не будет алерта - не нужен dismiss
+    {
+        [self dismissViewControllerAnimated:NO completion:nil];
+    }
+    UIViewController* view = [VMZChangePhoneViewController new];
+    [view setModalPresentationStyle:UIModalPresentationFullScreen];
+    [view setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
+    [self presentViewController:view animated:YES completion:nil];
 }
 
 
