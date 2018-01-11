@@ -7,26 +7,31 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <Firebase.h>
+
+
+@protocol GIDSignInDelegate;
+@class FIRUser;
 
 
 typedef void (^FirebaseRequestCallback)(NSDictionary *_Nullable data, NSError *_Nullable error);
 
 
-@protocol VMZOweDelegate <NSObject>
+@protocol VMZOweUIDelegate
 
-- (void)FIRAuthDidSignInForUser:(FIRUser *_Nullable)user withError:(NSError *_Nullable)error;
+@optional
+
+- (void)VMZAuthDidSignInForUser:(FIRUser *_Nullable)user withError:(NSError *_Nullable)error;
+- (void)VMZPhoneNumberCheckedWithResult:(BOOL)success;
 
 @end
 
 
-@interface VMZOwe : NSObject <VMZOweDelegate>
+@interface VMZOwe : NSObject <GIDSignInDelegate, VMZOweUIDelegate>
 
-@property (nonatomic, weak) _Nullable id<VMZOweDelegate> delegate;
+@property (nonatomic, weak) UIViewController<VMZOweUIDelegate> *_Nullable uiDelegate;
 
 + (VMZOwe *_Nonnull)sharedInstance;
 
-//- (void)firebaseCloudFunctionCall:(NSString *_Nonnull)function completion:(_Nullable FirebaseRequestCallback)completion;
 - (void)getMyPhoneWithCompletion:(void(^_Nonnull)(NSString *_Nullable phone))completion;
 - (void)setMyPhone:(NSString *_Nonnull)phone completion:(_Nullable FirebaseRequestCallback)completion;
 

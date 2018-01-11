@@ -6,18 +6,74 @@
 //  Copyright © 2018 Вячеслав Живетьев. All rights reserved.
 //
 
+#import <Firebase.h>
+#import <GoogleSignIn/GoogleSignIn.h>
+
 #import "VMZOwe.h"
+
+
+@interface VMZOwe ()
+
+@property (nonatomic, strong) id<NSObject> firebaseAuthStateDidChangeHandler;
+
+@end
+
 
 @implementation VMZOwe
 
 
+#pragma mark - GIDSignInDelegate
+
+- (void)signIn:(GIDSignIn *)signIn
+didSignInForUser:(GIDGoogleUser *)user
+     withError:(NSError *)error
+{
+    if (error == nil)
+    {
+        GIDAuthentication *authentication = user.authentication;
+        FIRAuthCredential *credential =
+        [FIRGoogleAuthProvider credentialWithIDToken:authentication.idToken
+                                         accessToken:authentication.accessToken];
+        
+        // и теперь авторизуемся в firebase с помощью гугловкого credential
+        
+        [[FIRAuth auth] signInWithCredential:credential completion:^(FIRUser *user, NSError *error) {
+            if (error)
+            {
+                [self VMZAuthDidSignInForUser:user withError:error];
+            }
+        }];
+    }
+    else
+    {
+        [self VMZAuthDidSignInForUser:nil withError:error];
+    }
+}
+
+- (void)signIn:(GIDSignIn *)signIn
+didDisconnectWithUser:(GIDGoogleUser *)user
+     withError:(NSError *)error
+{
+    // Perform any operations when the user disconnects from app here.
+    // ...
+}
+
+
 #pragma mark - VMZOweDelegate
 
-- (void)FIRAuthDidSignInForUser:(FIRUser*)user withError:(NSError*)error
+- (void)VMZAuthDidSignInForUser:(FIRUser*)user withError:(NSError*)error
 {
-    if (self.delegate != self)
+    if ([self.uiDelegate respondsToSelector:@selector(VMZAuthDidSignInForUser:withError:)])
     {
-        [self.delegate FIRAuthDidSignInForUser:user withError:error];
+        [self.uiDelegate VMZAuthDidSignInForUser:user withError:error];
+    }
+}
+
+- (void)VMZPhoneNumberCheckedWithResult:(BOOL)success
+{
+    if ([self.uiDelegate respondsToSelector:@selector(VMZPhoneNumberCheckedWithResult:)])
+    {
+        [self.uiDelegate VMZPhoneNumberCheckedWithResult:success];
     }
 }
 
@@ -36,13 +92,75 @@
     return sharedInstance;
 }
 
+- (void)setUiDelegate:(UIViewController<VMZOweUIDelegate> *)uiDelegate
+{
+    _uiDelegate = uiDelegate;
+    
+    if (!self.firebaseAuthStateDidChangeHandler)
+    {
+        self.firebaseAuthStateDidChangeHandler =
+        [[FIRAuth auth] addAuthStateDidChangeListener:^(FIRAuth *_Nonnull auth, FIRUser *_Nullable user) {
+            NSLog(@"Auth state changed %@", user);
+            
+            if(user)
+            {
+                [self VMZAuthDidSignInForUser:user withError:nil];
+                
+                [self getMyPhoneWithCompletion:^(NSString * _Nullable phone) {
+                    NSLog(@"Got my phone: %@",phone);
+                    
+                    [self VMZPhoneNumberCheckedWithResult:![phone isEqualToString:@"undefinedPhone"]];
+                }];
+            }
+            else
+            {
+                [self VMZAuthDidSignInForUser:nil withError:nil];
+            }
+        }];
+    }
+}
+
+- (instancetype)init
+{
+    self = [super init];
+    if(self)
+    {
+        
+    }
+    return self;
+}
+
+- (void)dealloc
+{
+    [[FIRAuth auth] removeAuthStateDidChangeListener:self.firebaseAuthStateDidChangeHandler];
+}
 
 #pragma mark - FirebaseNetworking
 
-- (void)firebaseCloudFunctionCall:(NSString *_Nonnull)function completion:(_Nullable FirebaseRequestCallback)completion
+- (NSString*)firebaseUrlForFunction:(NSString *_Nonnull)function withParameters:(NSDictionary *_Nullable)parameters
 {
-    NSString *escapedParameters = [function stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLHostAllowedCharacterSet]];
-    NSString *url = [NSString stringWithFormat:@"https://us-central1-owe-ios.cloudfunctions.net/app/%@", escapedParameters];
+    if (parameters)
+    {
+        NSMutableString *resultUrl = [[NSMutableString alloc] initWithString:function];
+        [resultUrl appendString:@"?"];
+        for (NSString *param in parameters)
+        {
+            NSString *value = parameters[param];
+            NSString *escapedValue = [value stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLHostAllowedCharacterSet]];
+            [resultUrl appendString:[NSString stringWithFormat:@"%@=%@&", param, escapedValue]];
+        }
+        [resultUrl deleteCharactersInRange:NSMakeRange(resultUrl.length-1, 1)];
+        return [NSString stringWithString:resultUrl];
+    }
+    return function;
+}
+
+- (void)firebaseCloudFunctionCall:(NSString *_Nonnull)function
+                       parameters:(NSDictionary *_Nullable)parameters
+                       completion:(_Nullable FirebaseRequestCallback)completion
+{
+    NSString *functionWithEscapedParameters = [self firebaseUrlForFunction:function withParameters:parameters];
+    NSString *url = [NSString stringWithFormat:@"https://us-central1-owe-ios.cloudfunctions.net/app/%@", functionWithEscapedParameters];
    
     [[FIRAuth auth].currentUser getIDTokenWithCompletion:^(NSString * _Nullable token, NSError * _Nullable error) {
         NSMutableURLRequest *urlRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:url]];
@@ -94,24 +212,15 @@
 
 - (void)getMyPhoneWithCompletion:(void(^_Nonnull)(NSString *_Nullable phone))completion
 {
-    [self firebaseCloudFunctionCall:@"getPhone" completion:^(NSDictionary *data, NSError *error) {
+    [self firebaseCloudFunctionCall:@"getPhone" parameters:nil completion:^(NSDictionary *data, NSError *error) {
         completion(error || data == nil ? nil : data[@"phone"]);
-        if (error)
-        {
-            @throw error;
-        }
     }];
 }
 
 - (void)setMyPhone:(NSString *_Nonnull)phone completion:(_Nullable FirebaseRequestCallback)completion
 {
-    NSString *functionWithParameters = [NSString stringWithFormat:@"setPhone?phone=%@", phone];
-    [self firebaseCloudFunctionCall:functionWithParameters completion:^(NSDictionary *data, NSError *error) {
+    [self firebaseCloudFunctionCall:@"setPhone" parameters:@{@"phone":phone} completion:^(NSDictionary *data, NSError *error) {
         completion(data, error);
-        if (error)
-        {
-            @throw error;
-        }
     }];
 }
 
