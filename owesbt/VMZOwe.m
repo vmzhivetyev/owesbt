@@ -14,11 +14,13 @@
 #import "VMZOwe.h"
 #import "VMZOweData+CoreDataClass.h"
 #import "UIViewController+Extension.h"
+#import "VMZCoreDataManager.h"
 
 @interface VMZOwe ()
 
 @property (nonatomic, strong) id<NSObject> firebaseAuthStateDidChangeHandler;
 @property (nonatomic, strong) NSPersistentContainer *persistentContainer;
+@property (nonatomic, weak) NSManagedObjectContext *managedObjectContext;
 
 @end
 
@@ -129,14 +131,6 @@ didDisconnectWithUser:(GIDGoogleUser *)user
     self = [super init];
     if(self)
     {
-        self.persistentContainer = [[NSPersistentContainer alloc] initWithName:@"DataModel"];
-        [self.persistentContainer loadPersistentStoresWithCompletionHandler:^(NSPersistentStoreDescription *description, NSError *error) {
-            if (error != nil) {
-                NSLog(@"Failed to load Core Data stack: %@", error);
-                abort();
-            }
-        }];
-        
         [self downloadOwes:@"active"];
     }
     return self;
@@ -255,30 +249,10 @@ didDisconnectWithUser:(GIDGoogleUser *)user
     }];
 }
 
-- (NSArray *)managedObjectsForClass:(NSString *)className withId:(NSString*)uid {
-    __block NSArray *results = nil;
-    
-    NSManagedObjectContext *moc = self.persistentContainer.viewContext;
-    
-    NSFetchRequest *fetchRequest = [VMZOweData fetchRequest];
-    if (uid)
-    {
-        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"uid = %s", uid]];
-    }
-    
-    [moc performBlockAndWait:^{
-        NSError *error = nil;
-        results = [moc executeFetchRequest:fetchRequest error:&error];
-        NSLog(@"Fetching error: %@", error);
-    }];
-    
-    return results;
-}
-
 - (void)downloadOwes:(NSString*)status
 {
     [self firebaseCloudFunctionCall:@"getOwes2" parameters:@{@"status":status} completion:^(NSDictionary * _Nullable data, NSError * _Nullable error) {
-        NSLog(@"%@\n%@", data, error);
+        NSLog(@"Downloaded owes: %@\nDownloaded owes with error:%@", data, error);
         
         NSArray *owesArray = data[@"result"];
         if (!owesArray)
@@ -286,24 +260,7 @@ didDisconnectWithUser:(GIDGoogleUser *)user
             return;
         }
         
-        NSManagedObjectContext *moc = self.persistentContainer.viewContext;
-        
-        [[self managedObjectsForClass:@"Owe" withId:nil] enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            NSLog(@"Deleting %@",((VMZOweData*)obj).uid);
-            [moc deleteObject:obj];
-        }];
-        
-        [owesArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            VMZOweData *newManagedObject = [NSEntityDescription insertNewObjectForEntityForName:@"Owe" inManagedObjectContext:moc];
-            [newManagedObject loadFromDictionary:obj];
-            NSLog(@"Added %@", newManagedObject.uid);
-        }];
-        
-        NSError *saveError = nil;
-        if (![moc save:&saveError])
-        {
-            NSLog(@"CoreData save error: %@", saveError.localizedDescription);
-        }
+        [[VMZCoreDataManager sharedInstance] updateOwes:owesArray];
     }];
 }
 
