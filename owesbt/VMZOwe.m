@@ -39,8 +39,11 @@ didSignInForUser:(GIDGoogleUser *)user
         // и теперь авторизуемся в firebase с помощью гугловкого credential
         
         [[FIRAuth auth] signInWithCredential:credential completion:^(FIRUser *user, NSError *error) {
-                                      [self VMZAuthDidSignInForUser:user withError:error];
-                                  }];
+            if (error)
+            {
+                [self VMZAuthDidSignInForUser:user withError:error];
+            }
+        }];
     }
     else
     {
@@ -94,30 +97,35 @@ didDisconnectWithUser:(GIDGoogleUser *)user
 {
     _uiDelegate = uiDelegate;
     
-    self.firebaseAuthStateDidChangeHandler =
-    [[FIRAuth auth] addAuthStateDidChangeListener:^(FIRAuth *_Nonnull auth, FIRUser *_Nullable user) {
-        NSLog(@"Auth state changed %@", user);
-        
-        if(user)
-        {
-            [self getMyPhoneWithCompletion:^(NSString * _Nullable phone) {
-                NSLog(@"Got my phone: %@",phone);
+    if (!self.firebaseAuthStateDidChangeHandler)
+    {
+        self.firebaseAuthStateDidChangeHandler =
+        [[FIRAuth auth] addAuthStateDidChangeListener:^(FIRAuth *_Nonnull auth, FIRUser *_Nullable user) {
+            NSLog(@"Auth state changed %@", user);
+            
+            if(user)
+            {
+                [self VMZAuthDidSignInForUser:user withError:nil];
                 
-                if ([phone isEqualToString:@"undefinedPhone"])
-                {
-                    [self presentChangePhoneView];
-                }
-                else
-                {
-                    //goto authorized view
-                }
-            }];
-        }
-        else
-        {
-            [self VMZAuthDidSignInForUser:nil withError:nil];
-        }
-    }];
+                [self getMyPhoneWithCompletion:^(NSString * _Nullable phone) {
+                    NSLog(@"Got my phone: %@",phone);
+                    
+                    if ([phone isEqualToString:@"undefinedPhone"])
+                    {
+                        [self presentChangePhoneView];
+                    }
+                    else
+                    {
+                        //goto authorized view
+                    }
+                }];
+            }
+            else
+            {
+                [self VMZAuthDidSignInForUser:nil withError:nil];
+            }
+        }];
+    }
 }
 
 - (instancetype)init
@@ -137,6 +145,10 @@ didDisconnectWithUser:(GIDGoogleUser *)user
 
 - (void)presentChangePhoneView
 {
+    //TODO костыль для дисмиса алерта, который нужен для дебага, не будет алерта - не нужен dismiss
+    {
+        [self.uiDelegate dismissViewControllerAnimated:NO completion:nil];
+    }
     UIViewController* view = [VMZChangePhoneViewController new];
     [view setModalPresentationStyle:UIModalPresentationFullScreen];
     [view setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];

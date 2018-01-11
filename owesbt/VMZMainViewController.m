@@ -31,13 +31,8 @@
     [self showMessagePrompt:
         [NSString stringWithFormat:@"Signed in for user: %@\nError: %@", user, error.localizedDescription]];
     
-    if (!user)
-    {
-        self.spinnerImageView.hidden = YES;
-        
-        self.googleSignInButton = [[GIDSignInButton alloc] initWithFrame:CGRectMake(80.0, 210.0, 120.0, 40.0)];
-        [self.view addSubview:self.googleSignInButton];
-    }
+    self.spinnerImageView.hidden = !user;
+    self.googleSignInButton.hidden = !!user;
 }
 
 - (void)VMZPhoneNumberCheckedWithResult:(BOOL)success
@@ -123,6 +118,9 @@
     //[[GIDSignIn sharedInstance] signIn];
     
     self.view.backgroundColor = [UIColor whiteColor];
+    
+    self.googleSignInButton = [[GIDSignInButton alloc] initWithFrame:CGRectMake(80.0, 210.0, 120.0, 40.0)];
+    [self.view addSubview:self.googleSignInButton];
     
     UIImage* image = [UIImage imageNamed:@"Dual Ring"];
     CGFloat x = CGRectGetMidX(self.view.bounds) - image.size.width/2;
