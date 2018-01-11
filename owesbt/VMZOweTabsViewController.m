@@ -7,6 +7,7 @@
 //
 
 #import "VMZOweTabsViewController.h"
+#import "VMZOwesTableViewController.h"
 
 @interface VMZOweTabsViewController ()
 
@@ -18,6 +19,27 @@
     [super viewDidLoad];
     
     self.view.backgroundColor = [UIColor yellowColor];
+    
+    VMZOwesTableViewController *view1 = [[VMZOwesTableViewController alloc] init];
+    VMZOwesTableViewController *view2 = [[VMZOwesTableViewController alloc] init];
+    VMZOwesTableViewController *view3 = [[VMZOwesTableViewController alloc] init];
+    
+    NSArray *tabViewControllers = @[view1, view2, view3];
+    
+    [self setViewControllers:tabViewControllers];
+    
+    view1.tabBarItem =
+    [[UITabBarItem alloc] initWithTitle:@"view1"
+                                  image:[UIImage imageNamed:@"list1"]
+                                    tag:1];
+    view2.tabBarItem =
+    [[UITabBarItem alloc] initWithTitle:@"view2"
+                                  image:[UIImage imageNamed:@"pending1"]
+                                    tag:2];
+    view3.tabBarItem =
+    [[UITabBarItem alloc] initWithTitle:@"view3"
+                                  image:[UIImage imageNamed:@"stack"]
+                                    tag:3];
 }
 
 - (void)didReceiveMemoryWarning {

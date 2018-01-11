@@ -8,13 +8,17 @@
 
 #import <Firebase.h>
 #import <GoogleSignIn/GoogleSignIn.h>
+#import <UIKit/UIKit.h>
+#import <CoreData/CoreData.h>
 
 #import "VMZOwe.h"
-
+#import "VMZOweData+CoreDataClass.h"
+#import "UIViewController+Extension.h"
 
 @interface VMZOwe ()
 
 @property (nonatomic, strong) id<NSObject> firebaseAuthStateDidChangeHandler;
+@property (nonatomic, strong) NSPersistentContainer *persistentContainer;
 
 @end
 
@@ -125,7 +129,15 @@ didDisconnectWithUser:(GIDGoogleUser *)user
     self = [super init];
     if(self)
     {
+        self.persistentContainer = [[NSPersistentContainer alloc] initWithName:@"DataModel"];
+        [self.persistentContainer loadPersistentStoresWithCompletionHandler:^(NSPersistentStoreDescription *description, NSError *error) {
+            if (error != nil) {
+                NSLog(@"Failed to load Core Data stack: %@", error);
+                abort();
+            }
+        }];
         
+        [self downloadOwes:@"active"];
     }
     return self;
 }
@@ -213,7 +225,26 @@ didDisconnectWithUser:(GIDGoogleUser *)user
 - (void)getMyPhoneWithCompletion:(void(^_Nonnull)(NSString *_Nullable phone))completion
 {
     [self firebaseCloudFunctionCall:@"getPhone" parameters:nil completion:^(NSDictionary *data, NSError *error) {
-        completion(error || data == nil ? nil : data[@"phone"]);
+        if (error)
+        {
+            NSString* phoneNumber = [[NSUserDefaults standardUserDefaults] objectForKey:@"myPhoneNumber"];
+            if (phoneNumber)
+            {
+                completion(phoneNumber);
+            }
+            else
+            {
+                NSString *message = [NSString stringWithFormat:@"Checking phone number error:\n%@", error.localizedDescription];
+                [[self uiDelegate] showMessagePrompt:message];
+                completion(nil);
+            }
+        }
+        else
+        {
+            NSString* phoneNumber = data[@"phone"];
+            [[NSUserDefaults standardUserDefaults] setObject:phoneNumber forKey:@"myPhoneNumber"];
+            completion(phoneNumber);
+        }
     }];
 }
 
@@ -221,6 +252,58 @@ didDisconnectWithUser:(GIDGoogleUser *)user
 {
     [self firebaseCloudFunctionCall:@"setPhone" parameters:@{@"phone":phone} completion:^(NSDictionary *data, NSError *error) {
         completion(data, error);
+    }];
+}
+
+- (NSArray *)managedObjectsForClass:(NSString *)className withId:(NSString*)uid {
+    __block NSArray *results = nil;
+    
+    NSManagedObjectContext *moc = self.persistentContainer.viewContext;
+    
+    NSFetchRequest *fetchRequest = [VMZOweData fetchRequest];
+    if (uid)
+    {
+        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"uid = %s", uid]];
+    }
+    
+    [moc performBlockAndWait:^{
+        NSError *error = nil;
+        results = [moc executeFetchRequest:fetchRequest error:&error];
+        NSLog(@"Fetching error: %@", error);
+    }];
+    
+    return results;
+}
+
+- (void)downloadOwes:(NSString*)status
+{
+    [self firebaseCloudFunctionCall:@"getOwes2" parameters:@{@"status":status} completion:^(NSDictionary * _Nullable data, NSError * _Nullable error) {
+        NSLog(@"%@\n%@", data, error);
+        
+        NSArray *owesArray = data[@"result"];
+        if (!owesArray)
+        {
+            return;
+        }
+        
+        NSManagedObjectContext *moc = self.persistentContainer.viewContext;
+        
+        [[self managedObjectsForClass:@"Owe" withId:nil] enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            NSLog(@"Deleting %@",((VMZOweData*)obj).uid);
+            [moc deleteObject:obj];
+        }];
+        
+        [owesArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            VMZOweData *newManagedObject = [NSEntityDescription insertNewObjectForEntityForName:@"Owe" inManagedObjectContext:moc];
+            [newManagedObject loadFromDictionary:obj];
+            NSLog(@"Added %@", newManagedObject.uid);
+        }];
+        
+        NSError *saveError = nil;
+        if (![moc save:&saveError])
+        {
+            NSLog(@"CoreData save error: %@", saveError.localizedDescription);
+        }
     }];
 }
 

@@ -29,6 +29,8 @@ typedef void (^FirebaseRequestCallback)(NSDictionary *_Nullable data, NSError *_
 @interface VMZOwe : NSObject <GIDSignInDelegate, VMZOweUIDelegate>
 
 @property (nonatomic, weak) UIViewController<VMZOweUIDelegate> *_Nullable uiDelegate;
+@property (nonatomic, strong) NSArray *_Nullable owes;
+
 
 + (VMZOwe *_Nonnull)sharedInstance;
 

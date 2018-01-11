@@ -36,7 +36,7 @@
         return;
     }
     
-    [self showMessagePrompt: [NSString stringWithFormat:@"Signed in for user: %@", user]];
+    //[self showMessagePrompt: [NSString stringWithFormat:@"Signed in for user: %@", user]];
     
     self.spinnerImageView.hidden = !user;
     self.googleSignInButton.hidden = !!user;
