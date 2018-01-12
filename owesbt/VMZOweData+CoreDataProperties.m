@@ -25,6 +25,7 @@
     self.descr = [dict objectForKey:@"descr"];
     self.status = [dict objectForKey:@"status"];
     self.uid = [dict objectForKey:@"id"];
+    self.sum = [dict objectForKey:@"sum"];
 }
 
 @dynamic closed;
@@ -34,5 +35,6 @@
 @dynamic descr;
 @dynamic status;
 @dynamic uid;
+@dynamic sum;
 
 @end

@@ -25,6 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, copy) NSString *descr;
 @property (nullable, nonatomic, copy) NSString *status;
 @property (nullable, nonatomic, copy) NSString *uid;
+@property (nullable, nonatomic, copy) NSString *sum;
 
 @end
 

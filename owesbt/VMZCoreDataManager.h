@@ -16,6 +16,8 @@
 @property (nonatomic, weak, readonly) NSManagedObjectContext *managedObjectContext;
 
 + (instancetype)sharedInstance;
+
+- (NSArray *)owesForStatus:(NSString *)status selfIsDebtor:(BOOL)selfIsDebtor;
 - (void)updateOwes:(NSArray *_Nonnull)owesArray;
 
 @end

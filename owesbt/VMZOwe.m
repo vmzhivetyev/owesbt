@@ -83,6 +83,14 @@ didDisconnectWithUser:(GIDGoogleUser *)user
     }
 }
 
+- (void)VMZOwesDataDidUpdate
+{
+    if ([self.uiDelegate respondsToSelector:@selector(VMZOwesDataDidUpdate)])
+    {
+        [self.uiDelegate VMZOwesDataDidUpdate];
+    }
+}
+
 
 #pragma mark - LifeCycle
 

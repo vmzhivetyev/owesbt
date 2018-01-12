@@ -8,6 +8,7 @@
 
 #import "VMZCoreDataManager.h"
 #import "VMZOweData+CoreDataClass.h"
+#import "VMZOwe.h"
 
 @implementation VMZCoreDataManager
 
@@ -44,15 +45,29 @@
     return self;
 }
 
-- (NSArray *)managedObjectsForClass:(NSString *)className withId:(NSString*)uid {
+- (NSArray *)owesForStatus:(NSString *)status selfIsDebtor:(BOOL)selfIsDebtor
+{
+    NSMutableString* predicate = [NSMutableString stringWithFormat:@"(status = '%@')", status];
+    if (selfIsDebtor)
+    {
+        [predicate appendString:@" && (debtor = 'self')"];
+    }
+    else
+    {
+        [predicate appendString:@" && (debtor != 'self')"];
+    }
+    return [self managedObjectsForClass:@"Owe" predicateFormat:predicate];
+}
+
+- (NSArray *)managedObjectsForClass:(NSString *)className predicateFormat:(NSString*)predicate {
     __block NSArray *results = nil;
     
     NSManagedObjectContext *moc = self.persistentContainer.viewContext;
     
     NSFetchRequest *fetchRequest = [VMZOweData fetchRequest];
-    if (uid)
+    if (predicate)
     {
-        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"uid = %s", uid]];
+        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:predicate]];
     }
     
     [moc performBlockAndWait:^{
@@ -68,7 +83,7 @@
 {
     NSManagedObjectContext *moc = self.persistentContainer.viewContext;
     
-    [[self managedObjectsForClass:@"Owe" withId:nil] enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    [[self managedObjectsForClass:@"Owe" predicateFormat:nil] enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         NSLog(@"Deleting %@",((VMZOweData*)obj).uid);
         [moc deleteObject:obj];
     }];
@@ -83,6 +98,10 @@
     if (![moc save:&saveError])
     {
         NSLog(@"CoreData save error: %@", saveError.localizedDescription);
+    }
+    else
+    {
+        [[VMZOwe sharedInstance] VMZOwesDataDidUpdate];
     }
 }
 

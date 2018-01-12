@@ -8,6 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
-@interface VMZOwesTableViewController : UITableViewController
+
+@protocol VMZOweUIDelegate;
+
+
+@interface VMZOwesTableViewController : UITableViewController <VMZOweUIDelegate>
+
+- (instancetype)initWithStatus:(NSString*)status;
 
 @end

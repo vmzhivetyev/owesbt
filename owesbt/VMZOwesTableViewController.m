@@ -9,15 +9,49 @@
 #import "VMZOwesTableViewController.h"
 #import "VMZOwe.h"
 #import "VMZOweData+CoreDataClass.h"
+#import "VMZCoreDataManager.h"
 
 @interface VMZOwesTableViewController ()
+
+@property (nonatomic, strong) NSArray* owesToDisplay;
+@property (nonatomic, strong, readonly) NSString* owesStatus;
 
 @end
 
 @implementation VMZOwesTableViewController
 
+
+#pragma mark - VMZOweUIDelegate
+
+- (void)VMZOwesDataDidUpdate
+{
+    _owesToDisplay = @[ [[VMZCoreDataManager sharedInstance] owesForStatus:self.owesStatus selfIsDebtor:YES],
+                        [[VMZCoreDataManager sharedInstance] owesForStatus:self.owesStatus selfIsDebtor:NO] ];
+    
+    NSLog(@"%@", _owesToDisplay);
+    
+    [self.tableView reloadData];
+}
+
+
+#pragma mark - Lifecycle
+
+- (instancetype)initWithStatus:(NSString*)status
+{
+    self = [super init];
+    if(self)
+    {
+        _owesStatus = status;
+    }
+    return self;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    [self VMZOwesDataDidUpdate];
+    
+    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"cell"];
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -28,7 +62,9 @@
 
 - (void)viewDidAppear:(BOOL)animated
 {
-    NSLog(@"viewDidAppear %@",self);
+    [super viewDidAppear:animated];
+    
+    [VMZOwe sharedInstance].uiDelegate = self;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -36,23 +72,43 @@
     // Dispose of any resources that can be recreated.
 }
 
-#pragma mark - Table view data source
+#pragma mark - UITableViewDataSourceDelegate
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
+    return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [[VMZOwe sharedInstance].owes count];
+    return [self.owesToDisplay[section] count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
     
-    VMZOweData *owe = [VMZOwe sharedInstance].owes[indexPath.row];
-    cell.textLabel.text = owe.descr;
+    VMZOweData *owe = (VMZOweData*)self.owesToDisplay[indexPath.section][indexPath.row];
+    //cell.textLabel.text = owe.uid;
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ %@", owe.sum, owe.descr];
     
     return cell;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 18)];
+    /* Create custom view to display section header... */
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, tableView.frame.size.width, 18)];
+    [label setFont:[UIFont boldSystemFontOfSize:12]];
+    NSString *string = @[@"I'm debtor", @"I'm creditor"][section];
+    /* Section header is in 0th index... */
+    [label setText:string];
+    [view addSubview:label];
+    [view setBackgroundColor:[UIColor colorWithRed:166/255.0 green:177/255.0 blue:186/255.0 alpha:1.0]]; //your background color...
+    return view;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 60;
 }
 
 /*
@@ -86,16 +142,6 @@
 - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
     // Return NO if you do not want the item to be re-orderable.
     return YES;
-}
-*/
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
 }
 */
 

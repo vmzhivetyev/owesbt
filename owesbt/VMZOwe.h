@@ -11,7 +11,7 @@
 
 @protocol GIDSignInDelegate;
 @class FIRUser;
-
+@class UIViewController;
 
 typedef void (^FirebaseRequestCallback)(NSDictionary *_Nullable data, NSError *_Nullable error);
 
@@ -22,6 +22,7 @@ typedef void (^FirebaseRequestCallback)(NSDictionary *_Nullable data, NSError *_
 
 - (void)VMZAuthDidSignInForUser:(FIRUser *_Nullable)user withError:(NSError *_Nullable)error;
 - (void)VMZPhoneNumberCheckedWithResult:(BOOL)success;
+- (void)VMZOwesDataDidUpdate;
 
 @end
 

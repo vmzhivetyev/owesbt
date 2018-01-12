@@ -20,7 +20,7 @@
     
     self.view.backgroundColor = [UIColor yellowColor];
     
-    VMZOwesTableViewController *view1 = [[VMZOwesTableViewController alloc] init];
+    VMZOwesTableViewController *view1 = [[VMZOwesTableViewController alloc] initWithStatus:@"active"];
     VMZOwesTableViewController *view2 = [[VMZOwesTableViewController alloc] init];
     VMZOwesTableViewController *view3 = [[VMZOwesTableViewController alloc] init];
     
