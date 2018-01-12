@@ -10,6 +10,7 @@
 #import "VMZOwe.h"
 #import "VMZOweData+CoreDataClass.h"
 #import "VMZCoreDataManager.h"
+#import "VMZOwesTableViewCell.h"
 
 @interface VMZOwesTableViewController ()
 
@@ -51,7 +52,7 @@
     
     [self VMZOwesDataDidUpdate];
     
-    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"cell"];
+    [self.tableView registerClass:[VMZOwesTableViewCell class] forCellReuseIdentifier:@"cell"];
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -65,6 +66,8 @@
     [super viewDidAppear:animated];
     
     [VMZOwe sharedInstance].uiDelegate = self;
+    
+    self.parentViewController.navigationItem.title = self.owesStatus;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -83,11 +86,11 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
+    VMZOwesTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
     
     VMZOweData *owe = (VMZOweData*)self.owesToDisplay[indexPath.section][indexPath.row];
-    //cell.textLabel.text = owe.uid;
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ %@", owe.sum, owe.descr];
+    cell.mainLabel.text = [owe.creditor isEqualToString:@"self"] ? owe.debtor : owe.creditor;
+    cell.secondLabel.text = [NSString stringWithFormat:@"%@ %@", owe.sum, owe.descr];
     
     return cell;
 }
@@ -108,7 +111,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 60;
+    return [VMZOwesTableViewCell height];
 }
 
 /*

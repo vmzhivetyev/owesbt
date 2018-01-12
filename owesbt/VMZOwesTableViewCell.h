@@ -8,6 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-@interface VMZOwesTableViewCell : UIView
+@interface VMZOwesTableViewCell : UITableViewCell
+
+@property (nonatomic, strong, readonly) UILabel *mainLabel;
+@property (nonatomic, strong, readonly) UILabel *secondLabel;
+
++ (CGFloat)height;
 
 @end
