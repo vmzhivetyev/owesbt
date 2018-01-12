@@ -8,13 +8,19 @@
 
 #import <Firebase.h>
 #import <GoogleSignIn/GoogleSignIn.h>
+#import <UIKit/UIKit.h>
+#import <CoreData/CoreData.h>
 
 #import "VMZOwe.h"
-
+#import "VMZOweData+CoreDataClass.h"
+#import "UIViewController+Extension.h"
+#import "VMZCoreDataManager.h"
 
 @interface VMZOwe ()
 
 @property (nonatomic, strong) id<NSObject> firebaseAuthStateDidChangeHandler;
+@property (nonatomic, strong) NSPersistentContainer *persistentContainer;
+@property (nonatomic, weak) NSManagedObjectContext *managedObjectContext;
 
 @end
 
@@ -65,7 +71,9 @@ didDisconnectWithUser:(GIDGoogleUser *)user
 {
     if ([self.uiDelegate respondsToSelector:@selector(VMZAuthDidSignInForUser:withError:)])
     {
-        [self.uiDelegate VMZAuthDidSignInForUser:user withError:error];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.uiDelegate VMZAuthDidSignInForUser:user withError:error];
+        });
     }
 }
 
@@ -73,7 +81,19 @@ didDisconnectWithUser:(GIDGoogleUser *)user
 {
     if ([self.uiDelegate respondsToSelector:@selector(VMZPhoneNumberCheckedWithResult:)])
     {
-        [self.uiDelegate VMZPhoneNumberCheckedWithResult:success];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.uiDelegate VMZPhoneNumberCheckedWithResult:success];
+        });
+    }
+}
+
+- (void)VMZOwesDataDidUpdate
+{
+    if ([self.uiDelegate respondsToSelector:@selector(VMZOwesDataDidUpdate)])
+    {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.uiDelegate VMZOwesDataDidUpdate];
+        });
     }
 }
 
@@ -213,7 +233,26 @@ didDisconnectWithUser:(GIDGoogleUser *)user
 - (void)getMyPhoneWithCompletion:(void(^_Nonnull)(NSString *_Nullable phone))completion
 {
     [self firebaseCloudFunctionCall:@"getPhone" parameters:nil completion:^(NSDictionary *data, NSError *error) {
-        completion(error || data == nil ? nil : data[@"phone"]);
+        if (error)
+        {
+            NSString* phoneNumber = [[NSUserDefaults standardUserDefaults] objectForKey:@"myPhoneNumber"];
+            if (phoneNumber)
+            {
+                completion(phoneNumber);
+            }
+            else
+            {
+                NSString *message = [NSString stringWithFormat:@"Checking phone number error:\n%@", error.localizedDescription];
+                [[self uiDelegate] showMessagePrompt:message];
+                completion(nil);
+            }
+        }
+        else
+        {
+            NSString* phoneNumber = data[@"phone"];
+            [[NSUserDefaults standardUserDefaults] setObject:phoneNumber forKey:@"myPhoneNumber"];
+            completion(phoneNumber);
+        }
     }];
 }
 
@@ -221,6 +260,21 @@ didDisconnectWithUser:(GIDGoogleUser *)user
 {
     [self firebaseCloudFunctionCall:@"setPhone" parameters:@{@"phone":phone} completion:^(NSDictionary *data, NSError *error) {
         completion(data, error);
+    }];
+}
+
+- (void)downloadOwes:(NSString*)status
+{
+    [self firebaseCloudFunctionCall:@"getOwes2" parameters:@{@"status":status} completion:^(NSDictionary * _Nullable data, NSError * _Nullable error) {
+        NSLog(@"Downloaded owes: %@\nDownloaded owes with error:%@", data, error);
+        
+        NSArray *owesArray = data[@"result"];
+        if (!owesArray)
+        {
+            return;
+        }
+        
+        [[VMZCoreDataManager sharedInstance] updateOwes:owesArray];
     }];
 }
 

@@ -7,6 +7,7 @@
 //
 
 #import "VMZOweTabsViewController.h"
+#import "VMZOwesTableViewController.h"
 
 @interface VMZOweTabsViewController ()
 
@@ -17,7 +18,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.view.backgroundColor = [UIColor yellowColor];
+    UIViewController *view1 = [[VMZOwesTableViewController alloc] initWithStatus:@"active" tabBarImage:@"list1"];
+    UIViewController *view2 = [[VMZOwesTableViewController alloc] initWithStatus:@"requested" tabBarImage:@"pending1"];
+    UIViewController *view3 = [[VMZOwesTableViewController alloc] initWithStatus:@"closed" tabBarImage:@"stack"];
+    
+    [self setViewControllers:@[view1, view2, view3]];
 }
 
 - (void)didReceiveMemoryWarning {
