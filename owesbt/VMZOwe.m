@@ -71,7 +71,9 @@ didDisconnectWithUser:(GIDGoogleUser *)user
 {
     if ([self.uiDelegate respondsToSelector:@selector(VMZAuthDidSignInForUser:withError:)])
     {
-        [self.uiDelegate VMZAuthDidSignInForUser:user withError:error];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.uiDelegate VMZAuthDidSignInForUser:user withError:error];
+        });
     }
 }
 
@@ -79,7 +81,9 @@ didDisconnectWithUser:(GIDGoogleUser *)user
 {
     if ([self.uiDelegate respondsToSelector:@selector(VMZPhoneNumberCheckedWithResult:)])
     {
-        [self.uiDelegate VMZPhoneNumberCheckedWithResult:success];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.uiDelegate VMZPhoneNumberCheckedWithResult:success];
+        });
     }
 }
 
@@ -87,7 +91,9 @@ didDisconnectWithUser:(GIDGoogleUser *)user
 {
     if ([self.uiDelegate respondsToSelector:@selector(VMZOwesDataDidUpdate)])
     {
-        [self.uiDelegate VMZOwesDataDidUpdate];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.uiDelegate VMZOwesDataDidUpdate];
+        });
     }
 }
 
@@ -139,7 +145,7 @@ didDisconnectWithUser:(GIDGoogleUser *)user
     self = [super init];
     if(self)
     {
-        [self downloadOwes:@"active"];
+        
     }
     return self;
 }

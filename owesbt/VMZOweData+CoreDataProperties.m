@@ -7,19 +7,19 @@
 //
 //
 
+#import <Foundation/Foundation.h>
 #import "VMZOweData+CoreDataProperties.h"
 
 @implementation VMZOweData (CoreDataProperties)
 
-+ (NSFetchRequest<VMZOweData *> *)fetchRequest
-{
++ (NSFetchRequest<VMZOweData *> *)fetchRequest {
 	return [[NSFetchRequest alloc] initWithEntityName:@"Owe"];
 }
 
 - (void)loadFromDictionary:(NSDictionary * _Nonnull)dict
 {
-    //self.created = [dict objectForKey:@"created"];
-    //self.closed = [dict objectForKey:@"closed"];
+    self.created = [NSDate dateWithTimeIntervalSince1970:[[dict objectForKey:@"created"] integerValue]/1000.0];
+    self.closed = [NSDate dateWithTimeIntervalSince1970:[[dict objectForKey:@"closed"] integerValue]/1000.0];
     self.creditor = [dict objectForKey:@"to"];
     self.debtor = [dict objectForKey:@"who"];
     self.descr = [dict objectForKey:@"descr"];

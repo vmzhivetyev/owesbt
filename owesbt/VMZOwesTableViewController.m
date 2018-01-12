@@ -14,8 +14,8 @@
 
 @interface VMZOwesTableViewController ()
 
-@property (nonatomic, strong) NSArray* owesToDisplay;
-@property (nonatomic, strong, readonly) NSString* owesStatus;
+@property (nonatomic, strong) NSArray *owesToDisplay;
+@property (nonatomic, copy, readonly) NSString *cellIdentifier;
 
 @end
 
@@ -24,25 +24,44 @@
 
 #pragma mark - VMZOweUIDelegate
 
-- (void)VMZOwesDataDidUpdate
+- (void)updateData
 {
     _owesToDisplay = @[ [[VMZCoreDataManager sharedInstance] owesForStatus:self.owesStatus selfIsDebtor:YES],
                         [[VMZCoreDataManager sharedInstance] owesForStatus:self.owesStatus selfIsDebtor:NO] ];
-    
-    NSLog(@"%@", _owesToDisplay);
-    
     [self.tableView reloadData];
+}
+
+- (void)VMZOwesDataDidUpdate
+{
+    [self updateData];
+    [self.refreshControl endRefreshing];
+}
+
+
+#pragma mark - UI
+
+- (void)refresh:(UIRefreshControl*)sender
+{
+    [[VMZOwe sharedInstance] downloadOwes:self.owesStatus];
 }
 
 
 #pragma mark - Lifecycle
 
-- (instancetype)initWithStatus:(NSString*)status
+- (instancetype)initWithStatus:(NSString*)status tabBarImage:(NSString*)imageName
 {
     self = [super init];
     if(self)
     {
         _owesStatus = status;
+        _cellIdentifier = [NSString stringWithFormat:@"cellId%@", _owesStatus];
+        
+        if(imageName)
+        {
+            self.tabBarItem = [[UITabBarItem alloc] initWithTitle:_owesStatus
+                                                            image:[UIImage imageNamed:imageName]
+                                                              tag:1];
+        }
     }
     return self;
 }
@@ -50,9 +69,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self VMZOwesDataDidUpdate];
+    [self.tableView registerClass:[VMZOwesTableViewCell class] forCellReuseIdentifier:self.cellIdentifier];
     
-    [self.tableView registerClass:[VMZOwesTableViewCell class] forCellReuseIdentifier:@"cell"];
+    self.refreshControl = [[UIRefreshControl alloc] init];
+    [self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
+    
+    [self refresh:self.refreshControl];
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -66,6 +88,8 @@
     [super viewDidAppear:animated];
     
     [VMZOwe sharedInstance].uiDelegate = self;
+    
+    [self updateData];
     
     self.parentViewController.navigationItem.title = self.owesStatus;
 }
@@ -86,26 +110,24 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    VMZOwesTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
+    VMZOwesTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
     
     VMZOweData *owe = (VMZOweData*)self.owesToDisplay[indexPath.section][indexPath.row];
     cell.mainLabel.text = [owe.creditor isEqualToString:@"self"] ? owe.debtor : owe.creditor;
-    cell.secondLabel.text = [NSString stringWithFormat:@"%@ %@", owe.sum, owe.descr];
+    cell.secondLabel.text = [NSString stringWithFormat:@"%@ %@ %@", owe.sum, owe.descr, owe.created];
     
     return cell;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 18)];
-    /* Create custom view to display section header... */
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, tableView.frame.size.width, 18)];
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(tableView.frame), 18)];
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, CGRectGetWidth(tableView.frame), 18)];
     [label setFont:[UIFont boldSystemFontOfSize:12]];
-    NSString *string = @[@"I'm debtor", @"I'm creditor"][section];
-    /* Section header is in 0th index... */
+    NSString *string = @[@"You owe", @"You are creditor"][section];
     [label setText:string];
     [view addSubview:label];
-    [view setBackgroundColor:[UIColor colorWithRed:166/255.0 green:177/255.0 blue:186/255.0 alpha:1.0]]; //your background color...
+    [view setBackgroundColor:[UIColor colorWithRed:166/255.0 green:177/255.0 blue:186/255.0 alpha:1.0]];
     return view;
 }
 

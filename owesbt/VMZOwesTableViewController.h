@@ -14,6 +14,8 @@
 
 @interface VMZOwesTableViewController : UITableViewController <VMZOweUIDelegate>
 
-- (instancetype)initWithStatus:(NSString*)status;
+@property (nonatomic, strong, readonly) NSString* owesStatus;
+
+- (instancetype)initWithStatus:(NSString*)status tabBarImage:(NSString*)imageName;
 
 @end

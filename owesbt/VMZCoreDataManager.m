@@ -56,6 +56,7 @@
     {
         [predicate appendString:@" && (debtor != 'self')"];
     }
+    
     return [self managedObjectsForClass:@"Owe" predicateFormat:predicate];
 }
 
@@ -69,6 +70,8 @@
     {
         [fetchRequest setPredicate:[NSPredicate predicateWithFormat:predicate]];
     }
+    NSSortDescriptor *sort = [[NSSortDescriptor alloc] initWithKey:@"created" ascending:NO];
+    [fetchRequest setSortDescriptors:@[sort]];
     
     [moc performBlockAndWait:^{
         NSError *error = nil;
@@ -83,7 +86,9 @@
 {
     NSManagedObjectContext *moc = self.persistentContainer.viewContext;
     
-    [[self managedObjectsForClass:@"Owe" predicateFormat:nil] enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    NSString *predicate = [NSString stringWithFormat:@"status = '%@'", [owesArray[0] valueForKey:@"status"]];
+    
+    [[self managedObjectsForClass:@"Owe" predicateFormat:predicate] enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         NSLog(@"Deleting %@",((VMZOweData*)obj).uid);
         [moc deleteObject:obj];
     }];

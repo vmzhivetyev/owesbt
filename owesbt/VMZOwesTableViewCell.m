@@ -30,6 +30,7 @@
         _secondLabel.textColor = [UIColor blackColor];
         _secondLabel.backgroundColor = [UIColor cyanColor];
         _secondLabel.text = @"Text";
+        _secondLabel.font = [UIFont systemFontOfSize:12];
         [self addSubview:_secondLabel];
     }
     return self;
