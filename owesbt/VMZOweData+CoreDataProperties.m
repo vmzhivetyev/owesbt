@@ -10,6 +10,7 @@
 #import <Foundation/Foundation.h>
 #import "VMZOweData+CoreDataProperties.h"
 
+
 @implementation VMZOweData (CoreDataProperties)
 
 + (NSFetchRequest<VMZOweData *> *)fetchRequest {

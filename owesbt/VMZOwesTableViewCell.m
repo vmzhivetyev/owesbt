@@ -7,12 +7,22 @@
 //
 
 #import "VMZOwesTableViewCell.h"
+#import "VMZOweData+CoreDataClass.h"
+
+
+@interface VMZOwesTableViewCell ()
+
+@property (nonatomic, strong, readonly) UILabel *mainLabel;
+@property (nonatomic, strong, readonly) UILabel *secondLabel;
+@property (nonatomic, strong, readonly) UILabel *emptyLabel;
+
+@end
 
 @implementation VMZOwesTableViewCell
 
-+ (CGFloat)height
++ (CGFloat)heightForEmpty:(BOOL)emptyCell
 {
-    return 58;
+    return emptyCell ? 37 : 58;
 }
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -32,8 +42,33 @@
         _secondLabel.text = @"Text";
         _secondLabel.font = [UIFont systemFontOfSize:12];
         [self addSubview:_secondLabel];
+        
+        _emptyLabel = [[UILabel alloc] initWithFrame:CGRectMake(8, 8, CGRectGetWidth(self.frame) - 16, 21)];
+        _emptyLabel.textAlignment = NSTextAlignmentCenter;
+        _emptyLabel.textColor = [UIColor grayColor];
+        _emptyLabel.text = @"Empty";
+        [self addSubview:_emptyLabel];
     }
     return self;
+}
+
+- (void)loadOweData:(VMZOweData *)owe
+{
+    if (owe)
+    {
+        self.mainLabel.text = [owe.creditor isEqualToString:@"self"] ? owe.debtor : owe.creditor;
+        self.secondLabel.text = [NSString stringWithFormat:@"%@ %@ %@", owe.sum, owe.descr, owe.created];
+        
+        self.accessoryType = [owe.creditor isEqualToString:@"self"] ? UITableViewCellAccessoryDetailDisclosureButton : UITableViewCellAccessoryDisclosureIndicator;
+    }
+    else
+    {
+        self.accessoryType = UITableViewCellAccessoryNone;
+    }
+    
+    self.mainLabel.hidden = !owe;
+    self.secondLabel.hidden = !owe;
+    self.emptyLabel.hidden = !!owe;
 }
 
 @end

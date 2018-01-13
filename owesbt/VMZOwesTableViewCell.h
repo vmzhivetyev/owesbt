@@ -8,11 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
+
+@class VMZOweData;
+
+
 @interface VMZOwesTableViewCell : UITableViewCell
 
-@property (nonatomic, strong, readonly) UILabel *mainLabel;
-@property (nonatomic, strong, readonly) UILabel *secondLabel;
-
-+ (CGFloat)height;
++ (CGFloat)heightForEmpty:(BOOL)emptyCell;
+- (void)loadOweData:(VMZOweData *)owe;
 
 @end

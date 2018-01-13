@@ -20,9 +20,25 @@ typedef void (^FirebaseRequestCallback)(NSDictionary *_Nullable data, NSError *_
 
 @optional
 
+/*
+    при успешном логине в firebase
+        user - not nil
+        error - nil
+    при ошибке логина в google/firebase или логауте из firebase
+        user - nil
+        error - nil / not nil
+ */
 - (void)VMZAuthDidSignInForUser:(FIRUser *_Nullable)user withError:(NSError *_Nullable)error;
+
+/*
+    success - номер телефона не пустой (из кэша либо получен от сервера)
+ */
 - (void)VMZPhoneNumberCheckedWithResult:(BOOL)success;
-- (void)VMZOwesDataDidUpdate;
+
+/*
+    обновились данные в кордате для entity "Owe"
+ */
+- (void)VMZOwesCoreDataDidUpdate;
 
 @end
 

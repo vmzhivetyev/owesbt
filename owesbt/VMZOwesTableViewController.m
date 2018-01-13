@@ -11,8 +11,12 @@
 #import "VMZOweData+CoreDataClass.h"
 #import "VMZCoreDataManager.h"
 #import "VMZOwesTableViewCell.h"
+#import "UIViewController+Extension.h"
 
 @interface VMZOwesTableViewController ()
+
+@property (nonatomic, strong, readonly) UITableView *tableView;
+@property (nonatomic, strong, readonly) UIRefreshControl *refreshControl;
 
 @property (nonatomic, strong) NSArray *owesToDisplay;
 @property (nonatomic, copy, readonly) NSString *cellIdentifier;
@@ -26,12 +30,14 @@
 
 - (void)updateData
 {
-    _owesToDisplay = @[ [[VMZCoreDataManager sharedInstance] owesForStatus:self.owesStatus selfIsDebtor:YES],
-                        [[VMZCoreDataManager sharedInstance] owesForStatus:self.owesStatus selfIsDebtor:NO] ];
+    _owesToDisplay = @[
+                       [[[VMZCoreDataManager sharedInstance] owesForStatus:self.owesStatus selfIsDebtor:YES] mutableCopy],
+                       [[[VMZCoreDataManager sharedInstance] owesForStatus:self.owesStatus selfIsDebtor:NO]  mutableCopy]
+                     ];
     [self.tableView reloadData];
 }
 
-- (void)VMZOwesDataDidUpdate
+- (void)VMZOwesCoreDataDidUpdate
 {
     [self updateData];
     [self.refreshControl endRefreshing];
@@ -48,13 +54,18 @@
 
 #pragma mark - Lifecycle
 
+- (instancetype)init
+{
+    return [self initWithStatus:nil tabBarImage:nil];
+}
+
 - (instancetype)initWithStatus:(NSString*)status tabBarImage:(NSString*)imageName
 {
     self = [super init];
     if(self)
     {
         _owesStatus = status;
-        _cellIdentifier = [NSString stringWithFormat:@"cellId%@", _owesStatus];
+        _cellIdentifier = @"reusableCellId";
         
         if(imageName)
         {
@@ -62,6 +73,7 @@
                                                             image:[UIImage imageNamed:imageName]
                                                               tag:1];
         }
+        
     }
     return self;
 }
@@ -69,11 +81,23 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    //init instances
+    
+    _tableView = [[UITableView alloc] initWithFrame:self.view.frame style:UITableViewStylePlain];
+    _tableView.delegate = self;
+    _tableView.dataSource = self;
+    [self.view addSubview:self.tableView];
+    
+    _refreshControl = [[UIRefreshControl alloc] init];
+    self.tableView.refreshControl = self.refreshControl;
+    
+    //additional init
+    
     [self.tableView registerClass:[VMZOwesTableViewCell class] forCellReuseIdentifier:self.cellIdentifier];
     
-    self.refreshControl = [[UIRefreshControl alloc] init];
     [self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
     
+    [self updateData];
     [self refresh:self.refreshControl];
     
     // Uncomment the following line to preserve selection between presentations.
@@ -99,22 +123,57 @@
     // Dispose of any resources that can be recreated.
 }
 
-#pragma mark - UITableViewDataSourceDelegate
+
+#pragma mark - UITableViewDelegate
+
+- (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
+{
+    NSString *status = [self oweForIndexPath:indexPath].status;
+    if ([status isEqualToString:@"active"])
+    {
+        NSString *message = @"Вы действительно вернули себе этот долг и хотите пометить его закрытым?";
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Active Owe" message:message preferredStyle:UIAlertControllerStyleActionSheet];
+        [alert addAction: [UIAlertAction actionWithTitle:@"Close Owe" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+            //[self showMessagePrompt:@"CLOSED"];
+            /*[tableView beginUpdates];
+            [_owesToDisplay[indexPath.section] removeObject:[self oweForIndexPath:indexPath]];
+            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+            [tableView endUpdates];*/
+            
+            [[VMZCoreDataManager sharedInstance] closeOwe:[self oweForIndexPath:indexPath]];
+        }]];
+        [alert addAction: [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+        [self presentViewController:alert animated:YES completion:nil];
+    }
+}
+
+- (NSInteger)numberOfRowsInSection:(NSInteger)section
+{
+    return [self.owesToDisplay[section] count];
+}
+
+
+#pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [self.owesToDisplay[section] count];
+    NSInteger count = [self numberOfRowsInSection:section];
+    return count > 0 ? count : 1;
+}
+
+- (VMZOweData *)oweForIndexPath:(NSIndexPath *)indexPath
+{
+    return (VMZOweData*)self.owesToDisplay[indexPath.section][indexPath.row];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     VMZOwesTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
     
-    VMZOweData *owe = (VMZOweData*)self.owesToDisplay[indexPath.section][indexPath.row];
-    cell.mainLabel.text = [owe.creditor isEqualToString:@"self"] ? owe.debtor : owe.creditor;
-    cell.secondLabel.text = [NSString stringWithFormat:@"%@ %@ %@", owe.sum, owe.descr, owe.created];
+    VMZOweData *owe = [self numberOfRowsInSection:indexPath.section] > 0 ? [self oweForIndexPath:indexPath] : nil;
+    [cell loadOweData:owe];
     
     return cell;
 }
@@ -131,9 +190,15 @@
     return view;
 }
 
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
+{
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(tableView.frame), 18)];
+    return view;
+}
+
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return [VMZOwesTableViewCell height];
+    return [VMZOwesTableViewCell heightForEmpty:[self numberOfRowsInSection:indexPath.section] == 0];
 }
 
 /*

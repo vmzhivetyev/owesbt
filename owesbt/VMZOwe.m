@@ -60,8 +60,7 @@ didSignInForUser:(GIDGoogleUser *)user
 didDisconnectWithUser:(GIDGoogleUser *)user
      withError:(NSError *)error
 {
-    // Perform any operations when the user disconnects from app here.
-    // ...
+    
 }
 
 
@@ -87,12 +86,12 @@ didDisconnectWithUser:(GIDGoogleUser *)user
     }
 }
 
-- (void)VMZOwesDataDidUpdate
+- (void)VMZOwesCoreDataDidUpdate
 {
-    if ([self.uiDelegate respondsToSelector:@selector(VMZOwesDataDidUpdate)])
+    if ([self.uiDelegate respondsToSelector:@selector(VMZOwesCoreDataDidUpdate)])
     {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.uiDelegate VMZOwesDataDidUpdate];
+            [self.uiDelegate VMZOwesCoreDataDidUpdate];
         });
     }
 }
@@ -129,11 +128,12 @@ didDisconnectWithUser:(GIDGoogleUser *)user
                 [self getMyPhoneWithCompletion:^(NSString * _Nullable phone) {
                     NSLog(@"Got my phone: %@",phone);
                     
-                    [self VMZPhoneNumberCheckedWithResult:![phone isEqualToString:@"undefinedPhone"]];
+                    [self VMZPhoneNumberCheckedWithResult: phone != nil];
                 }];
             }
             else
             {
+                [self clearCachedPhoneNumber];
                 [self VMZAuthDidSignInForUser:nil withError:nil];
             }
         }];
@@ -230,26 +230,31 @@ didDisconnectWithUser:(GIDGoogleUser *)user
     }];
 }
 
+- (void)clearCachedPhoneNumber
+{
+    [[NSUserDefaults standardUserDefaults] setObject:nil forKey:@"myPhoneNumber"];
+}
+
 - (void)getMyPhoneWithCompletion:(void(^_Nonnull)(NSString *_Nullable phone))completion
 {
     [self firebaseCloudFunctionCall:@"getPhone" parameters:nil completion:^(NSDictionary *data, NSError *error) {
         if (error)
         {
             NSString* phoneNumber = [[NSUserDefaults standardUserDefaults] objectForKey:@"myPhoneNumber"];
-            if (phoneNumber)
-            {
-                completion(phoneNumber);
-            }
-            else
+            if (!phoneNumber)
             {
                 NSString *message = [NSString stringWithFormat:@"Checking phone number error:\n%@", error.localizedDescription];
                 [[self uiDelegate] showMessagePrompt:message];
-                completion(nil);
             }
+            completion(phoneNumber);
         }
         else
         {
             NSString* phoneNumber = data[@"phone"];
+            if ([phoneNumber isEqualToString:@"undefinedPhone"])
+            {
+                phoneNumber = nil;
+            }
             [[NSUserDefaults standardUserDefaults] setObject:phoneNumber forKey:@"myPhoneNumber"];
             completion(phoneNumber);
         }
