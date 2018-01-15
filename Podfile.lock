@@ -39,11 +39,13 @@ PODS:
   - GTMSessionFetcher/Core (1.1.10)
   - GTMSessionFetcher/Full (1.1.10):
     - GTMSessionFetcher/Core (= 1.1.10)
+  - Masonry (1.0.2)
 
 DEPENDENCIES:
   - Firebase/Auth
   - Firebase/Core
   - GoogleSignIn
+  - Masonry
 
 SPEC CHECKSUMS:
   Firebase: c7ad0731eab26d18a3fc547dd048b0f7cd9c63ae
@@ -55,7 +57,8 @@ SPEC CHECKSUMS:
   GoogleToolboxForMac: 8e329f1b599f2512c6b10676d45736bcc2cbbeb0
   GTMOAuth2: 7fc9c10f5c745f4d9850419ea88889fe3baa6b7d
   GTMSessionFetcher: 30d874b96d0d76028f61fbd122801e3f030d47db
+  Masonry: 7c429b56da9d4ee0bbb3ed77a5ea710d6a5df39e
 
-PODFILE CHECKSUM: eae98430d8a24a697777943be226ec2523e39ba5
+PODFILE CHECKSUM: cefe1c872ddce5a7941e4c9b738555a0b7d281f5
 
 COCOAPODS: 1.3.1
