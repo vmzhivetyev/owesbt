@@ -6,9 +6,10 @@
 //  Copyright © 2018 Вячеслав Живетьев. All rights reserved.
 //
 
+#import <Masonry.h>
+
 #import "VMZOwesTableViewCell.h"
 #import "VMZOweData+CoreDataClass.h"
-
 
 @interface VMZOwesTableViewCell ()
 
@@ -36,20 +37,40 @@
         _mainLabel.text = @"Text";
         [self.contentView addSubview:_mainLabel];
         
-        _secondLabel = [[UILabel alloc] initWithFrame:CGRectMake(8, 21+8, CGRectGetWidth(self.frame) - 16, 21)];
+        _secondLabel = [[UILabel alloc] init];
         _secondLabel.textColor = [UIColor blackColor];
         _secondLabel.backgroundColor = [UIColor cyanColor];
         _secondLabel.text = @"Text";
-        _secondLabel.font = [UIFont systemFontOfSize:12];
+        _secondLabel.font = [UIFont systemFontOfSize:15];
         [self.contentView addSubview:_secondLabel];
         
-        _emptyLabel = [[UILabel alloc] initWithFrame:CGRectMake(8, 8, CGRectGetWidth(self.frame) - 16, 21)];
+        _emptyLabel = [[UILabel alloc] init];
         _emptyLabel.textAlignment = NSTextAlignmentCenter;
         _emptyLabel.textColor = [UIColor grayColor];
+        _emptyLabel.backgroundColor = [UIColor lightGrayColor];
         _emptyLabel.text = @"Empty";
         [self.contentView addSubview:_emptyLabel];
     }
     return self;
+}
+
+- (void)updateConstraints
+{
+    [_mainLabel mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.left.right.top.equalTo(self.contentView).insets(UIEdgeInsetsMake(10, 10, 10, 10));
+        make.height.equalTo(@21);
+    }];
+    [_secondLabel mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.left.right.equalTo(_mainLabel);
+        make.top.equalTo(_mainLabel.mas_bottom).offset(5);
+        make.height.equalTo(@15);
+    }];
+    [_emptyLabel mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.edges.equalTo(self.contentView).insets(UIEdgeInsetsMake(10, 10, 10, 10));
+        make.height.equalTo(@21);
+    }];
+    
+    [super updateConstraints];
 }
 
 - (void)loadOweData:(VMZOweData *)owe
@@ -69,6 +90,19 @@
     self.mainLabel.hidden = !owe;
     self.secondLabel.hidden = !owe;
     self.emptyLabel.hidden = !!owe;
+    
+    [_secondLabel mas_updateConstraints:^(MASConstraintMaker *make) {
+        if (owe)
+        {
+            make.bottom.equalTo(self.contentView.mas_bottom).with.offset(-10);
+        }
+    }];
+    [_emptyLabel mas_updateConstraints:^(MASConstraintMaker *make) {
+        if (!owe)
+        {
+            make.bottom.equalTo(self.contentView.mas_bottom).with.offset(-10);
+        }
+    }];
 }
 
 @end

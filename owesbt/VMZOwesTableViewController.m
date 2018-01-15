@@ -6,6 +6,8 @@
 //  Copyright © 2018 Вячеслав Живетьев. All rights reserved.
 //
 
+#import <Masonry.h>
+
 #import "VMZOwesTableViewController.h"
 #import "VMZOwe.h"
 #import "VMZOweData+CoreDataClass.h"
@@ -83,15 +85,22 @@
     
     //init instances
     
-    _tableView = [[UITableView alloc] initWithFrame:self.view.frame style:UITableViewStylePlain];
+    _tableView = [[UITableView alloc] init];
     _tableView.delegate = self;
     _tableView.dataSource = self;
     [self.view addSubview:self.tableView];
+    
+    [_tableView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.equalTo(self.view);
+    }];
     
     _refreshControl = [[UIRefreshControl alloc] init];
     self.tableView.refreshControl = self.refreshControl;
     
     //additional init
+    
+    self.tableView.estimatedRowHeight = 100.0;
+    self.tableView.rowHeight = UITableViewAutomaticDimension;
     
     [self.tableView registerClass:[VMZOwesTableViewCell class] forCellReuseIdentifier:self.cellIdentifier];
     
@@ -118,9 +127,9 @@
     self.parentViewController.navigationItem.title = self.owesStatus;
 }
 
-- (void)didReceiveMemoryWarning {
+- (void)didReceiveMemoryWarning
+{
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 
@@ -194,11 +203,6 @@
 {
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(tableView.frame), 18)];
     return view;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    return [VMZOwesTableViewCell heightForEmpty:[self numberOfRowsInSection:indexPath.section] == 0];
 }
 
 /*

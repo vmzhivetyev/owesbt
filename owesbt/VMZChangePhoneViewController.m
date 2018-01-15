@@ -6,6 +6,8 @@
 //  Copyright © 2018 Вячеслав Живетьев. All rights reserved.
 //
 
+#import <Masonry.h>
+
 #import "VMZChangePhoneViewController.h"
 #import "VMZOwe.h"
 #import "UIViewController+Extension.h"
@@ -13,7 +15,7 @@
 
 @interface VMZChangePhoneViewController ()
 
-@property (strong, nonatomic) UITextField* phoneTextField;
+@property (nonatomic, weak) UITextField* phoneTextField;
 
 @end
 
@@ -58,27 +60,41 @@
     //[self.view safeAreaInsets].top
     self.view.backgroundColor = [UIColor whiteColor];
     
-    CGFloat leftRightMargin = 8;
-    CGFloat top = 28;
-    CGFloat width = CGRectGetWidth([self.view frame]) - 2*leftRightMargin;
-    CGFloat height = 30;
-    self.phoneTextField = [UITextField new];
-    self.phoneTextField.frame = CGRectMake(leftRightMargin, top, width, height);
-    self.phoneTextField.textColor = [UIColor blackColor];
-    self.phoneTextField.borderStyle = UITextBorderStyleRoundedRect;
-    self.phoneTextField.keyboardType = UIKeyboardTypePhonePad;
-    self.phoneTextField.textContentType = UITextContentTypeTelephoneNumber;
-    [self.view addSubview:self.phoneTextField];
+    UITextField *phoneTextField = [UITextField new];
+    phoneTextField.textColor = [UIColor blackColor];
+    phoneTextField.borderStyle = UITextBorderStyleNone;
+    phoneTextField.keyboardType = UIKeyboardTypePhonePad;
+    phoneTextField.textContentType = UITextContentTypeTelephoneNumber;
+    phoneTextField.placeholder = @"Enter your phone number";
+    phoneTextField.textAlignment = NSTextAlignmentCenter;
+    phoneTextField.adjustsFontSizeToFitWidth = YES;
+    phoneTextField.font = [UIFont boldSystemFontOfSize:30];
+    [self.view addSubview:phoneTextField];
+    self.phoneTextField = phoneTextField;
     
     [self.phoneTextField becomeFirstResponder];
     
     UIButton* setPhoneButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    setPhoneButton.frame = CGRectMake(leftRightMargin, CGRectGetMaxY(self.phoneTextField.frame) + 8, width, 25);
+    setPhoneButton.titleLabel.font = [UIFont systemFontOfSize:20];
     [setPhoneButton setTitle:@"Done" forState:UIControlStateNormal];
     [setPhoneButton addTarget:self
                        action:@selector(doneButtonClick:)
              forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:setPhoneButton];
+    
+    //constrainsts
+    
+    [phoneTextField mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.top.equalTo(self.view).insets(UIEdgeInsetsMake(130, 30, 10, 30));
+        make.height.equalTo(@30);
+    }];
+    
+    [setPhoneButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.equalTo(self.view.mas_centerX);
+        make.top.equalTo(self.phoneTextField.mas_bottom).offset(30);
+        make.height.equalTo(@40);
+        make.width.equalTo(@100);
+    }];
 }
 
 - (void)didReceiveMemoryWarning {
