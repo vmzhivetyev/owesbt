@@ -9,5 +9,6 @@ target 'owesbt' do
   pod 'Firebase/Core'
   pod 'Firebase/Auth'
   pod 'GoogleSignIn'
+  pod 'Masonry'
 
 end
