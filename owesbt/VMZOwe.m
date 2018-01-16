@@ -15,13 +15,13 @@
 #import "VMZOweData+CoreDataClass.h"
 #import "UIViewController+Extension.h"
 #import "VMZCoreDataManager.h"
+#import "VMZOweAction+CoreDataClass.h"
 
 @interface VMZOwe ()
 
 @property (nonatomic, strong) id<NSObject> firebaseAuthStateDidChangeHandler;
-@property (nonatomic, strong) NSPersistentContainer *persistentContainer;
-@property (nonatomic, weak) NSManagedObjectContext *managedObjectContext;
-@property (nonatomic, strong) NSMutableArray *actionsQueue;
+@property (nonatomic, strong) NSTimer *requestsTimer;
+@property (atomic, assign) BOOL doingActions;
 
 @end
 
@@ -69,34 +69,55 @@ didDisconnectWithUser:(GIDGoogleUser *)user
 
 - (void)VMZAuthDidSignInForUser:(FIRUser*)user withError:(NSError*)error
 {
-    if ([self.uiDelegate respondsToSelector:@selector(VMZAuthDidSignInForUser:withError:)])
+    for (NSObject<VMZOweDelegate> *delegate in self.delegates)
     {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.uiDelegate VMZAuthDidSignInForUser:user withError:error];
-        });
+        if ([delegate respondsToSelector:@selector(VMZAuthDidSignInForUser:withError:)])
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [delegate VMZAuthDidSignInForUser:user withError:error];
+            });
+        }
     }
 }
 
 - (void)VMZPhoneNumberCheckedWithResult:(BOOL)success
 {
-    if ([self.uiDelegate respondsToSelector:@selector(VMZPhoneNumberCheckedWithResult:)])
+    for (NSObject<VMZOweDelegate> *delegate in self.delegates)
     {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.uiDelegate VMZPhoneNumberCheckedWithResult:success];
-        });
+        if ([delegate respondsToSelector:@selector(VMZPhoneNumberCheckedWithResult:)])
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [delegate VMZPhoneNumberCheckedWithResult:success];
+            });
+        }
     }
 }
 
 - (void)VMZOwesCoreDataDidUpdate
 {
-    if ([self.uiDelegate respondsToSelector:@selector(VMZOwesCoreDataDidUpdate)])
+    for (NSObject<VMZOweDelegate> *delegate in self.delegates)
     {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.uiDelegate VMZOwesCoreDataDidUpdate];
-        });
+        if ([delegate respondsToSelector:@selector(VMZOwesCoreDataDidUpdate)])
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [delegate VMZOwesCoreDataDidUpdate];
+            });
+        }
     }
 }
 
+- (void)VMZOweErrorOccured:(NSString *)error
+{
+    for (NSObject<VMZOweDelegate> *delegate in self.delegates)
+    {
+        if ([delegate respondsToSelector:@selector(VMZOweErrorOccured:)])
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [delegate VMZOweErrorOccured:error];
+            });
+        }
+    }
+}
 
 #pragma mark - LifeCycle
 
@@ -112,9 +133,9 @@ didDisconnectWithUser:(GIDGoogleUser *)user
     return sharedInstance;
 }
 
-- (void)setUiDelegate:(UIViewController<VMZOweUIDelegate> *)uiDelegate
+- (void)addDelegate:(nonnull NSObject<VMZOweDelegate> *)delegate
 {
-    _uiDelegate = uiDelegate;
+    [self.delegates addPointer:(__bridge void * _Nullable)(delegate)];
     
     if (!self.firebaseAuthStateDidChangeHandler)
     {
@@ -141,12 +162,28 @@ didDisconnectWithUser:(GIDGoogleUser *)user
     }
 }
 
+- (void)removeDelegate:(nonnull NSObject<VMZOweDelegate> *)delegate
+{
+    for(int i = 0; i < [self.delegates count]; i++)
+    {
+        if(delegate == [self.delegates pointerAtIndex:i])
+        {
+            [self.delegates removePointerAtIndex: i];
+            return;
+        }
+    }
+    //@throw @"Your are trying to delete unexisting pointer from delegates.";
+}
+
 - (instancetype)init
 {
     self = [super init];
     if(self)
     {
-        _actionsQueue = [NSMutableArray new];
+        _delegates = [NSPointerArray new];
+        _requestsTimer = [NSTimer scheduledTimerWithTimeInterval:5 repeats:YES block:^(NSTimer * _Nonnull timer) {
+            [self doOweActionsAsync];
+        }];
     }
     return self;
 }
@@ -213,7 +250,7 @@ didDisconnectWithUser:(GIDGoogleUser *)user
                                                                                   JSONObjectWithData:data
                                                                                   options:0
                                                                                   error:&parseError];
-                                              NSLog(@"The response is - %@; parseError is - %@",responseDictionary, parseError);
+                                              NSLog(@"parseError is - %@", parseError);
                                               
                                               if(completion)
                                               {
@@ -245,7 +282,7 @@ didDisconnectWithUser:(GIDGoogleUser *)user
             if (!phoneNumber)
             {
                 NSString *message = [NSString stringWithFormat:@"Checking phone number error:\n%@", error.localizedDescription];
-                [[self uiDelegate] showMessagePrompt:message];
+                [self.currentViewController showMessagePrompt:message];
             }
             completion(phoneNumber);
         }
@@ -269,42 +306,24 @@ didDisconnectWithUser:(GIDGoogleUser *)user
     }];
 }
 
-- (void)downloadOwes:(NSString*)status
+- (void)downloadOwes:(NSString*)status completion:(void(^)(NSError *error))completion
 {
     [self callFirebaseCloudFunction:@"getOwes2" parameters:@{@"status":status} completion:^(NSDictionary * _Nullable data, NSError * _Nullable error) {
-        NSLog(@"Downloaded owes: %@\nDownloaded owes with error:%@", data, error);
+        NSLog(@"Downloaded owes %lu with error:%@", [data count], error.localizedDescription);
         
         NSArray *owesArray = data[@"result"];
         if (!owesArray)
         {
+            if(completion)
+            {
+                completion(error);
+            }
             return;
         }
         
         [[VMZCoreDataManager sharedInstance] updateOwes:owesArray];
+        completion(nil);
     }];
-}
-
-- (void)doActions
-{
-    NSArray *action = self.actionsQueue.firstObject;
-    if(action)
-    {
-        [self callFirebaseCloudFunction:action[0] parameters:action[1] completion:^(NSDictionary * _Nullable data, NSError * _Nullable error) {
-            NSLog(@"action %@ with error %@", action, error);
-            
-            if (error)
-            {
-                NSLog(@"ERROR: %@", error.localizedDescription);
-            }
-            else
-            {
-                [self.actionsQueue removeObject:action];
-                NSLog(@"GOOD");
-            }
-            [self doActions];
-        }];
-    }
-    
 }
 
 - (void)closeOwe:(VMZOweData *)owe
@@ -315,11 +334,14 @@ didDisconnectWithUser:(GIDGoogleUser *)user
         return;
     }
 
-    NSArray *obj = @[@"changeOwe", @{@"id":owe.uid, @"action":@"close"}];
-    [[VMZCoreDataManager sharedInstance] closeOwe:owe];
+    if ([owe.status isEqualToString:@"active"])
+    {
+        owe.status = @"closed";
+    }
     
-    [self.actionsQueue addObject: obj];
-    [self doActions];
+    [[VMZCoreDataManager sharedInstance] addNewAction:@"changeOwe"
+                                           parameters:@{@"id":owe.uid.copy, @"action":@"close"}
+                                                  owe:owe];
 }
 
 - (void)confirmOwe:(VMZOweData *)owe
@@ -330,20 +352,112 @@ didDisconnectWithUser:(GIDGoogleUser *)user
         return;
     }
     
-    NSArray *obj = @[@"changeOwe", @{@"id":owe.uid, @"action":@"confirm"}];
-    [[VMZCoreDataManager sharedInstance] confirmOwe:owe];
+    if ([owe.status isEqualToString:@"requested"])
+    {
+        owe.status = @"active";
+    }
     
-    [self.actionsQueue addObject: obj];
-    [self doActions];
+    [[VMZCoreDataManager sharedInstance] addNewAction:@"changeOwe"
+                                           parameters:@{@"id":owe.uid.copy, @"action":@"confirm"}
+                                                  owe:owe];
 }
 
 - (void)cancelRequestForOwe:(VMZOweData *)owe
 {
-    NSArray *obj = @[@"changeOwe", @{@"id":owe.uid, @"action":@"cancel"}];
-    [[VMZCoreDataManager sharedInstance] cancelRequestForOwe:owe];
+    if ([owe.status isEqualToString:@"requested"])
+    {
+        owe.status = @"closed";
+    }
     
-    [self.actionsQueue addObject: obj];
-    [self doActions];
+    [[VMZCoreDataManager sharedInstance] addNewAction:@"changeOwe"
+                                           parameters:@{@"id":owe.uid.copy, @"action":@"cancel"}
+                                                  owe:owe];
+}
+
+- (void)addNewOweFor:(NSString *)partner whichIsDebtor:(BOOL)partnerIsDebtor sum:(NSString*)sum descr:(NSString *)descr
+{
+    [[VMZCoreDataManager sharedInstance] addNewOweWithActionFor:partner whichIsDebtor:partnerIsDebtor sum:sum descr:descr];
+}
+
+- (void)doOweActionsAsync
+{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self doOweActions];
+    });
+}
+
+- (void)doOweActions
+{
+    if (self.doingActions)
+    {
+        NSLog(@"DOING ACTIONS");
+        return;
+    }
+    
+    NSArray *actions = [[VMZCoreDataManager sharedInstance] getActions];
+    if ([actions count] == 0)
+    {
+        return;
+    }
+    
+    self.doingActions = YES;
+    
+    while ([actions count] > 0)
+    {
+        dispatch_semaphore_t sema = dispatch_semaphore_create(0);
+        __block BOOL stop = NO;
+        
+        for (VMZOweAction *action in actions)
+        {
+            [self callFirebaseCloudFunction:action.action parameters:(NSDictionary *)action.parameters completion:^(NSDictionary * _Nullable data, NSError * _Nullable error) {
+                
+                if (error)
+                {
+                    NSLog(@"ERROR: %@", error.localizedDescription);
+                    stop = YES;
+                }
+                else if (data)
+                {
+                    NSString *serverErrorMessage = [[data objectForKey:@"error"] objectForKey:@"message"];
+                    if (serverErrorMessage)
+                    {
+                        NSLog(@"ACTION DONE WITH SERVER ERROR %@", serverErrorMessage);
+                        
+                        [self VMZOweErrorOccured:serverErrorMessage];
+                    }
+                    else
+                    {
+                        NSLog(@"ACTION DONE SUCCESSFULLY");
+                        
+                        if ([action.action isEqualToString: @"addOwe"])
+                        {
+                            action.owe.uid = data[@"oweId"];
+                        }
+                    }
+                    
+                    [[VMZCoreDataManager sharedInstance] removeAction:action];
+                }
+                
+                dispatch_semaphore_signal(sema);
+            }];
+            dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
+            if (stop)
+            {
+                break;
+            }
+        }
+        if (stop)
+        {
+            break;
+        }
+        actions = [[VMZCoreDataManager sharedInstance] getActions];
+        if ([actions count] > 0)
+        {
+            NSLog(@"action 0: %@", ((VMZOweAction *)actions[0]).action);
+        }
+    }
+    
+    self.doingActions = NO;
 }
 
 @end

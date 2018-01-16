@@ -10,7 +10,14 @@
         <attribute name="sum" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="uid" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
+    <entity name="OweAction" representedClassName="VMZOweAction" syncable="YES">
+        <attribute name="action" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="created" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="parameters" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <relationship name="owe" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Owe" syncable="YES"/>
+    </entity>
     <elements>
         <element name="Owe" positionX="-54" positionY="-9" width="128" height="165"/>
+        <element name="OweAction" positionX="-45" positionY="63" width="128" height="105"/>
     </elements>
 </model>

@@ -13,9 +13,10 @@
 
 @interface VMZOwesTableViewCell ()
 
-@property (nonatomic, strong, readonly) UILabel *mainLabel;
-@property (nonatomic, strong, readonly) UILabel *secondLabel;
-@property (nonatomic, strong, readonly) UILabel *emptyLabel;
+@property (nonatomic, weak, readonly) UILabel *mainLabel;
+@property (nonatomic, weak, readonly) UILabel *secondLabel;
+@property (nonatomic, weak, readonly) UILabel *emptyLabel;
+@property (nonatomic, weak) VMZOweData *owe;
 
 @end
 
@@ -31,23 +32,25 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if(self)
     {
-        _mainLabel = [[UILabel alloc] init];
+        UILabel *mainLabel = [UILabel new];
+        _mainLabel = mainLabel;
         _mainLabel.textColor = [UIColor blackColor];
         _mainLabel.backgroundColor = [UIColor cyanColor];
         _mainLabel.text = @"Text";
         [self.contentView addSubview:_mainLabel];
         
-        _secondLabel = [[UILabel alloc] init];
+        UILabel *secondLabel = [UILabel new];
+        _secondLabel = secondLabel;
         _secondLabel.textColor = [UIColor blackColor];
         _secondLabel.backgroundColor = [UIColor cyanColor];
         _secondLabel.text = @"Text";
         _secondLabel.font = [UIFont systemFontOfSize:15];
         [self.contentView addSubview:_secondLabel];
         
-        _emptyLabel = [[UILabel alloc] init];
+        UILabel *emptyLabel = [UILabel new];
+        _emptyLabel = emptyLabel;
         _emptyLabel.textAlignment = NSTextAlignmentCenter;
         _emptyLabel.textColor = [UIColor grayColor];
-        _emptyLabel.backgroundColor = [UIColor lightGrayColor];
         _emptyLabel.text = @"Empty";
         [self.contentView addSubview:_emptyLabel];
     }
@@ -56,18 +59,26 @@
 
 - (void)updateConstraints
 {
-    [_mainLabel mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.left.right.top.equalTo(self.contentView).insets(UIEdgeInsetsMake(10, 10, 10, 10));
-        make.height.equalTo(@21);
+    [self.mainLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.top.equalTo(self.contentView).insets(UIEdgeInsetsMake(10, 20, 10, 10));
     }];
-    [_secondLabel mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.left.right.equalTo(_mainLabel);
-        make.top.equalTo(_mainLabel.mas_bottom).offset(5);
-        make.height.equalTo(@15);
+    [self.secondLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.equalTo(self.mainLabel);
+        make.top.equalTo(self.mainLabel.mas_bottom).offset(5);
+        
+        if (self.owe)
+        {
+            make.bottom.equalTo(self.contentView.mas_bottom).with.offset(-10);
+        }
     }];
-    [_emptyLabel mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.edges.equalTo(self.contentView).insets(UIEdgeInsetsMake(10, 10, 10, 10));
-        make.height.equalTo(@21);
+    [self.emptyLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.height.equalTo(@40).priorityHigh();
+        make.left.top.right.equalTo(self.contentView);
+        
+        if (!self.owe)
+        {
+            make.bottom.equalTo(self.contentView.mas_bottom);
+        }
     }];
     
     [super updateConstraints];
@@ -98,19 +109,9 @@
     self.mainLabel.hidden = !owe;
     self.secondLabel.hidden = !owe;
     self.emptyLabel.hidden = !!owe;
+    self.owe = owe;
     
-    [_secondLabel mas_updateConstraints:^(MASConstraintMaker *make) {
-        if (owe)
-        {
-            make.bottom.equalTo(self.contentView.mas_bottom).with.offset(-10);
-        }
-    }];
-    [_emptyLabel mas_updateConstraints:^(MASConstraintMaker *make) {
-        if (!owe)
-        {
-            make.bottom.equalTo(self.contentView.mas_bottom).with.offset(-10);
-        }
-    }];
+    [self setNeedsUpdateConstraints];
 }
 
 @end

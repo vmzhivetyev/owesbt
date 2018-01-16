@@ -8,12 +8,19 @@
 
 #import "VMZOweTabsViewController.h"
 #import "VMZOwesTableViewController.h"
+#import "VMZNewOweViewController.h"
 
 @interface VMZOweTabsViewController ()
 
 @end
 
 @implementation VMZOweTabsViewController
+
+- (void)plusButtonClicked:(UIBarButtonItem *)button
+{
+    UIViewController *view = [VMZNewOweViewController new];
+    [self.navigationController pushViewController:view animated:YES];
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -23,6 +30,13 @@
     UIViewController *view3 = [[VMZOwesTableViewController alloc] initWithStatus:@"closed" tabBarImage:@"stack"];
     
     [self setViewControllers:@[view1, view2, view3]];
+    
+    UIBarButtonItem *plusButton =
+    [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
+                                                  target:self
+                                                  action:@selector(plusButtonClicked:)];
+    self.navigationItem.rightBarButtonItem = plusButton;
+    
 }
 
 - (void)didReceiveMemoryWarning {

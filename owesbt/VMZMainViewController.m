@@ -51,7 +51,7 @@
         UINavigationController *navigationController =
             [[UINavigationController alloc] initWithRootViewController:tabbarView];
         [self presentViewController:navigationController animated:YES completion:^{
-            
+            [[VMZOwe sharedInstance] removeDelegate:self];
         }];
     }
     else
@@ -141,11 +141,17 @@
 //        }];
 //}
 
+- (void)dealloc
+{
+    [[VMZOwe sharedInstance] removeDelegate:self];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
-    [VMZOwe sharedInstance].uiDelegate = self;
+    [[VMZOwe sharedInstance] addDelegate:self];
+    [VMZOwe sharedInstance].currentViewController = self;
     [GIDSignIn sharedInstance].uiDelegate = self;
     //[[GIDSignIn sharedInstance] signIn];
     

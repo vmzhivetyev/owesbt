@@ -8,6 +8,7 @@
 
 #import "VMZCoreDataManager.h"
 #import "VMZOweData+CoreDataClass.h"
+#import "VMZOweAction+CoreDataClass.h"
 #import "VMZOwe.h"
 
 @implementation VMZCoreDataManager
@@ -70,10 +71,10 @@
         [predicate appendString:@" && (debtor != 'self')"];
     }
     
-    return [self managedObjectsForClass:@"Owe" predicateFormat:predicate];
+    return [self getOwesWithPredicate:predicate];
 }
 
-- (NSArray *)managedObjectsForClass:(NSString *)className predicateFormat:(NSString*)predicate {
+- (NSArray *)getOwesWithPredicate:(NSString*)predicate {
     __block NSArray *results = nil;
     
     NSFetchRequest *fetchRequest = [VMZOweData fetchRequest];
@@ -97,13 +98,13 @@
 {
     NSString *predicate = [NSString stringWithFormat:@"status = '%@'", [owesArray[0] valueForKey:@"status"]];
     
-    [[self managedObjectsForClass:@"Owe" predicateFormat:predicate] enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    [[self getOwesWithPredicate:predicate] enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         NSLog(@"Deleting %@",((VMZOweData*)obj).uid);
         [self.managedObjectContext deleteObject:obj];
     }];
     
     [owesArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        VMZOweData *newManagedObject = [NSEntityDescription insertNewObjectForEntityForName:@"Owe" inManagedObjectContext:self.managedObjectContext];
+        VMZOweData *newManagedObject = [self createNewOweObject];
         [newManagedObject loadFromDictionary:obj];
         NSLog(@"Added %@", newManagedObject.uid);
     }];
@@ -127,6 +128,60 @@
 {
     [self.managedObjectContext deleteObject:owe];
     [self saveManagedObjectContext];
+}
+
+- (VMZOweData *)createNewOweObject
+{
+    return [VMZOweData newOweInManagedObjectContext:self.managedObjectContext];
+}
+
+- (void)addNewAction:(NSString *)action parameters:(NSDictionary *)params owe:(VMZOweData *)owe
+{
+    [VMZOweAction newAction:action withParameters:params forOwe:owe managedObjectContext:self.managedObjectContext];
+    [[VMZOwe sharedInstance] doOweActionsAsync];
+}
+
+- (void)addNewOweWithActionFor:(NSString *)partner whichIsDebtor:(BOOL)partnerIsDebtor sum:(NSString*)sum descr:(NSString *)descr
+{
+    VMZOweData *owe = [self createNewOweObject];
+    owe.created = [NSDate date];
+    owe.closed = nil;
+    owe.creditor = partnerIsDebtor ? @"self" : partner;
+    owe.debtor = !partnerIsDebtor ? @"self" : partner;
+    owe.descr = descr;
+    owe.status = partnerIsDebtor ? @"requested" : @"active";
+    owe.uid = nil;
+    owe.sum = sum;
+    
+    NSDictionary *params = @{@"who":owe.debtor.copy, @"to":owe.creditor.copy, @"sum":owe.sum.copy, @"descr":owe.descr.copy};
+    [self addNewAction:@"addOwe" parameters:params owe:owe];
+    
+    [self saveManagedObjectContext];
+}
+
+- (NSArray *)getActions
+{
+    __block NSArray *results = nil;
+    
+    NSFetchRequest *fetchRequest = [VMZOweAction fetchRequest];
+    //fetchRequest.fetchLimit = 1;
+    NSSortDescriptor *sort = [[NSSortDescriptor alloc] initWithKey:@"created" ascending:YES];
+    [fetchRequest setSortDescriptors:@[sort]];
+    
+    [self.managedObjectContext performBlockAndWait:^{
+        NSError *error = nil;
+        results = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+        NSLog(@"Fetching error: %@", error);
+    }];
+    
+    NSLog(@"ACTIONS: %ld", [results count]);
+    
+    return results;//[results count] > 0 ? results[0] : nil;
+}
+
+- (void)removeAction:(VMZOweAction *)action
+{
+    [self.managedObjectContext deleteObject:action];
 }
 
 @end

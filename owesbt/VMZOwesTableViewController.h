@@ -9,10 +9,10 @@
 #import <UIKit/UIKit.h>
 
 
-@protocol VMZOweUIDelegate;
+@protocol VMZOweDelegate;
 
 
-@interface VMZOwesTableViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, VMZOweUIDelegate>
+@interface VMZOwesTableViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, VMZOweDelegate>
 
 @property (nonatomic, strong, readonly) NSString* owesStatus;
 

@@ -14,6 +14,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface VMZOweData : NSManagedObject
 
++ (instancetype)newOweInManagedObjectContext:(NSManagedObjectContext *)moc;
+- (void)loadFromDictionary:(NSDictionary * _Nonnull)dict;
+- (BOOL)selfIsCreditor;
+
 @end
 
 NS_ASSUME_NONNULL_END

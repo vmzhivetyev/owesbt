@@ -28,21 +28,21 @@
 @implementation VMZOwesTableViewController
 
 
-#pragma mark - VMZOweUIDelegate
-
 - (void)updateData
 {
     _owesToDisplay = @[
                        [[[VMZCoreDataManager sharedInstance] owesForStatus:self.owesStatus selfIsDebtor:YES] mutableCopy],
                        [[[VMZCoreDataManager sharedInstance] owesForStatus:self.owesStatus selfIsDebtor:NO]  mutableCopy]
-                     ];
+                       ];
     [self.tableView reloadData];
 }
+
+
+#pragma mark - VMZOweUIDelegate
 
 - (void)VMZOwesCoreDataDidUpdate
 {
     [self updateData];
-    [self.refreshControl endRefreshing];
 }
 
 
@@ -50,7 +50,14 @@
 
 - (void)refresh:(UIRefreshControl*)sender
 {
-    [[VMZOwe sharedInstance] downloadOwes:self.owesStatus];
+    [[VMZOwe sharedInstance] downloadOwes:self.owesStatus completion:^(NSError * _Nullable error) {
+        [sender endRefreshing];
+        
+        if (error)
+        {
+            [self showMessagePrompt:error.localizedDescription];
+        }
+    }];
 }
 
 
@@ -80,12 +87,19 @@
     return self;
 }
 
+- (void)dealloc
+{
+    [[VMZOwe sharedInstance] removeDelegate:self];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    [[VMZOwe sharedInstance] addDelegate:self];
+    
     //init instances
     
-    _tableView = [[UITableView alloc] init];
+    _tableView = [[UITableView alloc] initWithFrame:self.view.frame style:UITableViewStyleGrouped];
     _tableView.delegate = self;
     _tableView.dataSource = self;
     [self.view addSubview:self.tableView];
@@ -101,6 +115,8 @@
     
     self.tableView.estimatedRowHeight = 100.0;
     self.tableView.rowHeight = UITableViewAutomaticDimension;
+    self.tableView.sectionHeaderHeight = 28;
+    self.tableView.sectionFooterHeight = 18;
     
     [self.tableView registerClass:[VMZOwesTableViewCell class] forCellReuseIdentifier:self.cellIdentifier];
     
@@ -116,11 +132,11 @@
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
-- (void)viewDidAppear:(BOOL)animated
+- (void)viewWillAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
     
-    [VMZOwe sharedInstance].uiDelegate = self;
+    [VMZOwe sharedInstance].currentViewController = self;
     
     [self updateData];
     
@@ -135,6 +151,12 @@
 
 #pragma mark - UITableViewDelegate
 
+- (void)removeAtIndexPath:(NSIndexPath *)indexPath
+{
+    [self.owesToDisplay[indexPath.section] removeObjectAtIndex:indexPath.row];
+    [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+}
+
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
 {
     VMZOweData *owe = [self oweForIndexPath:indexPath];
@@ -148,6 +170,7 @@
         [actions addObject: [UIAlertAction actionWithTitle:@"Close Owe" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
             
             [[VMZOwe sharedInstance] closeOwe:[self oweForIndexPath:indexPath]];
+            [self removeAtIndexPath:indexPath];
         }]];
     }
     else if ([status isEqualToString:@"requested"])
@@ -159,11 +182,13 @@
             [actions addObject: [UIAlertAction actionWithTitle:@"Confirm request" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
                         
                 [[VMZOwe sharedInstance] confirmOwe:[self oweForIndexPath:indexPath]];
+                [self removeAtIndexPath:indexPath];
             }]];
         }
         [actions addObject: [UIAlertAction actionWithTitle:@"Cancel request" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                         
             [[VMZOwe sharedInstance] cancelRequestForOwe:[self oweForIndexPath:indexPath]];
+            [self removeAtIndexPath:indexPath];
         }]];
     }
     
@@ -185,6 +210,11 @@
     return [self.owesToDisplay[section] count];
 }
 
+- (VMZOweData *)oweForIndexPath:(NSIndexPath *)indexPath
+{
+    return (VMZOweData*)self.owesToDisplay[indexPath.section][indexPath.row];
+}
+
 
 #pragma mark - UITableViewDataSource
 
@@ -195,11 +225,6 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     NSInteger count = [self numberOfRowsInSection:section];
     return count > 0 ? count : 1;
-}
-
-- (VMZOweData *)oweForIndexPath:(NSIndexPath *)indexPath
-{
-    return (VMZOweData*)self.owesToDisplay[indexPath.section][indexPath.row];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -213,19 +238,18 @@
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(tableView.frame), 18)];
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, CGRectGetWidth(tableView.frame), 18)];
+    UIView *view = [UIView new];
+    UILabel *label = [UILabel new];
     [label setFont:[UIFont boldSystemFontOfSize:12]];
-    NSString *string = @[@"You owe", @"You are creditor"][section];
-    [label setText:string];
+    [label setText: @[@"You owe", @"You are creditor"][section] ];
+    label.textAlignment = NSTextAlignmentNatural;
     [view addSubview:label];
-    [view setBackgroundColor:[UIColor colorWithRed:166/255.0 green:177/255.0 blue:186/255.0 alpha:1.0]];
-    return view;
-}
-
-- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
-{
-    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(tableView.frame), 18)];
+    
+    [label mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.bottom.equalTo(view).offset(-5);
+        make.left.equalTo(view).offset(10);
+    }];
+    
     return view;
 }
 
