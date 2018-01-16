@@ -111,7 +111,19 @@
     [self saveManagedObjectContext];
 }
 
-- (void)closeOwe:(VMZOweData *)owe
+- (void)closeOwe:(nonnull VMZOweData *)owe
+{
+    [self.managedObjectContext deleteObject:owe];
+    [self saveManagedObjectContext];
+}
+
+- (void)confirmOwe:(nonnull VMZOweData *)owe
+{
+    [self.managedObjectContext deleteObject:owe];
+    [self saveManagedObjectContext];
+}
+
+- (void)cancelRequestForOwe:(nonnull VMZOweData *)owe
 {
     [self.managedObjectContext deleteObject:owe];
     [self saveManagedObjectContext];

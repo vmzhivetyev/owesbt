@@ -11,7 +11,9 @@
 
 @protocol GIDSignInDelegate;
 @class FIRUser;
+@class VMZOweData;
 @class UIViewController;
+
 
 typedef void (^FirebaseRequestCallback)(NSDictionary *_Nullable data, NSError *_Nullable error);
 
@@ -53,6 +55,10 @@ typedef void (^FirebaseRequestCallback)(NSDictionary *_Nullable data, NSError *_
 
 - (void)getMyPhoneWithCompletion:(void(^_Nonnull)(NSString *_Nullable phone))completion;
 - (void)setMyPhone:(NSString *_Nonnull)phone completion:(_Nullable FirebaseRequestCallback)completion;
-- (void)downloadOwes:(NSString*)status;
+- (void)downloadOwes:(NSString*_Nonnull)status;
+- (void)closeOwe:(VMZOweData *_Nonnull)owe;
+- (void)confirmOwe:(VMZOweData *_Nonnull)owe;
+- (void)cancelRequestForOwe:(VMZOweData *_Nonnull)owe;
+
 
 @end

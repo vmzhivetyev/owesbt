@@ -21,7 +21,9 @@
 + (instancetype)sharedInstance;
 
 - (NSArray *)owesForStatus:(NSString *)status selfIsDebtor:(BOOL)selfIsDebtor;
-- (void)updateOwes:(NSArray *_Nonnull)owesArray;
-- (void)closeOwe:(VMZOweData *)owe;
+- (void)updateOwes:(nonnull NSArray *)owesArray;
+- (void)closeOwe:(nonnull VMZOweData *)owe;
+- (void)confirmOwe:(nonnull VMZOweData *)owe;
+- (void)cancelRequestForOwe:(nonnull VMZOweData *)owe;
 
 @end

@@ -137,20 +137,44 @@
 
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
 {
-    NSString *status = [self oweForIndexPath:indexPath].status;
+    VMZOweData *owe = [self oweForIndexPath:indexPath];
+    NSString *status = owe.status;
+    NSString *message, *title;
+    NSMutableArray *actions = [NSMutableArray new];
     if ([status isEqualToString:@"active"])
     {
-        NSString *message = @"Вы действительно вернули себе этот долг и хотите пометить его закрытым?";
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Active Owe" message:message preferredStyle:UIAlertControllerStyleActionSheet];
-        [alert addAction: [UIAlertAction actionWithTitle:@"Close Owe" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-            //[self showMessagePrompt:@"CLOSED"];
-            /*[tableView beginUpdates];
-            [_owesToDisplay[indexPath.section] removeObject:[self oweForIndexPath:indexPath]];
-            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-            [tableView endUpdates];*/
+        message = @"Вы действительно вернули себе этот долг и хотите пометить его закрытым?";
+        title = @"Active Owe";
+        [actions addObject: [UIAlertAction actionWithTitle:@"Close Owe" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
             
-            [[VMZCoreDataManager sharedInstance] closeOwe:[self oweForIndexPath:indexPath]];
+            [[VMZOwe sharedInstance] closeOwe:[self oweForIndexPath:indexPath]];
         }]];
+    }
+    else if ([status isEqualToString:@"requested"])
+    {
+        message = [owe selfIsCreditor] ? @"Отменить запрос?" : @"Подтвердить вашу задолжность?";
+        title = @"Requested Owe";
+        if (![owe selfIsCreditor])
+        {
+            [actions addObject: [UIAlertAction actionWithTitle:@"Confirm request" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+                        
+                [[VMZOwe sharedInstance] confirmOwe:[self oweForIndexPath:indexPath]];
+            }]];
+        }
+        [actions addObject: [UIAlertAction actionWithTitle:@"Cancel request" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                        
+            [[VMZOwe sharedInstance] cancelRequestForOwe:[self oweForIndexPath:indexPath]];
+        }]];
+    }
+    
+    if (message)
+    {
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleActionSheet];
+        
+        for(UIAlertAction *action in actions)
+        {
+            [alert addAction:action];
+        }
         [alert addAction: [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
         [self presentViewController:alert animated:YES completion:nil];
     }

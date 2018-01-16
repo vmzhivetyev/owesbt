@@ -17,6 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSFetchRequest<VMZOweData *> *)fetchRequest;
 
 - (void)loadFromDictionary:(NSDictionary * _Nonnull)dict;
+- (BOOL)selfIsCreditor;
 
 @property (nullable, nonatomic, copy) NSDate *closed;
 @property (nullable, nonatomic, copy) NSDate *created;

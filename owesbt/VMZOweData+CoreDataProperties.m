@@ -29,6 +29,11 @@
     self.sum = [dict objectForKey:@"sum"];
 }
 
+- (BOOL)selfIsCreditor
+{
+    return [self.creditor isEqualToString:@"self"];
+}
+
 @dynamic closed;
 @dynamic created;
 @dynamic creditor;

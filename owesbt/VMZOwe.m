@@ -21,6 +21,7 @@
 @property (nonatomic, strong) id<NSObject> firebaseAuthStateDidChangeHandler;
 @property (nonatomic, strong) NSPersistentContainer *persistentContainer;
 @property (nonatomic, weak) NSManagedObjectContext *managedObjectContext;
+@property (nonatomic, strong) NSMutableArray *actionsQueue;
 
 @end
 
@@ -145,7 +146,7 @@ didDisconnectWithUser:(GIDGoogleUser *)user
     self = [super init];
     if(self)
     {
-        
+        _actionsQueue = [NSMutableArray new];
     }
     return self;
 }
@@ -175,7 +176,7 @@ didDisconnectWithUser:(GIDGoogleUser *)user
     return function;
 }
 
-- (void)firebaseCloudFunctionCall:(NSString *_Nonnull)function
+- (void)callFirebaseCloudFunction:(NSString *_Nonnull)function
                        parameters:(NSDictionary *_Nullable)parameters
                        completion:(_Nullable FirebaseRequestCallback)completion
 {
@@ -237,7 +238,7 @@ didDisconnectWithUser:(GIDGoogleUser *)user
 
 - (void)getMyPhoneWithCompletion:(void(^_Nonnull)(NSString *_Nullable phone))completion
 {
-    [self firebaseCloudFunctionCall:@"getPhone" parameters:nil completion:^(NSDictionary *data, NSError *error) {
+    [self callFirebaseCloudFunction:@"getPhone" parameters:nil completion:^(NSDictionary *data, NSError *error) {
         if (error)
         {
             NSString* phoneNumber = [[NSUserDefaults standardUserDefaults] objectForKey:@"myPhoneNumber"];
@@ -263,14 +264,14 @@ didDisconnectWithUser:(GIDGoogleUser *)user
 
 - (void)setMyPhone:(NSString *_Nonnull)phone completion:(_Nullable FirebaseRequestCallback)completion
 {
-    [self firebaseCloudFunctionCall:@"setPhone" parameters:@{@"phone":phone} completion:^(NSDictionary *data, NSError *error) {
+    [self callFirebaseCloudFunction:@"setPhone" parameters:@{@"phone":phone} completion:^(NSDictionary *data, NSError *error) {
         completion(data, error);
     }];
 }
 
 - (void)downloadOwes:(NSString*)status
 {
-    [self firebaseCloudFunctionCall:@"getOwes2" parameters:@{@"status":status} completion:^(NSDictionary * _Nullable data, NSError * _Nullable error) {
+    [self callFirebaseCloudFunction:@"getOwes2" parameters:@{@"status":status} completion:^(NSDictionary * _Nullable data, NSError * _Nullable error) {
         NSLog(@"Downloaded owes: %@\nDownloaded owes with error:%@", data, error);
         
         NSArray *owesArray = data[@"result"];
@@ -281,6 +282,68 @@ didDisconnectWithUser:(GIDGoogleUser *)user
         
         [[VMZCoreDataManager sharedInstance] updateOwes:owesArray];
     }];
+}
+
+- (void)doActions
+{
+    NSArray *action = self.actionsQueue.firstObject;
+    if(action)
+    {
+        [self callFirebaseCloudFunction:action[0] parameters:action[1] completion:^(NSDictionary * _Nullable data, NSError * _Nullable error) {
+            NSLog(@"action %@ with error %@", action, error);
+            
+            if (error)
+            {
+                NSLog(@"ERROR: %@", error.localizedDescription);
+            }
+            else
+            {
+                [self.actionsQueue removeObject:action];
+                NSLog(@"GOOD");
+            }
+            [self doActions];
+        }];
+    }
+    
+}
+
+- (void)closeOwe:(VMZOweData *)owe
+{
+    if (![owe selfIsCreditor])
+    {
+        NSLog(@"Error: trying to CLOSE owe by debtor");
+        return;
+    }
+
+    NSArray *obj = @[@"changeOwe", @{@"id":owe.uid, @"action":@"close"}];
+    [[VMZCoreDataManager sharedInstance] closeOwe:owe];
+    
+    [self.actionsQueue addObject: obj];
+    [self doActions];
+}
+
+- (void)confirmOwe:(VMZOweData *)owe
+{
+    if ([owe selfIsCreditor])
+    {
+        NSLog(@"Error: trying to CONFIRM owe by creditor");
+        return;
+    }
+    
+    NSArray *obj = @[@"changeOwe", @{@"id":owe.uid, @"action":@"confirm"}];
+    [[VMZCoreDataManager sharedInstance] confirmOwe:owe];
+    
+    [self.actionsQueue addObject: obj];
+    [self doActions];
+}
+
+- (void)cancelRequestForOwe:(VMZOweData *)owe
+{
+    NSArray *obj = @[@"changeOwe", @{@"id":owe.uid, @"action":@"cancel"}];
+    [[VMZCoreDataManager sharedInstance] cancelRequestForOwe:owe];
+    
+    [self.actionsQueue addObject: obj];
+    [self doActions];
 }
 
 @end

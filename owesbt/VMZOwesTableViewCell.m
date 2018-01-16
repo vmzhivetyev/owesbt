@@ -77,10 +77,18 @@
 {
     if (owe)
     {
-        self.mainLabel.text = [owe.creditor isEqualToString:@"self"] ? owe.debtor : owe.creditor;
+        self.mainLabel.text = [owe selfIsCreditor] ? owe.debtor : owe.creditor;
         self.secondLabel.text = [NSString stringWithFormat:@"%@ %@ %@", owe.sum, owe.descr, owe.created];
         
-        self.accessoryType = [owe.creditor isEqualToString:@"self"] ? UITableViewCellAccessoryDetailDisclosureButton : UITableViewCellAccessoryDisclosureIndicator;
+        if ([owe.status isEqualToString: @"active"])
+        {
+            self.accessoryType = [owe selfIsCreditor] ? UITableViewCellAccessoryDetailDisclosureButton : UITableViewCellAccessoryDisclosureIndicator;
+        }
+        else if ([owe.status isEqualToString: @"requested"])
+        {
+            self.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
+            //self.accessoryType = ![owe selfIsCreditor] ? UITableViewCellAccessoryDetailDisclosureButton : UITableViewCellAccessoryDisclosureIndicator;
+        }
     }
     else
     {
