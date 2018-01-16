@@ -8,6 +8,7 @@
 
 #import <GoogleSignIn/GoogleSignIn.h>
 #import <Firebase.h>
+#import <Masonry.h>
 
 #import "VMZOwe.h"
 #import "VMZMainViewController.h"
@@ -46,9 +47,6 @@
 {
     if (success)
     {
-        self.view.backgroundColor = [UIColor greenColor];
-        //show view for authorized user
-        
         UIViewController *tabbarView = [[VMZOweTabsViewController alloc] init];
         UINavigationController *navigationController =
             [[UINavigationController alloc] initWithRootViewController:tabbarView];
@@ -153,20 +151,21 @@
     
     self.view.backgroundColor = [UIColor whiteColor];
     
-    self.googleSignInButton = [[GIDSignInButton alloc] initWithFrame:CGRectMake(80.0, 210.0, 120.0, 40.0)];
+    self.googleSignInButton = [[GIDSignInButton alloc] init];
     [self.view addSubview:self.googleSignInButton];
     
     UIImage* image = [UIImage imageNamed:@"Dual Ring"];
-    CGFloat x = CGRectGetMidX(self.view.bounds) - image.size.width/2;
-    CGFloat y = CGRectGetMidY(self.view.bounds) - image.size.height/2;
-    CGRect rect = CGRectMake(x, y, image.size.width, image.size.height);
-    self.spinnerImageView = [[UIImageView alloc] initWithFrame:rect];
-    self.spinnerImageView.image = image;
-    self.spinnerImageView.tintColor = [UIColor whiteColor];
-    self.spinnerImageView.opaque = YES;
-    self.spinnerImageView.contentMode = UIViewContentModeScaleToFill;
-    self.spinnerImageView.layer.anchorPoint = CGPointMake(0.5f, 0.5f);
+    self.spinnerImageView = [[UIImageView alloc] initWithImage:image];
     [self.view addSubview:self.spinnerImageView];
+    
+    [self.spinnerImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.center.equalTo(self.view);
+        make.size.mas_equalTo(image.size);
+    }];
+    [self.googleSignInButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.center.equalTo(self.view);
+        make.size.mas_equalTo(CGSizeMake(150, 40));
+    }];
     
     CABasicAnimation* animation = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
     animation.fromValue = [NSNumber numberWithFloat:0.0f];
@@ -186,7 +185,7 @@
 
 - (void)viewDidAppear:(BOOL)animated
 {
-    [self.spinnerImageView.layer animationForKey:@"SpinAnimation"] ;
+    //[self.spinnerImageView.layer animationForKey:@"SpinAnimation"] ;
 }
 
 - (void)didReceiveMemoryWarning

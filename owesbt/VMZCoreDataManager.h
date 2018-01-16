@@ -10,6 +10,9 @@
 #import <CoreData/CoreData.h>
 
 
+@class VMZOweData;
+
+
 @interface VMZCoreDataManager : NSObject
 
 @property (nonatomic, strong, readonly) NSPersistentContainer *persistentContainer;
@@ -18,6 +21,9 @@
 + (instancetype)sharedInstance;
 
 - (NSArray *)owesForStatus:(NSString *)status selfIsDebtor:(BOOL)selfIsDebtor;
-- (void)updateOwes:(NSArray *_Nonnull)owesArray;
+- (void)updateOwes:(nonnull NSArray *)owesArray;
+- (void)closeOwe:(nonnull VMZOweData *)owe;
+- (void)confirmOwe:(nonnull VMZOweData *)owe;
+- (void)cancelRequestForOwe:(nonnull VMZOweData *)owe;
 
 @end

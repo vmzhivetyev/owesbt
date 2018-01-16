@@ -10,6 +10,7 @@
 #import <Foundation/Foundation.h>
 #import "VMZOweData+CoreDataProperties.h"
 
+
 @implementation VMZOweData (CoreDataProperties)
 
 + (NSFetchRequest<VMZOweData *> *)fetchRequest {
@@ -26,6 +27,11 @@
     self.status = [dict objectForKey:@"status"];
     self.uid = [dict objectForKey:@"id"];
     self.sum = [dict objectForKey:@"sum"];
+}
+
+- (BOOL)selfIsCreditor
+{
+    return [self.creditor isEqualToString:@"self"];
 }
 
 @dynamic closed;

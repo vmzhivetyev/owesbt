@@ -45,6 +45,19 @@
     return self;
 }
 
+- (void)saveManagedObjectContext
+{
+    NSError *saveError = nil;
+    if (![self.managedObjectContext save:&saveError])
+    {
+        NSLog(@"CoreData save error: %@", saveError.localizedDescription);
+    }
+    else
+    {
+        [[VMZOwe sharedInstance] VMZOwesCoreDataDidUpdate];
+    }
+}
+
 - (NSArray *)owesForStatus:(NSString *)status selfIsDebtor:(BOOL)selfIsDebtor
 {
     NSMutableString* predicate = [NSMutableString stringWithFormat:@"(status = '%@')", status];
@@ -63,8 +76,6 @@
 - (NSArray *)managedObjectsForClass:(NSString *)className predicateFormat:(NSString*)predicate {
     __block NSArray *results = nil;
     
-    NSManagedObjectContext *moc = self.persistentContainer.viewContext;
-    
     NSFetchRequest *fetchRequest = [VMZOweData fetchRequest];
     if (predicate)
     {
@@ -73,9 +84,9 @@
     NSSortDescriptor *sort = [[NSSortDescriptor alloc] initWithKey:@"created" ascending:NO];
     [fetchRequest setSortDescriptors:@[sort]];
     
-    [moc performBlockAndWait:^{
+    [self.managedObjectContext performBlockAndWait:^{
         NSError *error = nil;
-        results = [moc executeFetchRequest:fetchRequest error:&error];
+        results = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
         NSLog(@"Fetching error: %@", error);
     }];
     
@@ -84,30 +95,38 @@
 
 - (void)updateOwes:(NSArray*)owesArray
 {
-    NSManagedObjectContext *moc = self.persistentContainer.viewContext;
-    
     NSString *predicate = [NSString stringWithFormat:@"status = '%@'", [owesArray[0] valueForKey:@"status"]];
     
     [[self managedObjectsForClass:@"Owe" predicateFormat:predicate] enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         NSLog(@"Deleting %@",((VMZOweData*)obj).uid);
-        [moc deleteObject:obj];
+        [self.managedObjectContext deleteObject:obj];
     }];
     
     [owesArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        VMZOweData *newManagedObject = [NSEntityDescription insertNewObjectForEntityForName:@"Owe" inManagedObjectContext:moc];
+        VMZOweData *newManagedObject = [NSEntityDescription insertNewObjectForEntityForName:@"Owe" inManagedObjectContext:self.managedObjectContext];
         [newManagedObject loadFromDictionary:obj];
         NSLog(@"Added %@", newManagedObject.uid);
     }];
     
-    NSError *saveError = nil;
-    if (![moc save:&saveError])
-    {
-        NSLog(@"CoreData save error: %@", saveError.localizedDescription);
-    }
-    else
-    {
-        [[VMZOwe sharedInstance] VMZOwesDataDidUpdate];
-    }
+    [self saveManagedObjectContext];
+}
+
+- (void)closeOwe:(nonnull VMZOweData *)owe
+{
+    [self.managedObjectContext deleteObject:owe];
+    [self saveManagedObjectContext];
+}
+
+- (void)confirmOwe:(nonnull VMZOweData *)owe
+{
+    [self.managedObjectContext deleteObject:owe];
+    [self saveManagedObjectContext];
+}
+
+- (void)cancelRequestForOwe:(nonnull VMZOweData *)owe
+{
+    [self.managedObjectContext deleteObject:owe];
+    [self saveManagedObjectContext];
 }
 
 @end
