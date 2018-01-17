@@ -1,5 +1,5 @@
 //
-//  NSString+VMZExtensions.h
+//  VMZContacts.h
 //  owesbt
 //
 //  Created by Вячеслав Живетьев on 17.01.2018.
@@ -8,9 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
-@interface NSString (VMZExtensions)
+@interface VMZContacts : NSObject
 
-- (NSString *)uppercaseFirstLetter;
-- (NSString *)phoneNumberDigits;
++ (NSArray *)fetchContactsUncached;
++ (NSArray *)fetchContacts;
++ (CNContact *)contactWithPhoneNumber:(NSString *)phoneNumber;
 
 @end

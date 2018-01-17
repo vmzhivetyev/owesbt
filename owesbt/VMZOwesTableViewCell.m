@@ -7,6 +7,7 @@
 //
 
 #import <Masonry.h>
+#import <Contacts/Contacts.h>
 
 #import "VMZOwesTableViewCell.h"
 #import "VMZOweData+CoreDataClass.h"
@@ -108,7 +109,7 @@
     if (owe)
     {
         self.sumLabel.text = owe.sum;
-        self.mainLabel.text = [owe selfIsCreditor] ? owe.debtor : owe.creditor;
+        self.mainLabel.text = [owe partnerNameFromContacts];
         self.secondLabel.text = owe.descr;
         
         if ([owe.status isEqualToString: @"active"])

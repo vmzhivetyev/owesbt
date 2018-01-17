@@ -173,6 +173,11 @@
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     VMZOweData *owe = [self oweForIndexPath:indexPath];
+    if (!owe)
+    {
+        return;
+    }
+    
     UIViewController *view = [[VMZNewOweViewController alloc] initWithOwe:owe];
     [self.navigationController pushViewController:view animated:YES];
 }
@@ -180,6 +185,11 @@
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
 {
     VMZOweData *owe = [self oweForIndexPath:indexPath];
+    if (!owe)
+    {
+        return;
+    }
+    
     NSString *status = owe.status;
     NSString *message, *title;
     NSMutableArray *actions = [NSMutableArray new];
@@ -189,7 +199,7 @@
         title = @"Active Owe";
         [actions addObject: [UIAlertAction actionWithTitle:@"Close Owe" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
             
-            [[VMZOwe sharedInstance] closeOwe:[self oweForIndexPath:indexPath]];
+            [[VMZOwe sharedInstance] closeOwe:owe];
             [self removeAtIndexPath:indexPath];
         }]];
     }
@@ -201,13 +211,13 @@
         {
             [actions addObject: [UIAlertAction actionWithTitle:@"Confirm request" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
                         
-                [[VMZOwe sharedInstance] confirmOwe:[self oweForIndexPath:indexPath]];
+                [[VMZOwe sharedInstance] confirmOwe:owe];
                 [self removeAtIndexPath:indexPath];
             }]];
         }
         [actions addObject: [UIAlertAction actionWithTitle:@"Cancel request" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                         
-            [[VMZOwe sharedInstance] cancelRequestForOwe:[self oweForIndexPath:indexPath]];
+            [[VMZOwe sharedInstance] cancelRequestForOwe:owe];
             [self removeAtIndexPath:indexPath];
         }]];
     }
@@ -232,6 +242,10 @@
 
 - (VMZOweData *)oweForIndexPath:(NSIndexPath *)indexPath
 {
+    if ([self.owesToDisplay[indexPath.section] count] == 0)
+    {
+        return nil;
+    }
     return (VMZOweData*)self.owesToDisplay[indexPath.section][indexPath.row];
 }
 
@@ -250,7 +264,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     VMZOwesTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
     
-    VMZOweData *owe = [self numberOfRowsInSection:indexPath.section] > 0 ? [self oweForIndexPath:indexPath] : nil;
+    VMZOweData *owe = [self oweForIndexPath:indexPath];
     [cell loadOweData:owe];
     
     return cell;

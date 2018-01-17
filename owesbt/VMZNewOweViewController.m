@@ -77,6 +77,7 @@
         
         self.title = [[owe.status uppercaseFirstLetter] stringByAppendingString:@" Owe"];
         
+        self.nameTextField.text = [owe partnerNameFromContacts];
         self.phoneTextField.text = [owe selfIsCreditor] ? owe.debtor : owe.creditor;
         self.sumTextField.text = owe.sum;
         self.descriptionTextField.text = owe.descr;

@@ -10,6 +10,10 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
+
+@class CNContact;
+
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface VMZOweData : NSManagedObject
@@ -17,6 +21,8 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)newOweInManagedObjectContext:(NSManagedObjectContext *)moc;
 - (void)loadFromDictionary:(NSDictionary * _Nonnull)dict;
 - (BOOL)selfIsCreditor;
+- (CNContact *)getContactForPartner;
+- (NSString *)partnerNameFromContacts;
 
 @end
 
