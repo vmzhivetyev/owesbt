@@ -36,14 +36,9 @@
     return [self.creditor isEqualToString:@"self"];
 }
 
-- (CNContact *)getContactForPartner
+- (NSString *)partner
 {
-    return [VMZContacts contactWithPhoneNumber:[self selfIsCreditor] ? self.debtor : self.creditor];
-}
-
-- (NSString *)partnerNameFromContacts
-{
-    return [[self getContactForPartner] valueForKey:@"fullName"];
+    return [self selfIsCreditor] ? self.debtor : self.creditor;
 }
 
 @end

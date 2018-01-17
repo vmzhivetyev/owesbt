@@ -7,6 +7,7 @@
 //
 
 #import <Contacts/Contacts.h>
+#import <ContactsUI/ContactsUI.h>
 
 #import "VMZContacts.h"
 #import "NSString+VMZExtensions.h"
@@ -14,7 +15,7 @@
 
 @implementation VMZContacts
 
-+ (NSArray *)fetchContactsUncached
++ (NSArray *)fetchContacts
 {
     CNContactStore *store = [CNContactStore new];
     
@@ -35,33 +36,37 @@
     return [NSArray arrayWithArray:results];
 }
 
-+ (NSArray *)fetchContacts
-{
-    static NSArray<CNContact*>* contacts = nil;
-    if (contacts)
-    {
-        return contacts;
-    }
-    contacts = [self fetchContactsUncached];
-    return contacts;
-}
-
-+ (CNContact *)contactWithPhoneNumber:(NSString *)phoneNumber
++ (CNContact *)contactWithPhoneNumber:(NSString *)phoneNumber phoneNumberRef:(CNPhoneNumber **)ref
 {
     NSString *phoneNumberToCompareAgainst = [phoneNumber phoneNumberDigits];
     
-    for (CNContact *contact in [self fetchContactsUncached])
+    for (CNContact *contact in [self fetchContacts])
     {
         for (CNLabeledValue<CNPhoneNumber*>* phoneNumber in contact.phoneNumbers)
         {
             if ([phoneNumber.value.stringValue.phoneNumberDigits isEqualToString:phoneNumberToCompareAgainst])
             {
+                if(ref)
+                {
+                    *ref = phoneNumber.value;
+                }
                 return contact;
             }
         }
     }
     
     return nil;
+}
+
++ (CNContactPickerViewController *)contactPickerViewForPhoneNumber
+{
+    CNContactPickerViewController *contactPicker = [CNContactPickerViewController new];
+    
+    contactPicker.displayedPropertyKeys = @[CNContactPhoneNumbersKey];
+    contactPicker.predicateForEnablingContact = [NSPredicate predicateWithFormat:@"phoneNumbers.@count > 0"];
+    contactPicker.predicateForSelectionOfProperty = [NSPredicate predicateWithFormat:@"key=='phoneNumbers'"];
+    
+    return contactPicker;
 }
 
 @end

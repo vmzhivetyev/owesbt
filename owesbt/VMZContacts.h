@@ -8,10 +8,15 @@
 
 #import <Foundation/Foundation.h>
 
+
+@class CNContactPickerViewController;
+
+
 @interface VMZContacts : NSObject
 
-+ (NSArray *)fetchContactsUncached;
 + (NSArray *)fetchContacts;
-+ (CNContact *)contactWithPhoneNumber:(NSString *)phoneNumber;
++ (CNContact *)contactWithPhoneNumber:(NSString *)phoneNumber phoneNumberRef:(CNPhoneNumber **)ref;
+
++ (CNContactPickerViewController *)contactPickerViewForPhoneNumber;
 
 @end

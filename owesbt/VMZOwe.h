@@ -18,7 +18,7 @@
 typedef void (^FirebaseRequestCallback)(NSDictionary *_Nullable data, NSError *_Nullable error);
 
 
-@protocol VMZOweDelegate
+@protocol VMZOweDelegate<NSObject>
 
 @optional
 

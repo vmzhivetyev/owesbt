@@ -7,12 +7,15 @@
 //
 
 #import <Masonry.h>
+#import <Contacts/Contacts.h>
+#import <ContactsUI/ContactsUI.h>
 
 #import "VMZNewOweViewController.h"
 #import "VMZOwe.h"
 #import "VMZOweData+CoreDataClass.h"
 #import "UIViewController+VMZExtensions.h"
 #import "NSString+VMZExtensions.h"
+#import "VMZContacts.h"
 
 @interface VMZNewOweViewController ()
 
@@ -41,6 +44,25 @@
 }
 
 
+#pragma mark - CNContactPickerDelegate
+
+- (void)contactPickerDidCancel:(CNContactPickerViewController *)picker
+{
+    
+}
+
+- (void)contactPicker:(CNContactPickerViewController *)picker didSelectContactProperty:(CNContactProperty *)contactProperty
+{
+    CNPhoneNumber *phoneNumber = contactProperty.value;
+    if (phoneNumber)
+    {
+        self.nameTextField.text = [contactProperty.contact valueForKey:@"fullName"];
+        self.phoneTextField.text = phoneNumber.stringValue;
+        //selectedContactPhoneNumberDigits = phoneNumber.digits
+    }
+}
+
+
 #pragma mark - UI
 
 - (void)doneButtonClicked:(UIBarButtonItem *)button
@@ -56,6 +78,8 @@
     NSString *descr = self.descriptionTextField.text;
     
     [[VMZOwe sharedInstance] addNewOweFor:partner whichIsDebtor:partnerIsDebtor sum:sum descr:descr];
+    
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)textViewDidChange:(UITextView *)textView
@@ -77,8 +101,12 @@
         
         self.title = [[owe.status uppercaseFirstLetter] stringByAppendingString:@" Owe"];
         
-        self.nameTextField.text = [owe partnerNameFromContacts];
-        self.phoneTextField.text = [owe selfIsCreditor] ? owe.debtor : owe.creditor;
+        NSString *partnerPhone = [owe selfIsCreditor] ? owe.debtor : owe.creditor;
+        CNPhoneNumber *phone = nil;
+        CNContact* partnerContact = [VMZContacts contactWithPhoneNumber:partnerPhone phoneNumberRef:&phone];
+        
+        self.nameTextField.text = partnerContact ? [partnerContact valueForKey: @"fullName"] : @"Unnamed";
+        self.phoneTextField.text = phone ? phone.stringValue : partnerPhone;
         self.sumTextField.text = owe.sum;
         self.descriptionTextField.text = owe.descr;
         self.roleSegmentedControl.selectedSegmentIndex = [owe selfIsCreditor] ? 1 : 0;
@@ -91,6 +119,7 @@
         self.readonlyMode = YES;
         
         self.navigationItem.rightBarButtonItem = nil;
+        ((UITableViewCell*)self.nameTextField.superview).accessoryType = UITableViewCellAccessoryCheckmark;
     }
     return self;
 }
@@ -131,7 +160,7 @@
     self.title = @"New Owe";
     
     UITableViewCell *nameCell = [UITableViewCell new];
-    nameCell.accessoryType = UITableViewCellAccessoryCheckmark;
+    nameCell.accessoryType = UITableViewCellAccessoryDetailButton;
     UITextField *nameTextField = [UITextField new];
     self.nameTextField = nameTextField;
     self.nameTextField.placeholder = @"Person Name";
@@ -208,6 +237,19 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+
+#pragma mark - UITableViewDelegate
+
+- (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(nonnull NSIndexPath *)indexPath
+{
+    if (indexPath.section == 0 && indexPath.row == 0)
+    {
+        CNContactPickerViewController *view = [VMZContacts contactPickerViewForPhoneNumber];
+        view.delegate = self;
+        [self presentViewController:view animated:YES completion:nil];
+    }
 }
 
 

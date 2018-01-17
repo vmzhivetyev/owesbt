@@ -10,6 +10,7 @@
 #import "VMZOweData+CoreDataClass.h"
 #import "VMZOweAction+CoreDataClass.h"
 #import "VMZOwe.h"
+#import "NSString+VMZExtensions.h"
 
 @implementation VMZCoreDataManager
 
@@ -146,12 +147,12 @@
     VMZOweData *owe = [self createNewOweObject];
     owe.created = [NSDate date];
     owe.closed = nil;
-    owe.creditor = partnerIsDebtor ? @"self" : partner;
-    owe.debtor = !partnerIsDebtor ? @"self" : partner;
-    owe.descr = descr;
+    owe.creditor = partnerIsDebtor ? @"self" : partner.copy;//.phoneNumberDigits;
+    owe.debtor = !partnerIsDebtor ? @"self" : partner.copy;//.phoneNumberDigits;
+    owe.descr = descr.copy;
     owe.status = partnerIsDebtor ? @"requested" : @"active";
     owe.uid = nil;
-    owe.sum = sum;
+    owe.sum = sum.copy;
     
     NSDictionary *params = @{@"who":owe.debtor.copy, @"to":owe.creditor.copy, @"sum":owe.sum.copy, @"descr":owe.descr.copy};
     [self addNewAction:@"addOwe" parameters:params owe:owe];

@@ -21,8 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)newOweInManagedObjectContext:(NSManagedObjectContext *)moc;
 - (void)loadFromDictionary:(NSDictionary * _Nonnull)dict;
 - (BOOL)selfIsCreditor;
-- (CNContact *)getContactForPartner;
-- (NSString *)partnerNameFromContacts;
+- (NSString *)partner;
 
 @end
 

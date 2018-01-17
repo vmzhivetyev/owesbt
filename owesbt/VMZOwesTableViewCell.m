@@ -11,6 +11,7 @@
 
 #import "VMZOwesTableViewCell.h"
 #import "VMZOweData+CoreDataClass.h"
+#import "VMZContacts.h"
 
 @interface VMZOwesTableViewCell ()
 
@@ -108,8 +109,12 @@
 {
     if (owe)
     {
+        NSString *partnerPhone = [owe selfIsCreditor] ? owe.debtor : owe.creditor;
+        CNPhoneNumber *phone = nil;
+        CNContact* partnerContact = [VMZContacts contactWithPhoneNumber:partnerPhone phoneNumberRef:&phone];
+        
         self.sumLabel.text = owe.sum;
-        self.mainLabel.text = [owe partnerNameFromContacts];
+        self.mainLabel.text = partnerContact ? [partnerContact valueForKey: @"fullName"] : partnerPhone;
         self.secondLabel.text = owe.descr;
         
         if ([owe.status isEqualToString: @"active"])
