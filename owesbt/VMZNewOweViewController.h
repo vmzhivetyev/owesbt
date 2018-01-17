@@ -10,8 +10,11 @@
 
 
 @protocol VMZOweDelegate;
+@class VMZOweData;
 
 
-@interface VMZNewOweViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, UITextViewDelegate, VMZOweDelegate>
+@interface VMZNewOweViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, VMZOweDelegate, UITextFieldDelegate>
+
+- (instancetype)initWithOwe:(VMZOweData *)owe;
 
 @end

@@ -14,6 +14,7 @@
 #import "VMZCoreDataManager.h"
 #import "VMZOwesTableViewCell.h"
 #import "UIViewController+Extension.h"
+#import "VMZNewOweViewController.h"
 
 @interface VMZOwesTableViewController ()
 
@@ -148,13 +149,22 @@
     [super didReceiveMemoryWarning];
 }
 
-
-#pragma mark - UITableViewDelegate
-
 - (void)removeAtIndexPath:(NSIndexPath *)indexPath
 {
     [self.owesToDisplay[indexPath.section] removeObjectAtIndex:indexPath.row];
     [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+}
+
+
+#pragma mark - UITableViewDelegate
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    VMZOweData *owe = [self oweForIndexPath:indexPath];
+    UIViewController *view = [[VMZNewOweViewController alloc] initWithOwe:owe];
+    [self.navigationController pushViewController:view animated:YES];
 }
 
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
