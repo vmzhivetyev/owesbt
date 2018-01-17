@@ -84,7 +84,7 @@
         }
         else
         {
-            make.top.equalTo(self.sumLabel.mas_bottom).offset(5);
+            make.top.equalTo(self.mainLabel.mas_bottom).offset(5);
         }
         
         if (self.owe)
