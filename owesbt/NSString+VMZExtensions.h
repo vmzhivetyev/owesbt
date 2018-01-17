@@ -11,5 +11,6 @@
 @interface NSString (VMZExtensions)
 
 - (NSString *)uppercaseFirstLetter;
+- (NSString *)phoneNumberDigits;
 
 @end

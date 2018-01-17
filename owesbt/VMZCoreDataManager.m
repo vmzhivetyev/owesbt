@@ -10,6 +10,7 @@
 #import "VMZOweData+CoreDataClass.h"
 #import "VMZOweAction+CoreDataClass.h"
 #import "VMZOwe.h"
+#import "NSString+VMZExtensions.h"
 
 @implementation VMZCoreDataManager
 
@@ -112,24 +113,6 @@
     [self saveManagedObjectContext];
 }
 
-- (void)closeOwe:(nonnull VMZOweData *)owe
-{
-    [self.managedObjectContext deleteObject:owe];
-    [self saveManagedObjectContext];
-}
-
-- (void)confirmOwe:(nonnull VMZOweData *)owe
-{
-    [self.managedObjectContext deleteObject:owe];
-    [self saveManagedObjectContext];
-}
-
-- (void)cancelRequestForOwe:(nonnull VMZOweData *)owe
-{
-    [self.managedObjectContext deleteObject:owe];
-    [self saveManagedObjectContext];
-}
-
 - (VMZOweData *)createNewOweObject
 {
     return [VMZOweData newOweInManagedObjectContext:self.managedObjectContext];
@@ -138,7 +121,6 @@
 - (void)addNewAction:(NSString *)action parameters:(NSDictionary *)params owe:(VMZOweData *)owe
 {
     [VMZOweAction newAction:action withParameters:params forOwe:owe managedObjectContext:self.managedObjectContext];
-    [[VMZOwe sharedInstance] doOweActionsAsync];
 }
 
 - (void)addNewOweWithActionFor:(NSString *)partner whichIsDebtor:(BOOL)partnerIsDebtor sum:(NSString*)sum descr:(NSString *)descr
@@ -146,12 +128,12 @@
     VMZOweData *owe = [self createNewOweObject];
     owe.created = [NSDate date];
     owe.closed = nil;
-    owe.creditor = partnerIsDebtor ? @"self" : partner;
-    owe.debtor = !partnerIsDebtor ? @"self" : partner;
-    owe.descr = descr;
+    owe.creditor = partnerIsDebtor ? @"self" : partner.copy;//.phoneNumberDigits;
+    owe.debtor = !partnerIsDebtor ? @"self" : partner.copy;//.phoneNumberDigits;
+    owe.descr = descr.copy;
     owe.status = partnerIsDebtor ? @"requested" : @"active";
     owe.uid = nil;
-    owe.sum = sum;
+    owe.sum = sum.copy;
     
     NSDictionary *params = @{@"who":owe.debtor.copy, @"to":owe.creditor.copy, @"sum":owe.sum.copy, @"descr":owe.descr.copy};
     [self addNewAction:@"addOwe" parameters:params owe:owe];

@@ -7,9 +7,11 @@
 //
 
 #import <Masonry.h>
+#import <Contacts/Contacts.h>
 
 #import "VMZOwesTableViewCell.h"
 #import "VMZOweData+CoreDataClass.h"
+#import "VMZContacts.h"
 
 @interface VMZOwesTableViewCell ()
 
@@ -82,7 +84,7 @@
         }
         else
         {
-            make.top.equalTo(self.sumLabel.mas_bottom).offset(5);
+            make.top.equalTo(self.mainLabel.mas_bottom).offset(5);
         }
         
         if (self.owe)
@@ -107,8 +109,12 @@
 {
     if (owe)
     {
+        NSString *partnerPhone = [owe selfIsCreditor] ? owe.debtor : owe.creditor;
+        CNPhoneNumber *phone = nil;
+        CNContact* partnerContact = [VMZContacts contactWithPhoneNumber:partnerPhone phoneNumberRef:&phone];
+        
         self.sumLabel.text = owe.sum;
-        self.mainLabel.text = [owe selfIsCreditor] ? owe.debtor : owe.creditor;
+        self.mainLabel.text = partnerContact ? [partnerContact valueForKey: @"fullName"] : partnerPhone;
         self.secondLabel.text = owe.descr;
         
         if ([owe.status isEqualToString: @"active"])

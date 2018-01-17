@@ -18,7 +18,7 @@
 typedef void (^FirebaseRequestCallback)(NSDictionary *_Nullable data, NSError *_Nullable error);
 
 
-@protocol VMZOweDelegate
+@protocol VMZOweDelegate<NSObject>
 
 @optional
 
@@ -49,8 +49,6 @@ typedef void (^FirebaseRequestCallback)(NSDictionary *_Nullable data, NSError *_
 
 @interface VMZOwe : NSObject <GIDSignInDelegate, VMZOweDelegate>
 
-@property (nonatomic, weak) UIViewController *_Nullable currentViewController;
-
 @property (nonatomic, strong) NSPointerArray * _Nonnull delegates;
 
 @property (nonatomic, strong) NSArray *_Nullable owes;
@@ -61,14 +59,12 @@ typedef void (^FirebaseRequestCallback)(NSDictionary *_Nullable data, NSError *_
 - (void)addDelegate:(nonnull NSObject<VMZOweDelegate> *)delegate;
 - (void)removeDelegate:(nonnull NSObject<VMZOweDelegate> *)delegate;
 
-- (void)getMyPhoneWithCompletion:(void(^_Nonnull)(NSString *_Nullable phone))completion;
 - (void)setMyPhone:(NSString *_Nonnull)phone completion:(_Nullable FirebaseRequestCallback)completion;
 - (void)downloadOwes:(NSString*_Nonnull)status completion:(void(^_Nullable)(NSError * _Nullable error))completion;
 - (void)closeOwe:(VMZOweData *_Nonnull)owe;
 - (void)confirmOwe:(VMZOweData *_Nonnull)owe;
-- (void)cancelRequestForOwe:(VMZOweData *_Nonnull)owe;
+- (void)cancelOwe:(VMZOweData *_Nonnull)owe;
 - (void)addNewOweFor:(NSString *)partner whichIsDebtor:(BOOL)partnerIsDebtor sum:(NSString*)sum descr:(NSString *)descr;
-- (void)doOweActionsAsync;
 
 
 @end

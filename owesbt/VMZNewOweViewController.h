@@ -9,11 +9,12 @@
 #import <UIKit/UIKit.h>
 
 
+@protocol CNContactPickerDelegate;
 @protocol VMZOweDelegate;
 @class VMZOweData;
 
 
-@interface VMZNewOweViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, VMZOweDelegate, UITextFieldDelegate>
+@interface VMZNewOweViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, VMZOweDelegate, UITextFieldDelegate, CNContactPickerDelegate>
 
 - (instancetype)initWithOwe:(VMZOweData *)owe;
 

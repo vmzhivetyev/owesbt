@@ -13,7 +13,7 @@
 #import "VMZOwe.h"
 #import "VMZMainViewController.h"
 #import "VMZChangePhoneViewController.h"
-#import "VMZOweTabsViewController.h"
+#import "VMZNavigationController.h"
 #import "UIViewController+VMZExtensions.h"
 
 @interface VMZMainViewController ()
@@ -47,17 +47,18 @@
 {
     if (success)
     {
-        UIViewController *tabbarView = [[VMZOweTabsViewController alloc] init];
-        UINavigationController *navigationController =
-            [[UINavigationController alloc] initWithRootViewController:tabbarView];
-        [self presentViewController:navigationController animated:YES completion:^{
-            [[VMZOwe sharedInstance] removeDelegate:self];
-        }];
+        [[VMZOwe sharedInstance] removeDelegate:self];
+        [self presentViewController:[[VMZNavigationController alloc] init] animated:YES completion:nil];
     }
     else
     {
         [self presentChangePhoneView];
     }
+}
+
+- (void)VMZOweErrorOccured:(NSString *)error
+{
+    [self showMessagePrompt:error];
 }
 
 
@@ -78,10 +79,6 @@
 
 - (void)presentChangePhoneView
 {
-    //TODO костыль для дисмиса алерта, который нужен для дебага, не будет алерта - не нужен dismiss
-    {
-        [self dismissViewControllerAnimated:NO completion:nil];
-    }
     UIViewController* view = [VMZChangePhoneViewController new];
     [view setModalPresentationStyle:UIModalPresentationFullScreen];
     [view setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
@@ -90,56 +87,6 @@
 
 
 #pragma mark - LifeCycle
-
-//- (void)showPhoneNumberVerificationAlert
-//{
-//    UIAlertController * alertController =
-//        [UIAlertController alertControllerWithTitle: @"Verify phone number"
-//                                            message: @"Please, enter the code we sent you in SMS"
-//                                     preferredStyle: UIAlertControllerStyleAlert];
-//
-//    [alertController addTextFieldWithConfigurationHandler:^(UITextField *textField) {
-//        textField.placeholder = @"code";
-//        //textField.textColor = [UIColor blueColor];
-//        //textField.clearButtonMode = UITextFieldViewModeWhileEditing;
-//        //textField.borderStyle = UITextBorderStyleRoundedRect;
-//    }];
-//    [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-//        NSArray * textfields = alertController.textFields;
-//        UITextField * codeTextField = textfields[0];
-//
-//        NSString *verificationID = [[NSUserDefaults standardUserDefaults] stringForKey:@"authVerificationID"];
-//
-//        FIRAuthCredential *credential = [[FIRPhoneAuthProvider provider]
-//                                         credentialWithVerificationID:verificationID
-//                                                     verificationCode:codeTextField.text];
-//
-//        [[FIRAuth auth].currentUser updatePhoneNumberCredential:credential completion:^(NSError * _Nullable error) {
-//            if(error)
-//            {
-//                @throw error;
-//            }
-//        }];
-//    }]];
-//    [self presentViewController:alertController animated:YES completion:nil];
-//}
-
-//- (void)setPhoneNumber
-//{
-//    [[FIRPhoneAuthProvider provider] verifyPhoneNumber:@"89620565757"
-//        completion: ^(NSString * _Nullable verificationID, NSError * _Nullable error) {
-//            if (error)
-//            {
-//                @throw error;
-//                return;
-//            }
-//
-//            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-//            [defaults setObject:verificationID forKey:@"authVerificationID"];
-//
-//            [self showPhoneNumberVerificationAlert];
-//        }];
-//}
 
 - (void)dealloc
 {
@@ -151,7 +98,6 @@
     [super viewDidLoad];
     
     [[VMZOwe sharedInstance] addDelegate:self];
-    [VMZOwe sharedInstance].currentViewController = self;
     [GIDSignIn sharedInstance].uiDelegate = self;
     //[[GIDSignIn sharedInstance] signIn];
     
@@ -182,7 +128,7 @@
     
     
     //sign out button
-    UIButton* signOutButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
+    UIButton* signOutButton = [UIButton buttonWithType:UIButtonTypeCustom];
     signOutButton.frame = CGRectMake(25, CGRectGetMaxY(self.view.bounds) - 25, 60, 25);
     [signOutButton setTitle:@"Sign out" forState:UIControlStateNormal];
     [signOutButton addTarget:self action:@selector(signOutButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
@@ -191,7 +137,7 @@
 
 - (void)viewDidAppear:(BOOL)animated
 {
-    //[self.spinnerImageView.layer animationForKey:@"SpinAnimation"] ;
+    
 }
 
 - (void)didReceiveMemoryWarning

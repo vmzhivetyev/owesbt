@@ -25,11 +25,11 @@
 
 - (NSArray *_Nonnull)owesForStatus:(NSString *_Nonnull)status selfIsDebtor:(BOOL)selfIsDebtor;
 - (void)updateOwes:(NSArray * _Nonnull)owesArray;
-- (void)closeOwe:(VMZOweData * _Nonnull)owe;
-- (void)confirmOwe:(VMZOweData * _Nonnull)owe;
-- (void)cancelRequestForOwe:(VMZOweData * _Nonnull)owe;
 - (void)addNewAction:(NSString *_Nonnull)action parameters:(NSDictionary *_Nonnull)params owe:(VMZOweData *_Nonnull)owe;
-- (void)addNewOweWithActionFor:(NSString * _Nonnull)partner whichIsDebtor:(BOOL)partnerIsDebtor sum:(NSString * _Nonnull)sum descr:(NSString * _Nonnull)descr;
+- (void)addNewOweWithActionFor:(NSString * _Nonnull)partner
+                 whichIsDebtor:(BOOL)partnerIsDebtor
+                           sum:(NSString * _Nonnull)sum
+                         descr:(NSString * _Nonnull)descr;
 - (NSArray * _Nullable)getActions;
 - (void)removeAction:(VMZOweAction *_Nonnull)action;
 

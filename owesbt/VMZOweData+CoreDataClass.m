@@ -7,7 +7,10 @@
 //
 //
 
+#import <Contacts/Contacts.h>
+
 #import "VMZOweData+CoreDataClass.h"
+#import "VMZContacts.h"
 
 @implementation VMZOweData
 
@@ -31,6 +34,11 @@
 - (BOOL)selfIsCreditor
 {
     return [self.creditor isEqualToString:@"self"];
+}
+
+- (NSString *)partner
+{
+    return [self selfIsCreditor] ? self.debtor : self.creditor;
 }
 
 @end
