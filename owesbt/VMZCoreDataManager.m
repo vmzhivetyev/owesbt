@@ -113,24 +113,6 @@
     [self saveManagedObjectContext];
 }
 
-- (void)closeOwe:(nonnull VMZOweData *)owe
-{
-    [self.managedObjectContext deleteObject:owe];
-    [self saveManagedObjectContext];
-}
-
-- (void)confirmOwe:(nonnull VMZOweData *)owe
-{
-    [self.managedObjectContext deleteObject:owe];
-    [self saveManagedObjectContext];
-}
-
-- (void)cancelRequestForOwe:(nonnull VMZOweData *)owe
-{
-    [self.managedObjectContext deleteObject:owe];
-    [self saveManagedObjectContext];
-}
-
 - (VMZOweData *)createNewOweObject
 {
     return [VMZOweData newOweInManagedObjectContext:self.managedObjectContext];
@@ -139,7 +121,6 @@
 - (void)addNewAction:(NSString *)action parameters:(NSDictionary *)params owe:(VMZOweData *)owe
 {
     [VMZOweAction newAction:action withParameters:params forOwe:owe managedObjectContext:self.managedObjectContext];
-    [[VMZOwe sharedInstance] doOweActionsAsync];
 }
 
 - (void)addNewOweWithActionFor:(NSString *)partner whichIsDebtor:(BOOL)partnerIsDebtor sum:(NSString*)sum descr:(NSString *)descr

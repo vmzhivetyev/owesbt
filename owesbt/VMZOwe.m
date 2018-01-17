@@ -28,6 +28,50 @@
 
 @implementation VMZOwe
 
+- (void)addDelegate:(nonnull NSObject<VMZOweDelegate> *)delegate
+{
+    [self.delegates addPointer:(__bridge void * _Nullable)(delegate)];
+    
+    if (!self.firebaseAuthStateDidChangeHandler)
+    {
+        self.firebaseAuthStateDidChangeHandler =
+        [[FIRAuth auth] addAuthStateDidChangeListener:^(FIRAuth *_Nonnull auth, FIRUser *_Nullable user) {
+            NSLog(@"Auth state changed %@", user);
+            
+            if(user)
+            {
+                [self VMZAuthDidSignInForUser:user withError:nil];
+                
+                [self getMyPhoneWithCompletion:^(NSString * _Nullable phone, NSError * error) {
+                    NSLog(@"Got my phone: %@",phone);
+                    
+                    [self VMZPhoneNumberCheckedWithResult: phone != nil];
+                    
+                    [self VMZOweErrorOccured:error.localizedDescription];
+                }];
+            }
+            else
+            {
+                [self clearCachedPhoneNumber];
+                [self VMZAuthDidSignInForUser:nil withError:nil];
+            }
+        }];
+    }
+}
+
+- (void)removeDelegate:(nonnull NSObject<VMZOweDelegate> *)delegate
+{
+    for(int i = 0; i < [self.delegates count]; i++)
+    {
+        if(delegate == [self.delegates pointerAtIndex:i])
+        {
+            [self.delegates removePointerAtIndex: i];
+            return;
+        }
+    }
+    //@throw @"Your are trying to delete unexisting pointer from delegates.";
+}
+
 
 #pragma mark - GIDSignInDelegate
 
@@ -133,48 +177,6 @@ didDisconnectWithUser:(GIDGoogleUser *)user
     return sharedInstance;
 }
 
-- (void)addDelegate:(nonnull NSObject<VMZOweDelegate> *)delegate
-{
-    [self.delegates addPointer:(__bridge void * _Nullable)(delegate)];
-    
-    if (!self.firebaseAuthStateDidChangeHandler)
-    {
-        self.firebaseAuthStateDidChangeHandler =
-        [[FIRAuth auth] addAuthStateDidChangeListener:^(FIRAuth *_Nonnull auth, FIRUser *_Nullable user) {
-            NSLog(@"Auth state changed %@", user);
-            
-            if(user)
-            {
-                [self VMZAuthDidSignInForUser:user withError:nil];
-                
-                [self getMyPhoneWithCompletion:^(NSString * _Nullable phone) {
-                    NSLog(@"Got my phone: %@",phone);
-                    
-                    [self VMZPhoneNumberCheckedWithResult: phone != nil];
-                }];
-            }
-            else
-            {
-                [self clearCachedPhoneNumber];
-                [self VMZAuthDidSignInForUser:nil withError:nil];
-            }
-        }];
-    }
-}
-
-- (void)removeDelegate:(nonnull NSObject<VMZOweDelegate> *)delegate
-{
-    for(int i = 0; i < [self.delegates count]; i++)
-    {
-        if(delegate == [self.delegates pointerAtIndex:i])
-        {
-            [self.delegates removePointerAtIndex: i];
-            return;
-        }
-    }
-    //@throw @"Your are trying to delete unexisting pointer from delegates.";
-}
-
 - (instancetype)init
 {
     self = [super init];
@@ -273,29 +275,24 @@ didDisconnectWithUser:(GIDGoogleUser *)user
     [[NSUserDefaults standardUserDefaults] setObject:nil forKey:@"myPhoneNumber"];
 }
 
-- (void)getMyPhoneWithCompletion:(void(^_Nonnull)(NSString *_Nullable phone))completion
+- (void)getMyPhoneWithCompletion:(void(^_Nonnull)(NSString *_Nullable phone, NSError *error))completion
 {
     [self callFirebaseCloudFunction:@"getPhone" parameters:nil completion:^(NSDictionary *data, NSError *error) {
+        NSString *phoneNumber = nil;
         if (error)
         {
-            NSString* phoneNumber = [[NSUserDefaults standardUserDefaults] objectForKey:@"myPhoneNumber"];
-            if (!phoneNumber)
-            {
-                NSString *message = [NSString stringWithFormat:@"Checking phone number error:\n%@", error.localizedDescription];
-                [self.currentViewController showMessagePrompt:message];
-            }
-            completion(phoneNumber);
+            phoneNumber = [[NSUserDefaults standardUserDefaults] objectForKey:@"myPhoneNumber"];
         }
-        else
+        else if (data)
         {
-            NSString* phoneNumber = data[@"phone"];
+            phoneNumber = data[@"phone"];
             if ([phoneNumber isEqualToString:@"undefinedPhone"])
             {
                 phoneNumber = nil;
             }
             [[NSUserDefaults standardUserDefaults] setObject:phoneNumber forKey:@"myPhoneNumber"];
-            completion(phoneNumber);
         }
+        completion(phoneNumber, error);
     }];
 }
 
@@ -342,6 +339,7 @@ didDisconnectWithUser:(GIDGoogleUser *)user
     [[VMZCoreDataManager sharedInstance] addNewAction:@"changeOwe"
                                            parameters:@{@"id":owe.uid.copy, @"action":@"close"}
                                                   owe:owe];
+    [self doOweActionsAsync];
 }
 
 - (void)confirmOwe:(VMZOweData *)owe
@@ -360,9 +358,10 @@ didDisconnectWithUser:(GIDGoogleUser *)user
     [[VMZCoreDataManager sharedInstance] addNewAction:@"changeOwe"
                                            parameters:@{@"id":owe.uid.copy, @"action":@"confirm"}
                                                   owe:owe];
+    [self doOweActionsAsync];
 }
 
-- (void)cancelRequestForOwe:(VMZOweData *)owe
+- (void)cancelOwe:(VMZOweData *)owe
 {
     if ([owe.status isEqualToString:@"requested"])
     {
@@ -372,11 +371,13 @@ didDisconnectWithUser:(GIDGoogleUser *)user
     [[VMZCoreDataManager sharedInstance] addNewAction:@"changeOwe"
                                            parameters:@{@"id":owe.uid.copy, @"action":@"cancel"}
                                                   owe:owe];
+    [self doOweActionsAsync];
 }
 
 - (void)addNewOweFor:(NSString *)partner whichIsDebtor:(BOOL)partnerIsDebtor sum:(NSString*)sum descr:(NSString *)descr
 {
     [[VMZCoreDataManager sharedInstance] addNewOweWithActionFor:partner whichIsDebtor:partnerIsDebtor sum:sum descr:descr];
+    [self doOweActionsAsync];
 }
 
 - (void)doOweActionsAsync
@@ -393,14 +394,14 @@ didDisconnectWithUser:(GIDGoogleUser *)user
         NSLog(@"DOING ACTIONS");
         return;
     }
+    self.doingActions = YES;
     
     NSArray *actions = [[VMZCoreDataManager sharedInstance] getActions];
     if ([actions count] == 0)
     {
+        self.doingActions = NO;
         return;
     }
-    
-    self.doingActions = YES;
     
     while ([actions count] > 0)
     {
@@ -409,12 +410,15 @@ didDisconnectWithUser:(GIDGoogleUser *)user
         
         for (VMZOweAction *action in actions)
         {
+            NSLog(@"DOING ACTION: %@ %@", action.action, action.parameters);
+            
             [self callFirebaseCloudFunction:action.action parameters:(NSDictionary *)action.parameters completion:^(NSDictionary * _Nullable data, NSError * _Nullable error) {
                 
                 if (error)
                 {
                     NSLog(@"ERROR: %@", error.localizedDescription);
                     stop = YES;
+                    [self VMZOweErrorOccured:error.localizedDescription];
                 }
                 else if (data)
                 {
@@ -451,10 +455,6 @@ didDisconnectWithUser:(GIDGoogleUser *)user
             break;
         }
         actions = [[VMZCoreDataManager sharedInstance] getActions];
-        if ([actions count] > 0)
-        {
-            NSLog(@"action 0: %@", ((VMZOweAction *)actions[0]).action);
-        }
     }
     
     self.doingActions = NO;

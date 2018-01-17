@@ -40,11 +40,16 @@
 }
 
 
-#pragma mark - VMZOweUIDelegate
+#pragma mark - VMZOweDelegate
 
 - (void)VMZOwesCoreDataDidUpdate
 {
     [self updateData];
+}
+
+- (void)VMZOweErrorOccured:(NSString *)error
+{
+    [self showMessagePrompt:error];
 }
 
 
@@ -60,6 +65,30 @@
             [self showMessagePrompt:error.localizedDescription];
         }
     }];
+}
+
+- (void)removeOweAtIndexPath:(NSIndexPath *)indexPath
+{
+    [self.tableView beginUpdates];
+    [self.owesToDisplay[indexPath.section] removeObjectAtIndex:indexPath.row];
+    if ([self.owesToDisplay[indexPath.section] count] == 0)
+    {
+        [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
+    else
+    {
+        [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
+    [self.tableView endUpdates];
+}
+
+- (VMZOweData *)oweAtIndexPath:(NSIndexPath *)indexPath
+{
+    if ([self.owesToDisplay[indexPath.section] count] == 0)
+    {
+        return nil;
+    }
+    return (VMZOweData*)self.owesToDisplay[indexPath.section][indexPath.row];
 }
 
 
@@ -138,8 +167,6 @@
 {
     [super viewDidAppear:animated];
     
-    [VMZOwe sharedInstance].currentViewController = self;
-    
     [self updateData];
     
     self.parentViewController.title = [[self.owesStatus uppercaseFirstLetter] stringByAppendingString:@" Owes"];
@@ -150,21 +177,6 @@
     [super didReceiveMemoryWarning];
 }
 
-- (void)removeAtIndexPath:(NSIndexPath *)indexPath
-{
-    [self.tableView beginUpdates];
-    [self.owesToDisplay[indexPath.section] removeObjectAtIndex:indexPath.row];
-    if ([self.owesToDisplay[indexPath.section] count] == 0)
-    {
-        [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-    }
-    else
-    {
-        [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-    }
-    [self.tableView endUpdates];
-}
-
 
 #pragma mark - UITableViewDelegate
 
@@ -172,7 +184,7 @@
 {
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    VMZOweData *owe = [self oweForIndexPath:indexPath];
+    VMZOweData *owe = [self oweAtIndexPath:indexPath];
     if (!owe)
     {
         return;
@@ -184,7 +196,7 @@
 
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
 {
-    VMZOweData *owe = [self oweForIndexPath:indexPath];
+    VMZOweData *owe = [self oweAtIndexPath:indexPath];
     if (!owe)
     {
         return;
@@ -200,7 +212,7 @@
         [actions addObject: [UIAlertAction actionWithTitle:@"Close Owe" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
             
             [[VMZOwe sharedInstance] closeOwe:owe];
-            [self removeAtIndexPath:indexPath];
+            [self removeOweAtIndexPath:indexPath];
         }]];
     }
     else if ([status isEqualToString:@"requested"])
@@ -212,13 +224,13 @@
             [actions addObject: [UIAlertAction actionWithTitle:@"Confirm request" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
                         
                 [[VMZOwe sharedInstance] confirmOwe:owe];
-                [self removeAtIndexPath:indexPath];
+                [self removeOweAtIndexPath:indexPath];
             }]];
         }
         [actions addObject: [UIAlertAction actionWithTitle:@"Cancel request" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                         
-            [[VMZOwe sharedInstance] cancelRequestForOwe:owe];
-            [self removeAtIndexPath:indexPath];
+            [[VMZOwe sharedInstance] cancelOwe:owe];
+            [self removeOweAtIndexPath:indexPath];
         }]];
     }
     
@@ -240,15 +252,6 @@
     return [self.owesToDisplay[section] count];
 }
 
-- (VMZOweData *)oweForIndexPath:(NSIndexPath *)indexPath
-{
-    if ([self.owesToDisplay[indexPath.section] count] == 0)
-    {
-        return nil;
-    }
-    return (VMZOweData*)self.owesToDisplay[indexPath.section][indexPath.row];
-}
-
 
 #pragma mark - UITableViewDataSource
 
@@ -264,7 +267,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     VMZOwesTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
     
-    VMZOweData *owe = [self oweForIndexPath:indexPath];
+    VMZOweData *owe = [self oweAtIndexPath:indexPath];
     [cell loadOweData:owe];
     
     return cell;

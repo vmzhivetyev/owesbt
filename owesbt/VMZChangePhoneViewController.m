@@ -11,7 +11,7 @@
 #import "VMZChangePhoneViewController.h"
 #import "VMZOwe.h"
 #import "UIViewController+VMZExtensions.h"
-
+#import "VMZNavigationController.h"
 
 @interface VMZChangePhoneViewController ()
 
@@ -39,9 +39,7 @@
             }
             else
             {
-                [self dismissViewControllerAnimated:YES completion:^{
-                    [[VMZOwe sharedInstance] VMZPhoneNumberCheckedWithResult: YES];
-                }];
+                [self presentViewController:[[VMZNavigationController alloc] init] animated:YES completion:nil];
             }
         }
         else
