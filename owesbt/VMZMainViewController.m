@@ -14,7 +14,7 @@
 #import "VMZMainViewController.h"
 #import "VMZChangePhoneViewController.h"
 #import "VMZOweTabsViewController.h"
-#import "UIViewController+Extension.h"
+#import "UIViewController+VMZExtensions.h"
 
 @interface VMZMainViewController ()
 

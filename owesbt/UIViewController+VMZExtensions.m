@@ -6,9 +6,9 @@
 //  Copyright © 2018 Вячеслав Живетьев. All rights reserved.
 //
 
-#import "UIViewController+Extension.h"
+#import "UIViewController+VMZExtensions.h"
 
-@implementation UIViewController (VMZExtension)
+@implementation UIViewController (VMZExtensions)
 
 - (CGFloat)statusBarHeight
 {

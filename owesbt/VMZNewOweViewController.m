@@ -10,21 +10,23 @@
 
 #import "VMZNewOweViewController.h"
 #import "VMZOwe.h"
-#import "UIViewController+Extension.h"
+#import "VMZOweData+CoreDataClass.h"
+#import "UIViewController+VMZExtensions.h"
+#import "NSString+VMZExtensions.h"
 
 @interface VMZNewOweViewController ()
 
 @property (nonatomic, weak, readonly) UITableView *tableView;
+@property (nonatomic, strong) NSArray *cells;
 
-@property (strong, nonatomic) NSArray *cells;
+@property (nonatomic, weak) UITextField *nameTextField;
+@property (nonatomic, weak) UITextField *phoneTextField;
+@property (nonatomic, weak) UISegmentedControl *roleSegmentedControl;
 
-@property (weak, nonatomic) UITextField *nameTextField;
+@property (nonatomic, weak) UITextField *sumTextField;
+@property (nonatomic, weak) UITextField *descriptionTextField;
 
-@property (weak, nonatomic) UITextField *phoneTextField;
-
-@property (weak, nonatomic) UITextField *sumTextField;
-@property (weak, nonatomic) UITextView *infoTextField;
-@property (weak, nonatomic) UISegmentedControl *roleSegmentedControl;
+@property (nonatomic, assign) BOOL readonlyMode;
 
 @end
 
@@ -51,7 +53,7 @@
     NSString *partner = self.phoneTextField.text;
     BOOL partnerIsDebtor = self.roleSegmentedControl.selectedSegmentIndex == 1;
     NSString *sum = self.sumTextField.text;
-    NSString *descr = self.infoTextField.text;
+    NSString *descr = self.descriptionTextField.text;
     
     [[VMZOwe sharedInstance] addNewOweFor:partner whichIsDebtor:partnerIsDebtor sum:sum descr:descr];
 }
@@ -64,6 +66,43 @@
 
 
 #pragma mark - Lifecycle
+
+- (instancetype)initWithOwe:(VMZOweData *)owe
+{
+    self = [super init];
+    if (self)
+    {
+        // чтобы вызвать viewDidLoad
+        [self view];
+        
+        self.title = [[owe.status uppercaseFirstLetter] stringByAppendingString:@" Owe"];
+        
+        self.phoneTextField.text = [owe selfIsCreditor] ? owe.debtor : owe.creditor;
+        self.sumTextField.text = owe.sum;
+        self.descriptionTextField.text = owe.descr;
+        self.roleSegmentedControl.selectedSegmentIndex = [owe selfIsCreditor] ? 1 : 0;
+        self.roleSegmentedControl.enabled = NO;
+        
+        // чтобы клавиатура не показывалась при тапе по текстфилду, при этом текст можно выделять
+        self.sumTextField.inputView = [[UIView alloc] initWithFrame:CGRectZero];
+        self.descriptionTextField.inputView = [[UIView alloc] initWithFrame:CGRectZero];
+        
+        self.readonlyMode = YES;
+        
+        self.navigationItem.rightBarButtonItem = nil;
+    }
+    return self;
+}
+
+- (instancetype)init
+{
+    self = [super init];
+    if(self)
+    {
+        
+    }
+    return self;
+}
 
 - (void)dealloc
 {
@@ -94,16 +133,18 @@
     nameCell.accessoryType = UITableViewCellAccessoryCheckmark;
     UITextField *nameTextField = [UITextField new];
     self.nameTextField = nameTextField;
-    [self.nameTextField setUserInteractionEnabled:NO];
     self.nameTextField.placeholder = @"Person Name";
+    self.nameTextField.inputView = [[UIView alloc] initWithFrame:CGRectZero];
+    self.nameTextField.delegate = self;
     [nameCell addSubview:self.nameTextField];
     
     UITableViewCell *phoneCell = [UITableViewCell new];
     UITextField *phoneTextField = [UITextField new];
     self.phoneTextField = phoneTextField;
     self.phoneTextField.text = @"89999696597";
-    [self.phoneTextField setUserInteractionEnabled:NO];
     self.phoneTextField.placeholder = @"Phone Number";
+    self.phoneTextField.delegate = self;
+    self.phoneTextField.inputView = [[UIView alloc] initWithFrame:CGRectZero];
     [phoneCell addSubview:self.phoneTextField];
     
     UITableViewCell *roleCell = [UITableViewCell new];
@@ -115,16 +156,15 @@
     UITextField *sumTextField = [UITextField new];
     self.sumTextField = sumTextField;
     self.sumTextField.placeholder = @"Sum";
+    self.sumTextField.delegate = self;
     [sumCell addSubview:self.sumTextField];
     
     UITableViewCell *infoCell = [UITableViewCell new];
-    UITextView *infoTextField = [UITextView new];
-    self.infoTextField = infoTextField;
-    self.infoTextField.delegate = self;
-    self.infoTextField.editable = YES;
-    self.infoTextField.scrollEnabled = NO;
-    //self.infoTextField.
-    [infoCell addSubview:self.infoTextField];
+    UITextField *infoTextField = [UITextField new];
+    self.descriptionTextField = infoTextField;
+    self.descriptionTextField.placeholder = @"Description";
+    self.descriptionTextField.delegate = self;
+    [infoCell addSubview:self.descriptionTextField];
    
     /// UITextField * = [UITextField new]; [sumField setUserInteractionEnabled:NO];
     
@@ -143,9 +183,7 @@
     [self.sumTextField mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.equalTo(sumCell).insets(insets);
     }];
-    [self.infoTextField mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.height.equalTo(@(self.infoTextField.contentSize.height)).priorityLow();
-        make.height.greaterThanOrEqualTo(@24).priorityHigh();
+    [self.descriptionTextField mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.equalTo(infoCell).insets(insets);
     }];
     
@@ -186,6 +224,16 @@
     return self.cells[indexPath.section][indexPath.row];
 }
 
+
+#pragma mark - UITextFieldDelegate
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    if (textField == self.nameTextField || textField == self.phoneTextField)
+        return NO;
+    
+    return !self.readonlyMode;
+}
 
 
 /*
