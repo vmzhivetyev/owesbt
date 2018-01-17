@@ -11,7 +11,8 @@
 #import "VMZNewOweViewController.h"
 #import "VMZOwe.h"
 #import "VMZOweData+CoreDataClass.h"
-#import "UIViewController+Extension.h"
+#import "UIViewController+VMZExtensions.h"
+#import "NSString+VMZExtensions.h"
 
 @interface VMZNewOweViewController ()
 
@@ -73,6 +74,8 @@
     {
         // чтобы вызвать viewDidLoad
         [self view];
+        
+        self.title = [[owe.status uppercaseFirstLetter] stringByAppendingString:@" Owe"];
         
         self.phoneTextField.text = [owe selfIsCreditor] ? owe.debtor : owe.creditor;
         self.sumTextField.text = owe.sum;

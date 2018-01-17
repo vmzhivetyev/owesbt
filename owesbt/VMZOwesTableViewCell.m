@@ -34,15 +34,11 @@
     {
         UILabel *mainLabel = [UILabel new];
         _mainLabel = mainLabel;
-        _mainLabel.textColor = [UIColor blackColor];
-        _mainLabel.backgroundColor = [UIColor cyanColor];
         _mainLabel.text = @"Text";
         [self.contentView addSubview:_mainLabel];
         
         UILabel *secondLabel = [UILabel new];
         _secondLabel = secondLabel;
-        _secondLabel.textColor = [UIColor blackColor];
-        _secondLabel.backgroundColor = [UIColor cyanColor];
         _secondLabel.text = @"Text";
         _secondLabel.font = [UIFont systemFontOfSize:15];
         [self.contentView addSubview:_secondLabel];
@@ -59,10 +55,10 @@
 
 - (void)updateConstraints
 {
-    [self.mainLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.mainLabel mas_updateConstraints:^(MASConstraintMaker *make) {
         make.left.right.top.equalTo(self.contentView).insets(UIEdgeInsetsMake(10, 20, 10, 10));
     }];
-    [self.secondLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.secondLabel mas_updateConstraints:^(MASConstraintMaker *make) {
         make.left.right.equalTo(self.mainLabel);
         make.top.equalTo(self.mainLabel.mas_bottom).offset(5);
         
@@ -71,7 +67,7 @@
             make.bottom.equalTo(self.contentView.mas_bottom).with.offset(-10);
         }
     }];
-    [self.emptyLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.emptyLabel mas_updateConstraints:^(MASConstraintMaker *make) {
         make.height.equalTo(@40).priorityHigh();
         make.left.top.right.equalTo(self.contentView);
         
@@ -89,6 +85,7 @@
     if (owe)
     {
         self.mainLabel.text = [owe selfIsCreditor] ? owe.debtor : owe.creditor;
+        self.mainLabel.text = [self.mainLabel.text stringByAppendingString:owe.uid];
         self.secondLabel.text = [NSString stringWithFormat:@"%@ %@ %@", owe.sum, owe.descr, owe.created];
         
         if ([owe.status isEqualToString: @"active"])

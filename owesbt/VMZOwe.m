@@ -13,7 +13,7 @@
 
 #import "VMZOwe.h"
 #import "VMZOweData+CoreDataClass.h"
-#import "UIViewController+Extension.h"
+#import "UIViewController+VMZExtensions.h"
 #import "VMZCoreDataManager.h"
 #import "VMZOweAction+CoreDataClass.h"
 

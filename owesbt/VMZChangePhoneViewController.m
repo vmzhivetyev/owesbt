@@ -10,7 +10,7 @@
 
 #import "VMZChangePhoneViewController.h"
 #import "VMZOwe.h"
-#import "UIViewController+Extension.h"
+#import "UIViewController+VMZExtensions.h"
 
 
 @interface VMZChangePhoneViewController ()

@@ -13,8 +13,9 @@
 #import "VMZOweData+CoreDataClass.h"
 #import "VMZCoreDataManager.h"
 #import "VMZOwesTableViewCell.h"
-#import "UIViewController+Extension.h"
+#import "UIViewController+VMZExtensions.h"
 #import "VMZNewOweViewController.h"
+#import "NSString+VMZExtensions.h"
 
 @interface VMZOwesTableViewController ()
 
@@ -141,7 +142,7 @@
     
     [self updateData];
     
-    self.parentViewController.navigationItem.title = self.owesStatus;
+    self.parentViewController.title = [[self.owesStatus uppercaseFirstLetter] stringByAppendingString:@" Owes"];
 }
 
 - (void)didReceiveMemoryWarning

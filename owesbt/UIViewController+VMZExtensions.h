@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface UIViewController (VMZExtension)
+@interface UIViewController (VMZExtensions)
 
 - (CGFloat)statusBarHeight;
 - (void)showMessagePrompt:(NSString *)message;

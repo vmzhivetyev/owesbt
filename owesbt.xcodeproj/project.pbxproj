@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		130EDA98200E7E400040AA32 /* VMZOweAction+CoreDataClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 130EDA96200E7E400040AA32 /* VMZOweAction+CoreDataClass.m */; };
 		130EDA99200E7E400040AA32 /* VMZOweAction+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 130EDA97200E7E400040AA32 /* VMZOweAction+CoreDataProperties.m */; };
+		130EDA9C200ED53A0040AA32 /* NSString+VMZExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 130EDA9B200ED53A0040AA32 /* NSString+VMZExtensions.m */; };
 		131E767D1FFAAEDD00F8FA71 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 131E767C1FFAAEDD00F8FA71 /* AppDelegate.m */; };
 		131E76801FFAAEDD00F8FA71 /* VMZMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 131E767F1FFAAEDD00F8FA71 /* VMZMainViewController.m */; };
 		131E76881FFAAEDD00F8FA71 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 131E76861FFAAEDD00F8FA71 /* LaunchScreen.storyboard */; };
@@ -17,7 +18,7 @@
 		131E769A1FFD3B2E00F8FA71 /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 131E76981FFD3B2E00F8FA71 /* DataModel.xcdatamodeld */; };
 		131E769D1FFEBCAF00F8FA71 /* VMZOwe.m in Sources */ = {isa = PBXBuildFile; fileRef = 131E769C1FFEBCAF00F8FA71 /* VMZOwe.m */; };
 		13826B751FFFA5C900ACB7F2 /* VMZChangePhoneViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 13826B741FFFA5C900ACB7F2 /* VMZChangePhoneViewController.m */; };
-		13826B782006A71000ACB7F2 /* UIViewController+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 13826B772006A71000ACB7F2 /* UIViewController+Extension.m */; };
+		13826B782006A71000ACB7F2 /* UIViewController+VMZExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 13826B772006A71000ACB7F2 /* UIViewController+VMZExtensions.m */; };
 		13826B7A2006CA6700ACB7F2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13826B792006CA6600ACB7F2 /* Assets.xcassets */; };
 		13826B7D2007B70C00ACB7F2 /* VMZOweTabsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 13826B7C2007B70C00ACB7F2 /* VMZOweTabsViewController.m */; };
 		13D715B52007F91F00B7CAA6 /* VMZOweData+CoreDataClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 13D715B32007F91F00B7CAA6 /* VMZOweData+CoreDataClass.m */; };
@@ -34,6 +35,8 @@
 		130EDA95200E7E400040AA32 /* VMZOweAction+CoreDataClass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "VMZOweAction+CoreDataClass.h"; sourceTree = "<group>"; };
 		130EDA96200E7E400040AA32 /* VMZOweAction+CoreDataClass.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "VMZOweAction+CoreDataClass.m"; sourceTree = "<group>"; };
 		130EDA97200E7E400040AA32 /* VMZOweAction+CoreDataProperties.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "VMZOweAction+CoreDataProperties.m"; sourceTree = "<group>"; };
+		130EDA9A200ED53A0040AA32 /* NSString+VMZExtensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+VMZExtensions.h"; sourceTree = "<group>"; };
+		130EDA9B200ED53A0040AA32 /* NSString+VMZExtensions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+VMZExtensions.m"; sourceTree = "<group>"; };
 		131E76781FFAAEDD00F8FA71 /* owesbt.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = owesbt.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		131E767B1FFAAEDD00F8FA71 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		131E767C1FFAAEDD00F8FA71 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -48,8 +51,8 @@
 		131E769C1FFEBCAF00F8FA71 /* VMZOwe.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VMZOwe.m; sourceTree = "<group>"; };
 		13826B731FFFA5C800ACB7F2 /* VMZChangePhoneViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VMZChangePhoneViewController.h; sourceTree = "<group>"; };
 		13826B741FFFA5C900ACB7F2 /* VMZChangePhoneViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VMZChangePhoneViewController.m; sourceTree = "<group>"; };
-		13826B762006A71000ACB7F2 /* UIViewController+Extension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIViewController+Extension.h"; sourceTree = "<group>"; };
-		13826B772006A71000ACB7F2 /* UIViewController+Extension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+Extension.m"; sourceTree = "<group>"; };
+		13826B762006A71000ACB7F2 /* UIViewController+VMZExtensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIViewController+VMZExtensions.h"; sourceTree = "<group>"; };
+		13826B772006A71000ACB7F2 /* UIViewController+VMZExtensions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+VMZExtensions.m"; sourceTree = "<group>"; };
 		13826B792006CA6600ACB7F2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		13826B7B2007B70C00ACB7F2 /* VMZOweTabsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VMZOweTabsViewController.h; sourceTree = "<group>"; };
 		13826B7C2007B70C00ACB7F2 /* VMZOweTabsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VMZOweTabsViewController.m; sourceTree = "<group>"; };
@@ -131,8 +134,10 @@
 				131E769C1FFEBCAF00F8FA71 /* VMZOwe.m */,
 				13D715BA20081F1300B7CAA6 /* VMZCoreDataManager.h */,
 				13D715BB20081F1400B7CAA6 /* VMZCoreDataManager.m */,
-				13826B762006A71000ACB7F2 /* UIViewController+Extension.h */,
-				13826B772006A71000ACB7F2 /* UIViewController+Extension.m */,
+				13826B762006A71000ACB7F2 /* UIViewController+VMZExtensions.h */,
+				13826B772006A71000ACB7F2 /* UIViewController+VMZExtensions.m */,
+				130EDA9A200ED53A0040AA32 /* NSString+VMZExtensions.h */,
+				130EDA9B200ED53A0040AA32 /* NSString+VMZExtensions.m */,
 				131E76981FFD3B2E00F8FA71 /* DataModel.xcdatamodeld */,
 				131E76861FFAAEDD00F8FA71 /* LaunchScreen.storyboard */,
 				131E76891FFAAEDD00F8FA71 /* Info.plist */,
@@ -290,10 +295,11 @@
 			files = (
 				131E76801FFAAEDD00F8FA71 /* VMZMainViewController.m in Sources */,
 				130EDA98200E7E400040AA32 /* VMZOweAction+CoreDataClass.m in Sources */,
+				130EDA9C200ED53A0040AA32 /* NSString+VMZExtensions.m in Sources */,
 				131E769A1FFD3B2E00F8FA71 /* DataModel.xcdatamodeld in Sources */,
 				131E768B1FFAAEDD00F8FA71 /* main.m in Sources */,
 				13D715BF2008438100B7CAA6 /* VMZOwesTableViewCell.m in Sources */,
-				13826B782006A71000ACB7F2 /* UIViewController+Extension.m in Sources */,
+				13826B782006A71000ACB7F2 /* UIViewController+VMZExtensions.m in Sources */,
 				13826B751FFFA5C900ACB7F2 /* VMZChangePhoneViewController.m in Sources */,
 				130EDA99200E7E400040AA32 /* VMZOweAction+CoreDataProperties.m in Sources */,
 				131E769D1FFEBCAF00F8FA71 /* VMZOwe.m in Sources */,
