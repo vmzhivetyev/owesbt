@@ -152,8 +152,17 @@
 
 - (void)removeAtIndexPath:(NSIndexPath *)indexPath
 {
+    [self.tableView beginUpdates];
     [self.owesToDisplay[indexPath.section] removeObjectAtIndex:indexPath.row];
-    [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    if ([self.owesToDisplay[indexPath.section] count] == 0)
+    {
+        [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
+    else
+    {
+        [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
+    [self.tableView endUpdates];
 }
 
 
