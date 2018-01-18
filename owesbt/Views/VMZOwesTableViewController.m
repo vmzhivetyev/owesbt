@@ -20,8 +20,9 @@
 
 @interface VMZOwesTableViewController ()
 
-@property (nonatomic, strong, readonly) UITableView *tableView;
-@property (nonatomic, strong, readonly) UIRefreshControl *refreshControl;
+@property (nonatomic, weak) UITableView *tableView;
+@property (nonatomic, weak) UIRefreshControl *refreshControl;
+@property (nonatomic, weak) UISearchController *searchController;
 
 @property (nonatomic, strong) NSArray *owesToDisplay;
 @property (nonatomic, copy, readonly) NSString *cellIdentifier;
@@ -39,6 +40,14 @@
                        [[coreDataMgr owesForStatus:self.owesStatus selfIsDebtor:NO]  mutableCopy]
                        ];
     [self.tableView reloadData];
+}
+
+
+#pragma mark - UISearchController
+
+- (void)updateSearchResultsForSearchController:(UISearchController *)searchController
+{
+    
 }
 
 
@@ -95,7 +104,8 @@
 
 - (void)createUI
 {
-    _tableView = [[UITableView alloc] initWithFrame:self.view.frame style:UITableViewStyleGrouped];
+    UITableView *tableView = [[UITableView alloc] initWithFrame:self.view.frame style:UITableViewStyleGrouped];
+    _tableView = tableView;
     _tableView.delegate = self;
     _tableView.dataSource = self;
     [self.view addSubview:self.tableView];
@@ -104,7 +114,8 @@
         make.edges.equalTo(self.view);
     }];
     
-    _refreshControl = [[UIRefreshControl alloc] init];
+    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
+    self.refreshControl = refreshControl;
     self.tableView.refreshControl = self.refreshControl;
     
     self.tableView.estimatedRowHeight = 100.0;
@@ -115,6 +126,15 @@
     [self.tableView registerClass:[VMZOwesTableViewCell class] forCellReuseIdentifier:self.cellIdentifier];
     
     [self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
+    
+    UISearchController *searchController = [[UISearchController alloc] initWithSearchResultsController:nil];
+    self.searchController = searchController;
+    self.searchController.searchResultsUpdater = self;
+    self.searchController.searchBar.delegate = self;
+    //self.tableView.tableHeaderView = self.searchController.searchBar;
+    self.searchController.searchBar.placeholder = @"Enter name or email";
+    self.parentViewController.navigationItem.searchController = self.searchController;
+    [self.searchController.searchBar sizeToFit];
 }
 
 

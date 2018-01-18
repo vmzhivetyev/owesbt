@@ -152,6 +152,7 @@
 - (void)removeAction:(VMZOweAction *)action
 {
     [self.managedObjectContext deleteObject:action];
+    [self saveManagedObjectContext];
 }
 
 @end

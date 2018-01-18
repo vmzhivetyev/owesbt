@@ -12,7 +12,7 @@
 @protocol VMZOweDelegate;
 
 
-@interface VMZOwesTableViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, VMZOweDelegate>
+@interface VMZOwesTableViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, VMZOweDelegate, UISearchBarDelegate>
 
 @property (nonatomic, strong, readonly) NSString* owesStatus;
 

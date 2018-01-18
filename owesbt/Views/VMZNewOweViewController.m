@@ -69,6 +69,17 @@
 {
     if (self.roleSegmentedControl.selectedSegmentIndex < 0)
     {
+        [self showMessagePrompt:@"Please select your partner's role"];
+        return;
+    }
+    if ([self.phoneTextField.text length] == 0)
+    {
+        [self showMessagePrompt:@"Please select a phone number of your partner with (i) button"];
+        return;
+    }
+    if ([self.sumTextField.text length] == 0)
+    {
+        [self showMessagePrompt:@"Please enter sum"];
         return;
     }
     
@@ -82,10 +93,86 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (void)textViewDidChange:(UITextView *)textView
+- (void)createUI
 {
-    [textView sizeToFit];
-    [textView setNeedsUpdateConstraints];
+    UITableView* tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
+    _tableView = tableView;
+    self.tableView.dataSource = self;
+    self.tableView.delegate = self;
+    
+    // cells
+    
+    self.title = @"New Owe";
+    
+    UITableViewCell *nameCell = [UITableViewCell new];
+    nameCell.accessoryType = UITableViewCellAccessoryDetailButton;
+    UITextField *nameTextField = [UITextField new];
+    self.nameTextField = nameTextField;
+    self.nameTextField.placeholder = @"Person Name";
+    self.nameTextField.inputView = [[UIView alloc] initWithFrame:CGRectZero];
+    self.nameTextField.delegate = self;
+    
+    UITableViewCell *phoneCell = [UITableViewCell new];
+    UITextField *phoneTextField = [UITextField new];
+    self.phoneTextField = phoneTextField;
+    self.phoneTextField.placeholder = @"Phone Number";
+    self.phoneTextField.delegate = self;
+    self.phoneTextField.inputView = [[UIView alloc] initWithFrame:CGRectZero];
+    
+    UITableViewCell *roleCell = [UITableViewCell new];
+    UISegmentedControl *segmentedControl = [[UISegmentedControl alloc] initWithItems:@[@"is creditor", @"is debtor"]];
+    self.roleSegmentedControl = segmentedControl;
+    
+    UITableViewCell *sumCell = [UITableViewCell new];
+    UITextField *sumTextField = [UITextField new];
+    self.sumTextField = sumTextField;
+    self.sumTextField.placeholder = @"Sum";
+    self.sumTextField.keyboardType = UIKeyboardTypeNumberPad;
+    self.sumTextField.delegate = self;
+    
+    UITableViewCell *infoCell = [UITableViewCell new];
+    UITextField *infoTextField = [UITextField new];
+    self.descriptionTextField = infoTextField;
+    self.descriptionTextField.placeholder = @"Description";
+    self.descriptionTextField.delegate = self;
+    
+    /// UITextField * = [UITextField new]; [sumField setUserInteractionEnabled:NO];
+    [self.view addSubview:self.tableView];
+    [nameCell addSubview:self.nameTextField];
+    [phoneCell addSubview:self.phoneTextField];
+    [roleCell addSubview:self.roleSegmentedControl];
+    [sumCell addSubview:self.sumTextField];
+    [infoCell addSubview:self.descriptionTextField];
+    
+    self.cells = @[@[nameCell, phoneCell, roleCell], @[sumCell, infoCell]];
+    UIEdgeInsets insets = UIEdgeInsetsMake(10, 20, 10, 10);
+    
+    [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.equalTo(self.view);
+    }];
+    [self.nameTextField mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.equalTo(nameCell).insets(insets);
+    }];
+    [self.phoneTextField mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.equalTo(phoneCell).insets(insets);
+    }];
+    [self.roleSegmentedControl mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.equalTo(roleCell).insets(insets);
+    }];
+    [self.sumTextField mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.equalTo(sumCell).insets(insets);
+    }];
+    [self.descriptionTextField mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.equalTo(infoCell).insets(insets);
+    }];
+    
+    self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.frame.size.width, 40)];
+    self.tableView.allowsSelection = NO;
+    
+    UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                                                target:self
+                                                                                action:@selector(doneButtonClicked:)];
+    self.navigationItem.rightBarButtonItem = doneButton;
 }
 
 
@@ -96,84 +183,7 @@
     self = [super init];
     if(self)
     {
-        UITableView* tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
-        _tableView = tableView;
-        self.tableView.dataSource = self;
-        self.tableView.delegate = self;
-        
-        // cells
-        
-        self.title = @"New Owe";
-        
-        UITableViewCell *nameCell = [UITableViewCell new];
-        nameCell.accessoryType = UITableViewCellAccessoryDetailButton;
-        UITextField *nameTextField = [UITextField new];
-        self.nameTextField = nameTextField;
-        self.nameTextField.placeholder = @"Person Name";
-        self.nameTextField.inputView = [[UIView alloc] initWithFrame:CGRectZero];
-        self.nameTextField.delegate = self;
-        
-        UITableViewCell *phoneCell = [UITableViewCell new];
-        UITextField *phoneTextField = [UITextField new];
-        self.phoneTextField = phoneTextField;
-        self.phoneTextField.text = @"89999696597";
-        self.phoneTextField.placeholder = @"Phone Number";
-        self.phoneTextField.delegate = self;
-        self.phoneTextField.inputView = [[UIView alloc] initWithFrame:CGRectZero];
-        
-        UITableViewCell *roleCell = [UITableViewCell new];
-        UISegmentedControl *segmentedControl = [[UISegmentedControl alloc] initWithItems:@[@"is creditor", @"is debtor"]];
-        self.roleSegmentedControl = segmentedControl;
-        
-        UITableViewCell *sumCell = [UITableViewCell new];
-        UITextField *sumTextField = [UITextField new];
-        self.sumTextField = sumTextField;
-        self.sumTextField.placeholder = @"Sum";
-        self.sumTextField.delegate = self;
-        
-        UITableViewCell *infoCell = [UITableViewCell new];
-        UITextField *infoTextField = [UITextField new];
-        self.descriptionTextField = infoTextField;
-        self.descriptionTextField.placeholder = @"Description";
-        self.descriptionTextField.delegate = self;
-        
-        /// UITextField * = [UITextField new]; [sumField setUserInteractionEnabled:NO];
-        [self.view addSubview:self.tableView];
-        [nameCell addSubview:self.nameTextField];
-        [phoneCell addSubview:self.phoneTextField];
-        [roleCell addSubview:self.roleSegmentedControl];
-        [sumCell addSubview:self.sumTextField];
-        [infoCell addSubview:self.descriptionTextField];
-        
-        self.cells = @[@[nameCell, phoneCell, roleCell], @[sumCell, infoCell]];
-        UIEdgeInsets insets = UIEdgeInsetsMake(10, 20, 10, 10);
-        
-        [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.edges.equalTo(self.view);
-        }];
-        [self.nameTextField mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.edges.equalTo(nameCell).insets(insets);
-        }];
-        [self.phoneTextField mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.edges.equalTo(phoneCell).insets(insets);
-        }];
-        [self.roleSegmentedControl mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.edges.equalTo(roleCell).insets(insets);
-        }];
-        [self.sumTextField mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.edges.equalTo(sumCell).insets(insets);
-        }];
-        [self.descriptionTextField mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.edges.equalTo(infoCell).insets(insets);
-        }];
-        
-        self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.frame.size.width, 40)];
-        self.tableView.allowsSelection = NO;
-        
-        UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
-                                                                                    target:self
-                                                                                    action:@selector(doneButtonClicked:)];
-        self.navigationItem.rightBarButtonItem = doneButton;
+        [self createUI];
     }
     return self;
 }
@@ -265,6 +275,14 @@
 {
     if (textField == self.nameTextField || textField == self.phoneTextField)
         return NO;
+    
+    if (textField == self.sumTextField && !self.readonlyMode)
+    {
+        NSCharacterSet *numbersOnly = [NSCharacterSet characterSetWithCharactersInString:@"0123456789"];
+        NSCharacterSet *characterSetFromTextField = [NSCharacterSet characterSetWithCharactersInString:string];
+        
+        return [numbersOnly isSupersetOfSet:characterSetFromTextField];
+    }
     
     return !self.readonlyMode;
 }
