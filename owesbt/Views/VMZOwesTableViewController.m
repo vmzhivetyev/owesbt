@@ -29,6 +29,8 @@
 @property (nonatomic, strong) NSMutableArray *owesToDisplay;
 @property (nonatomic, copy, readonly) NSString *cellIdentifier;
 
+@property (nonatomic, strong) id<UIViewControllerPreviewing> previewingContext;
+
 @end
 
 @implementation VMZOwesTableViewController
@@ -157,6 +159,38 @@
 }
 
 
+#pragma mark - UIViewControllerPreviewingDelegate
+
+- (UIViewController *)previewingContext:(id<UIViewControllerPreviewing>)previewingContext viewControllerForLocation:(CGPoint)location
+{
+    CGPoint cellPostion = [self.tableView convertPoint:location fromView:self.view];
+    
+    NSIndexPath *path = [self.tableView indexPathForRowAtPoint:cellPostion];
+    
+    if (path)
+    {
+        VMZOweData *owe = [self oweAtIndexPath:path];
+        if (owe)
+        {
+            UITableViewCell *tableCell = [self.tableView cellForRowAtIndexPath:path];
+            
+            VMZNewOweViewController *previewController =
+                [[VMZNewOweViewController alloc] initWithOwe:owe];
+            
+            previewingContext.sourceRect = [self.view convertRect:tableCell.frame fromView:self.tableView];
+            return previewController;
+        }
+    }
+    
+    return nil;
+}
+
+-(void)previewingContext:(id )previewingContext commitViewController: (UIViewController *)viewControllerToCommit
+{
+    [self.navigationController showViewController:viewControllerToCommit sender:nil];
+}
+
+
 #pragma mark - Lifecycle
 
 - (instancetype)init
@@ -217,6 +251,27 @@
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
+}
+
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection
+{
+    [super traitCollectionDidChange:previousTraitCollection];
+    
+    if ([self.traitCollection respondsToSelector:@selector(forceTouchCapability)])
+    {
+        if (self.traitCollection.forceTouchCapability == UIForceTouchCapabilityAvailable)
+        {
+            if (!self.previewingContext)
+            {
+                self.previewingContext = [self registerForPreviewingWithDelegate:self sourceView:self.view];
+            }
+        }
+        else
+        {
+            [self unregisterForPreviewingWithContext:self.previewingContext];
+            self.previewingContext = nil;
+        }
+    }
 }
 
 
