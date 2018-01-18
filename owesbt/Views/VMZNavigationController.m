@@ -9,6 +9,7 @@
 #import "VMZNavigationController.h"
 #import "VMZOwesTableViewController.h"
 #import "VMZNewOweViewController.h"
+#import "VMZOweController.h"
 
 @interface VMZNavigationController ()
 
@@ -46,6 +47,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    [[VMZOweController sharedInstance] loggedInViewControllerDidLoad];
 }
 
 - (void)didReceiveMemoryWarning {

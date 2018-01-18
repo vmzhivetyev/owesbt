@@ -19,6 +19,8 @@ typedef void (^FirebaseRequestCallback)(NSDictionary *data, NSError *error);
 
 - (instancetype)initWithCoreDataManager:(VMZCoreDataManager *)manager;
 
+- (void)startActionsTimer;
+
 - (void)clearCachedPhoneNumber;
 - (void)getMyPhoneWithCompletion:(void(^)(NSString *phone, NSError *error))completion;
 - (void)setMyPhone:(NSString *)phone completion:(void(^)(NSString *errorText))completion;

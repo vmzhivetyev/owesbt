@@ -60,6 +60,8 @@
 - (void)addDelegate:(nonnull NSObject<VMZOweDelegate> *)delegate;
 - (void)removeDelegate:(nonnull NSObject<VMZOweDelegate> *)delegate;
 
+- (void)loggedInViewControllerDidLoad;
+
 - (void)setMyPhone:(NSString *)phone completion:(void(^)(NSString *errorText))completion;
 - (void)refreshOwesWithStatus:(NSString *)status completion:(void(^)(NSError *error))completion;
 - (void)closeOwe:(VMZOweData *)owe;

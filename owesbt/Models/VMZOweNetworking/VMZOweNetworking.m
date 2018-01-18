@@ -35,9 +35,6 @@
     if (self)
     {
         _coreDataManager = manager;
-        _requestsTimer = [NSTimer scheduledTimerWithTimeInterval:5 repeats:YES block:^(NSTimer * _Nonnull timer) {
-            [self doOweActionsAsync];
-        }];
     }
     return self;
 }
@@ -114,69 +111,6 @@
                                               }
                                           }];
         [dataTask resume];
-    }];
-}
-
-- (void)clearCachedPhoneNumber
-{
-    [[NSUserDefaults standardUserDefaults] setObject:nil forKey:@"myPhoneNumber"];
-}
-
-- (void)getMyPhoneWithCompletion:(void(^_Nonnull)(NSString *_Nullable phone, NSError *error))completion
-{
-    [self callFirebaseCloudFunction:@"getPhone" parameters:nil completion:^(NSDictionary *data, NSError *error) {
-        NSString *phoneNumber = nil;
-        if (error)
-        {
-            phoneNumber = [[NSUserDefaults standardUserDefaults] objectForKey:@"myPhoneNumber"];
-        }
-        else if (data)
-        {
-            phoneNumber = data[@"phone"];
-            if ([phoneNumber isEqualToString:@"undefinedPhone"])
-            {
-                phoneNumber = nil;
-            }
-            [[NSUserDefaults standardUserDefaults] setObject:phoneNumber forKey:@"myPhoneNumber"];
-        }
-        if (completion)
-        {
-            completion(phoneNumber, error);
-        }
-    }];
-}
-
-- (void)setMyPhone:(NSString *_Nonnull)phone completion:(void(^)(NSString *errorText))completion
-{
-    [self callFirebaseCloudFunction:@"setPhone" parameters:@{@"phone":phone} completion:^(NSDictionary *data, NSError *error) {
-        NSString* errorText = error ? error.localizedDescription : [[data objectForKey:@"error"] objectForKey:@"message"];
-        if (completion)
-        {
-            completion(errorText);
-        }
-    }];
-}
-
-- (void)downloadOwes:(NSString*)status completion:(void(^)(NSError *error))completion
-{
-    [self callFirebaseCloudFunction:@"getOwes2" parameters:@{@"status":status} completion:^(NSDictionary * _Nullable data, NSError * _Nullable error) {
-        
-        NSArray *owesArray = [data objectForKey:@"result"];
-        if (!owesArray)
-        {
-            if(completion)
-            {
-                completion(error);
-            }
-        }
-        else
-        {
-            [self.coreDataManager updateOwes:owesArray];
-            if (completion)
-            {
-                completion(nil);
-            }
-        }
     }];
 }
 
@@ -258,6 +192,82 @@
     }
     
     self.doingActions = NO;
+}
+
+
+#pragma mark - Public
+
+- (void)startActionsTimer
+{
+    if(!self.requestsTimer)
+    {
+        self.requestsTimer = [NSTimer scheduledTimerWithTimeInterval:5 repeats:YES block:^(NSTimer * _Nonnull timer) {
+            [self doOweActionsAsync];
+        }];
+    }
+}
+
+- (void)clearCachedPhoneNumber
+{
+    [[NSUserDefaults standardUserDefaults] setObject:nil forKey:@"myPhoneNumber"];
+}
+
+- (void)getMyPhoneWithCompletion:(void(^_Nonnull)(NSString *_Nullable phone, NSError *error))completion
+{
+    [self callFirebaseCloudFunction:@"getPhone" parameters:nil completion:^(NSDictionary *data, NSError *error) {
+        NSString *phoneNumber = nil;
+        if (error)
+        {
+            phoneNumber = [[NSUserDefaults standardUserDefaults] objectForKey:@"myPhoneNumber"];
+        }
+        else if (data)
+        {
+            phoneNumber = data[@"phone"];
+            if ([phoneNumber isEqualToString:@"undefinedPhone"])
+            {
+                phoneNumber = nil;
+            }
+            [[NSUserDefaults standardUserDefaults] setObject:phoneNumber forKey:@"myPhoneNumber"];
+        }
+        if (completion)
+        {
+            completion(phoneNumber, error);
+        }
+    }];
+}
+
+- (void)setMyPhone:(NSString *_Nonnull)phone completion:(void(^)(NSString *errorText))completion
+{
+    [self callFirebaseCloudFunction:@"setPhone" parameters:@{@"phone":phone} completion:^(NSDictionary *data, NSError *error) {
+        NSString* errorText = error ? error.localizedDescription : [[data objectForKey:@"error"] objectForKey:@"message"];
+        if (completion)
+        {
+            completion(errorText);
+        }
+    }];
+}
+
+- (void)downloadOwes:(NSString*)status completion:(void(^)(NSError *error))completion
+{
+    [self callFirebaseCloudFunction:@"getOwes2" parameters:@{@"status":status} completion:^(NSDictionary * _Nullable data, NSError * _Nullable error) {
+        
+        NSArray *owesArray = [data objectForKey:@"result"];
+        if (!owesArray)
+        {
+            if(completion)
+            {
+                completion(error);
+            }
+        }
+        else
+        {
+            [self.coreDataManager updateOwes:owesArray];
+            if (completion)
+            {
+                completion(nil);
+            }
+        }
+    }];
 }
 
 @end

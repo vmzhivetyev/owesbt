@@ -23,6 +23,35 @@
 
 @implementation VMZOweController
 
+- (void)createFirebaseAuthStateListener
+{
+    if (!self.firebaseAuthStateDidChangeHandler)
+    {
+        self.firebaseAuthStateDidChangeHandler =
+        [[FIRAuth auth] addAuthStateDidChangeListener:^(FIRAuth *_Nonnull auth, FIRUser *_Nullable user) {
+            NSLog(@"Auth state changed %@", user);
+            
+            if(user)
+            {
+                [self VMZAuthDidSignInForUser:user withError:nil];
+                
+                [self.networking getMyPhoneWithCompletion:^(NSString * _Nullable phone, NSError * error) {
+                    NSLog(@"Got my phone: %@",phone);
+                    
+                    [self VMZPhoneNumberCheckedWithResult: phone != nil];
+                    
+                    [self VMZOweErrorOccured:error.localizedDescription];
+                }];
+            }
+            else
+            {
+                [self.networking clearCachedPhoneNumber];
+                [self VMZAuthDidSignInForUser:nil withError:nil];
+            }
+        }];
+    }
+}
+
 
 #pragma mark - GIDSignInDelegate
 
@@ -145,38 +174,13 @@ didDisconnectWithUser:(GIDGoogleUser *)user
     [[FIRAuth auth] removeAuthStateDidChangeListener:self.firebaseAuthStateDidChangeHandler];
 }
 
-
 #pragma mark - Public
 
 - (void)addDelegate:(nonnull NSObject<VMZOweDelegate> *)delegate
 {
     [self.delegates addPointer:(__bridge void * _Nullable)(delegate)];
     
-    if (!self.firebaseAuthStateDidChangeHandler)
-    {
-        self.firebaseAuthStateDidChangeHandler =
-        [[FIRAuth auth] addAuthStateDidChangeListener:^(FIRAuth *_Nonnull auth, FIRUser *_Nullable user) {
-            NSLog(@"Auth state changed %@", user);
-            
-            if(user)
-            {
-                [self VMZAuthDidSignInForUser:user withError:nil];
-                
-                [self.networking getMyPhoneWithCompletion:^(NSString * _Nullable phone, NSError * error) {
-                    NSLog(@"Got my phone: %@",phone);
-                    
-                    [self VMZPhoneNumberCheckedWithResult: phone != nil];
-                    
-                    [self VMZOweErrorOccured:error.localizedDescription];
-                }];
-            }
-            else
-            {
-                [self.networking clearCachedPhoneNumber];
-                [self VMZAuthDidSignInForUser:nil withError:nil];
-            }
-        }];
-    }
+    [self createFirebaseAuthStateListener];
 }
 
 - (void)removeDelegate:(nonnull NSObject<VMZOweDelegate> *)delegate
@@ -190,6 +194,11 @@ didDisconnectWithUser:(GIDGoogleUser *)user
         }
     }
     //@throw @"Your are trying to delete unexisting pointer from delegates.";
+}
+
+- (void)loggedInViewControllerDidLoad
+{
+    [[self networking] startActionsTimer];
 }
 
 - (void)setMyPhone:(NSString *)phone completion:(void(^)(NSString *errorText))completion
