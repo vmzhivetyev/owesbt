@@ -11,7 +11,7 @@
 
 #import "AppDelegate.h"
 #import "VMZMainViewController.h"
-#import "VMZOwe.h"
+#import "VMZOweController.h"
 
 @interface AppDelegate ()
 
@@ -28,7 +28,7 @@
     [FIRApp configure];
     
     [GIDSignIn sharedInstance].clientID = [FIRApp defaultApp].options.clientID;
-    [GIDSignIn sharedInstance].delegate = [VMZOwe sharedInstance];
+    [GIDSignIn sharedInstance].delegate = [VMZOweController sharedInstance];
     
     
     self.window = [UIWindow new];

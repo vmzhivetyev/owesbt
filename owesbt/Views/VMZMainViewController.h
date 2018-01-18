@@ -9,11 +9,10 @@
 #import <UIKit/UIKit.h>
 
 
-@protocol GIDSignInUIDelegate;
 @protocol VMZOweDelegate;
 
 
-@interface VMZMainViewController : UIViewController <GIDSignInUIDelegate, VMZOweDelegate>
+@interface VMZMainViewController : UIViewController <VMZOweDelegate>
 
 @end
 

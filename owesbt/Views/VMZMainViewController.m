@@ -10,7 +10,7 @@
 #import <Firebase.h>
 #import <Masonry.h>
 
-#import "VMZOwe.h"
+#import "VMZOweController.h"
 #import "VMZMainViewController.h"
 #import "VMZChangePhoneViewController.h"
 #import "VMZNavigationController.h"
@@ -18,8 +18,8 @@
 
 @interface VMZMainViewController ()
 
-@property (nonatomic, strong) GIDSignInButton *googleSignInButton;
-@property (nonatomic, strong) UIImageView *spinnerImageView;
+@property (nonatomic, weak) GIDSignInButton *googleSignInButton;
+@property (nonatomic, weak) UIImageView *spinnerImageView;
 
 @end
 
@@ -37,8 +37,6 @@
         return;
     }
     
-    //[self showMessagePrompt: [NSString stringWithFormat:@"Signed in for user: %@", user]];
-    
     self.spinnerImageView.hidden = !user;
     self.googleSignInButton.hidden = !!user;
 }
@@ -47,7 +45,7 @@
 {
     if (success)
     {
-        [[VMZOwe sharedInstance] removeDelegate:self];
+        [[VMZOweController sharedInstance] removeDelegate:self];
         [self presentViewController:[[VMZNavigationController alloc] init] animated:YES completion:nil];
     }
     else
@@ -85,30 +83,31 @@
     [self presentViewController:view animated:YES completion:nil];
 }
 
-
-#pragma mark - LifeCycle
-
-- (void)dealloc
+- (void)createUI
 {
-    [[VMZOwe sharedInstance] removeDelegate:self];
-}
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    
-    [[VMZOwe sharedInstance] addDelegate:self];
-    [GIDSignIn sharedInstance].uiDelegate = self;
-    //[[GIDSignIn sharedInstance] signIn];
-    
     self.view.backgroundColor = [UIColor whiteColor];
     
-    self.googleSignInButton = [[GIDSignInButton alloc] init];
+    GIDSignInButton *googleSignInButton = [[GIDSignInButton alloc] init];
+    self.googleSignInButton = googleSignInButton;
     [self.view addSubview:self.googleSignInButton];
     
     UIImage* image = [UIImage imageNamed:@"Dual Ring"];
-    self.spinnerImageView = [[UIImageView alloc] initWithImage:image];
+    UIImageView *spinnerImageView = [[UIImageView alloc] initWithImage:image];
+    self.spinnerImageView = spinnerImageView;
     [self.view addSubview:self.spinnerImageView];
+    
+    CABasicAnimation* animation = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
+    animation.fromValue = [NSNumber numberWithFloat:0.0f];
+    animation.toValue = [NSNumber numberWithFloat: 2*M_PI];
+    animation.duration = 1.0f;
+    animation.repeatCount = INFINITY;
+    [self.spinnerImageView.layer addAnimation:animation forKey:@"SpinAnimation"];
+    
+    UIButton* signOutButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    signOutButton.frame = CGRectMake(25, CGRectGetMaxY(self.view.bounds) - 25, 60, 25);
+    [signOutButton setTitle:@"Sign out" forState:UIControlStateNormal];
+    [signOutButton addTarget:self action:@selector(signOutButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:signOutButton];
     
     [self.spinnerImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.center.equalTo(self.view);
@@ -118,21 +117,23 @@
         make.center.equalTo(self.view);
         make.size.mas_equalTo(CGSizeMake(150, 40));
     }];
+}
+
+
+#pragma mark - LifeCycle
+
+- (void)dealloc
+{
+    [[VMZOweController sharedInstance] removeDelegate:self];
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
     
-    CABasicAnimation* animation = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
-    animation.fromValue = [NSNumber numberWithFloat:0.0f];
-    animation.toValue = [NSNumber numberWithFloat: 2*M_PI];
-    animation.duration = 1.0f;
-    animation.repeatCount = INFINITY;
-    [self.spinnerImageView.layer addAnimation:animation forKey:@"SpinAnimation"];
+    [[VMZOweController sharedInstance] addDelegate:self];
     
-    
-    //sign out button
-    UIButton* signOutButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    signOutButton.frame = CGRectMake(25, CGRectGetMaxY(self.view.bounds) - 25, 60, 25);
-    [signOutButton setTitle:@"Sign out" forState:UIControlStateNormal];
-    [signOutButton addTarget:self action:@selector(signOutButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:signOutButton];
+    [self createUI];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -143,7 +144,6 @@
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 @end

@@ -9,22 +9,10 @@
 #import "VMZCoreDataManager.h"
 #import "VMZOweData+CoreDataClass.h"
 #import "VMZOweAction+CoreDataClass.h"
-#import "VMZOwe.h"
+#import "VMZOweController.h"
 #import "NSString+VMZExtensions.h"
 
 @implementation VMZCoreDataManager
-
-+ (instancetype)sharedInstance
-{
-    static id sharedInstance = nil;
-    
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        sharedInstance = [[self alloc] init];
-    });
-    
-    return sharedInstance;
-}
 
 - (instancetype)init
 {
@@ -56,7 +44,7 @@
     }
     else
     {
-        [[VMZOwe sharedInstance] VMZOwesCoreDataDidUpdate];
+        [[VMZOweController sharedInstance] VMZOwesCoreDataDidUpdate];
     }
 }
 

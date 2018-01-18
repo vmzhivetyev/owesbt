@@ -1,198 +1,45 @@
 //
-//  VMZOwe.m
+//  VMZOweNetworking.m
 //  owesbt
 //
-//  Created by Вячеслав Живетьев on 05.01.2018.
+//  Created by Вячеслав Живетьев on 18.01.2018.
 //  Copyright © 2018 Вячеслав Живетьев. All rights reserved.
 //
 
 #import <Firebase.h>
-#import <GoogleSignIn/GoogleSignIn.h>
-#import <UIKit/UIKit.h>
-#import <CoreData/CoreData.h>
 
-#import "VMZOwe.h"
-#import "VMZOweData+CoreDataClass.h"
-#import "UIViewController+VMZExtensions.h"
+#import "VMZOweNetworking.h"
 #import "VMZCoreDataManager.h"
+#import "VMZOweController.h"
 #import "VMZOweAction+CoreDataClass.h"
+#import "VMZOweData+CoreDataClass.h"
 
-@interface VMZOwe ()
+@interface VMZOweNetworking ()
 
-@property (nonatomic, strong) id<NSObject> firebaseAuthStateDidChangeHandler;
+@property (nonatomic, strong, readonly) VMZCoreDataManager* coreDataManager;
+
 @property (nonatomic, strong) NSTimer *requestsTimer;
 @property (atomic, assign) BOOL doingActions;
 
 @end
 
 
-@implementation VMZOwe
-
-- (void)addDelegate:(nonnull NSObject<VMZOweDelegate> *)delegate
-{
-    [self.delegates addPointer:(__bridge void * _Nullable)(delegate)];
-    
-    if (!self.firebaseAuthStateDidChangeHandler)
-    {
-        self.firebaseAuthStateDidChangeHandler =
-        [[FIRAuth auth] addAuthStateDidChangeListener:^(FIRAuth *_Nonnull auth, FIRUser *_Nullable user) {
-            NSLog(@"Auth state changed %@", user);
-            
-            if(user)
-            {
-                [self VMZAuthDidSignInForUser:user withError:nil];
-                
-                [self getMyPhoneWithCompletion:^(NSString * _Nullable phone, NSError * error) {
-                    NSLog(@"Got my phone: %@",phone);
-                    
-                    [self VMZPhoneNumberCheckedWithResult: phone != nil];
-                    
-                    [self VMZOweErrorOccured:error.localizedDescription];
-                }];
-            }
-            else
-            {
-                [self clearCachedPhoneNumber];
-                [self VMZAuthDidSignInForUser:nil withError:nil];
-            }
-        }];
-    }
-}
-
-- (void)removeDelegate:(nonnull NSObject<VMZOweDelegate> *)delegate
-{
-    for(int i = 0; i < [self.delegates count]; i++)
-    {
-        if(delegate == [self.delegates pointerAtIndex:i])
-        {
-            [self.delegates removePointerAtIndex: i];
-            return;
-        }
-    }
-    //@throw @"Your are trying to delete unexisting pointer from delegates.";
-}
+@implementation VMZOweNetworking
 
 
-#pragma mark - GIDSignInDelegate
+#pragma mark - Lifecycle
 
-- (void)signIn:(GIDSignIn *)signIn
-didSignInForUser:(GIDGoogleUser *)user
-     withError:(NSError *)error
-{
-    if (error == nil)
-    {
-        GIDAuthentication *authentication = user.authentication;
-        FIRAuthCredential *credential =
-        [FIRGoogleAuthProvider credentialWithIDToken:authentication.idToken
-                                         accessToken:authentication.accessToken];
-        
-        // и теперь авторизуемся в firebase с помощью гугловкого credential
-        
-        [[FIRAuth auth] signInWithCredential:credential completion:^(FIRUser *user, NSError *error) {
-            if (error)
-            {
-                [self VMZAuthDidSignInForUser:user withError:error];
-            }
-        }];
-    }
-    else
-    {
-        [self VMZAuthDidSignInForUser:nil withError:error];
-    }
-}
-
-- (void)signIn:(GIDSignIn *)signIn
-didDisconnectWithUser:(GIDGoogleUser *)user
-     withError:(NSError *)error
-{
-    
-}
-
-
-#pragma mark - VMZOweDelegate
-
-- (void)VMZAuthDidSignInForUser:(FIRUser*)user withError:(NSError*)error
-{
-    for (NSObject<VMZOweDelegate> *delegate in self.delegates)
-    {
-        if ([delegate respondsToSelector:@selector(VMZAuthDidSignInForUser:withError:)])
-        {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [delegate VMZAuthDidSignInForUser:user withError:error];
-            });
-        }
-    }
-}
-
-- (void)VMZPhoneNumberCheckedWithResult:(BOOL)success
-{
-    for (NSObject<VMZOweDelegate> *delegate in self.delegates)
-    {
-        if ([delegate respondsToSelector:@selector(VMZPhoneNumberCheckedWithResult:)])
-        {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [delegate VMZPhoneNumberCheckedWithResult:success];
-            });
-        }
-    }
-}
-
-- (void)VMZOwesCoreDataDidUpdate
-{
-    for (NSObject<VMZOweDelegate> *delegate in self.delegates)
-    {
-        if ([delegate respondsToSelector:@selector(VMZOwesCoreDataDidUpdate)])
-        {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [delegate VMZOwesCoreDataDidUpdate];
-            });
-        }
-    }
-}
-
-- (void)VMZOweErrorOccured:(NSString *)error
-{
-    for (NSObject<VMZOweDelegate> *delegate in self.delegates)
-    {
-        if ([delegate respondsToSelector:@selector(VMZOweErrorOccured:)])
-        {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [delegate VMZOweErrorOccured:error];
-            });
-        }
-    }
-}
-
-#pragma mark - LifeCycle
-
-+ (VMZOwe*)sharedInstance
-{
-    static id sharedInstance = nil;
-    
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        sharedInstance = [[self alloc] init];
-    });
-    
-    return sharedInstance;
-}
-
-- (instancetype)init
+- (instancetype)initWithCoreDataManager:(VMZCoreDataManager *)manager
 {
     self = [super init];
-    if(self)
+    if (self)
     {
-        _delegates = [NSPointerArray new];
+        _coreDataManager = manager;
         _requestsTimer = [NSTimer scheduledTimerWithTimeInterval:5 repeats:YES block:^(NSTimer * _Nonnull timer) {
             [self doOweActionsAsync];
         }];
     }
     return self;
-}
-
-- (void)dealloc
-{
-    [[FIRAuth auth] removeAuthStateDidChangeListener:self.firebaseAuthStateDidChangeHandler];
 }
 
 #pragma mark - FirebaseNetworking
@@ -221,7 +68,7 @@ didDisconnectWithUser:(GIDGoogleUser *)user
 {
     NSString *functionWithEscapedParameters = [self firebaseUrlForFunction:function withParameters:parameters];
     NSString *url = [NSString stringWithFormat:@"https://us-central1-owe-ios.cloudfunctions.net/app/%@", functionWithEscapedParameters];
-   
+    
     [[FIRAuth auth].currentUser getIDTokenWithCompletion:^(NSString * _Nullable token, NSError * _Nullable error) {
         NSMutableURLRequest *urlRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:url]];
         
@@ -292,92 +139,45 @@ didDisconnectWithUser:(GIDGoogleUser *)user
             }
             [[NSUserDefaults standardUserDefaults] setObject:phoneNumber forKey:@"myPhoneNumber"];
         }
-        completion(phoneNumber, error);
+        if (completion)
+        {
+            completion(phoneNumber, error);
+        }
     }];
 }
 
-- (void)setMyPhone:(NSString *_Nonnull)phone completion:(_Nullable FirebaseRequestCallback)completion
+- (void)setMyPhone:(NSString *_Nonnull)phone completion:(void(^)(NSString *errorText))completion
 {
     [self callFirebaseCloudFunction:@"setPhone" parameters:@{@"phone":phone} completion:^(NSDictionary *data, NSError *error) {
-        completion(data, error);
+        NSString* errorText = error ? error.localizedDescription : [[data objectForKey:@"error"] objectForKey:@"message"];
+        if (completion)
+        {
+            completion(errorText);
+        }
     }];
 }
 
 - (void)downloadOwes:(NSString*)status completion:(void(^)(NSError *error))completion
 {
     [self callFirebaseCloudFunction:@"getOwes2" parameters:@{@"status":status} completion:^(NSDictionary * _Nullable data, NSError * _Nullable error) {
-        NSLog(@"Downloaded owes %lu with error:%@", [data count], error.localizedDescription);
         
-        NSArray *owesArray = data[@"result"];
+        NSArray *owesArray = [data objectForKey:@"result"];
         if (!owesArray)
         {
             if(completion)
             {
                 completion(error);
             }
-            return;
         }
-        
-        [[VMZCoreDataManager sharedInstance] updateOwes:owesArray];
-        completion(nil);
+        else
+        {
+            [self.coreDataManager updateOwes:owesArray];
+            if (completion)
+            {
+                completion(nil);
+            }
+        }
     }];
-}
-
-- (void)closeOwe:(VMZOweData *)owe
-{
-    if (![owe selfIsCreditor])
-    {
-        NSLog(@"Error: trying to CLOSE owe by debtor");
-        return;
-    }
-
-    if ([owe.status isEqualToString:@"active"])
-    {
-        owe.status = @"closed";
-    }
-    
-    [[VMZCoreDataManager sharedInstance] addNewAction:@"changeOwe"
-                                           parameters:@{@"id":owe.uid.copy, @"action":@"close"}
-                                                  owe:owe];
-    [self doOweActionsAsync];
-}
-
-- (void)confirmOwe:(VMZOweData *)owe
-{
-    if ([owe selfIsCreditor])
-    {
-        NSLog(@"Error: trying to CONFIRM owe by creditor");
-        return;
-    }
-    
-    if ([owe.status isEqualToString:@"requested"])
-    {
-        owe.status = @"active";
-    }
-    
-    [[VMZCoreDataManager sharedInstance] addNewAction:@"changeOwe"
-                                           parameters:@{@"id":owe.uid.copy, @"action":@"confirm"}
-                                                  owe:owe];
-    [self doOweActionsAsync];
-}
-
-- (void)cancelOwe:(VMZOweData *)owe
-{
-    if ([owe.status isEqualToString:@"requested"])
-    {
-        owe.status = @"closed";
-    }
-    
-    [[VMZCoreDataManager sharedInstance] addNewAction:@"changeOwe"
-                                           parameters:@{@"id":owe.uid.copy, @"action":@"cancel"}
-                                                  owe:owe];
-    [self doOweActionsAsync];
-}
-
-- (void)addNewOweFor:(NSString *)partner whichIsDebtor:(BOOL)partnerIsDebtor sum:(NSString*)sum descr:(NSString *)descr
-{
-    [[VMZCoreDataManager sharedInstance] addNewOweWithActionFor:partner whichIsDebtor:partnerIsDebtor sum:sum descr:descr];
-    [self doOweActionsAsync];
 }
 
 - (void)doOweActionsAsync
@@ -396,7 +196,7 @@ didDisconnectWithUser:(GIDGoogleUser *)user
     }
     self.doingActions = YES;
     
-    NSArray *actions = [[VMZCoreDataManager sharedInstance] getActions];
+    NSArray *actions = [self.coreDataManager getActions];
     if ([actions count] == 0)
     {
         self.doingActions = NO;
@@ -418,7 +218,7 @@ didDisconnectWithUser:(GIDGoogleUser *)user
                 {
                     NSLog(@"ERROR: %@", error.localizedDescription);
                     stop = YES;
-                    [self VMZOweErrorOccured:error.localizedDescription];
+                    [[VMZOweController sharedInstance] VMZOweErrorOccured:error.localizedDescription];
                 }
                 else if (data)
                 {
@@ -427,7 +227,7 @@ didDisconnectWithUser:(GIDGoogleUser *)user
                     {
                         NSLog(@"ACTION DONE WITH SERVER ERROR %@", serverErrorMessage);
                         
-                        [self VMZOweErrorOccured:serverErrorMessage];
+                        [[VMZOweController sharedInstance] VMZOweErrorOccured:serverErrorMessage];
                     }
                     else
                     {
@@ -439,7 +239,7 @@ didDisconnectWithUser:(GIDGoogleUser *)user
                         }
                     }
                     
-                    [[VMZCoreDataManager sharedInstance] removeAction:action];
+                    [self.coreDataManager removeAction:action];
                 }
                 
                 dispatch_semaphore_signal(sema);
@@ -454,7 +254,7 @@ didDisconnectWithUser:(GIDGoogleUser *)user
         {
             break;
         }
-        actions = [[VMZCoreDataManager sharedInstance] getActions];
+        actions = [self.coreDataManager getActions];
     }
     
     self.doingActions = NO;

@@ -9,7 +9,8 @@
 #import <Masonry.h>
 
 #import "VMZOwesTableViewController.h"
-#import "VMZOwe.h"
+#import "VMZOweController.h"
+#import "VMZOweNetworking.h"
 #import "VMZOweData+CoreDataClass.h"
 #import "VMZCoreDataManager.h"
 #import "VMZOwesTableViewCell.h"
@@ -32,9 +33,10 @@
 
 - (void)updateData
 {
+    VMZCoreDataManager *coreDataMgr = [VMZOweController sharedInstance].coreDataManager;
     _owesToDisplay = @[
-                       [[[VMZCoreDataManager sharedInstance] owesForStatus:self.owesStatus selfIsDebtor:YES] mutableCopy],
-                       [[[VMZCoreDataManager sharedInstance] owesForStatus:self.owesStatus selfIsDebtor:NO]  mutableCopy]
+                       [[coreDataMgr owesForStatus:self.owesStatus selfIsDebtor:YES] mutableCopy],
+                       [[coreDataMgr owesForStatus:self.owesStatus selfIsDebtor:NO]  mutableCopy]
                        ];
     [self.tableView reloadData];
 }
@@ -57,7 +59,7 @@
 
 - (void)refresh:(UIRefreshControl*)sender
 {
-    [[VMZOwe sharedInstance] downloadOwes:self.owesStatus completion:^(NSError * _Nullable error) {
+    [[VMZOweController sharedInstance] refreshOwesWithStatus:self.owesStatus completion:^(NSError * _Nullable error) {
         [sender endRefreshing];
         
         if (error)
@@ -91,12 +93,39 @@
     return (VMZOweData*)self.owesToDisplay[indexPath.section][indexPath.row];
 }
 
+- (void)createUI
+{
+    _tableView = [[UITableView alloc] initWithFrame:self.view.frame style:UITableViewStyleGrouped];
+    _tableView.delegate = self;
+    _tableView.dataSource = self;
+    [self.view addSubview:self.tableView];
+    
+    [_tableView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.equalTo(self.view);
+    }];
+    
+    _refreshControl = [[UIRefreshControl alloc] init];
+    self.tableView.refreshControl = self.refreshControl;
+    
+    self.tableView.estimatedRowHeight = 100.0;
+    self.tableView.rowHeight = UITableViewAutomaticDimension;
+    self.tableView.sectionHeaderHeight = 28;
+    self.tableView.sectionFooterHeight = 18;
+    
+    [self.tableView registerClass:[VMZOwesTableViewCell class] forCellReuseIdentifier:self.cellIdentifier];
+    
+    [self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
+}
+
 
 #pragma mark - Lifecycle
 
 - (instancetype)init
 {
-    return [self initWithStatus:nil tabBarImage:nil];
+    @throw [NSException exceptionWithName:NSInternalInconsistencyException
+                                   reason:@"-init is not a valid initializer for the class VMZOwesTableViewController"
+                                 userInfo:nil];
+    return nil;
 }
 
 - (instancetype)initWithStatus:(NSString*)status tabBarImage:(NSString*)imageName
@@ -105,7 +134,7 @@
     if(self)
     {
         _owesStatus = status;
-        _cellIdentifier = @"reusableCellId";
+        _cellIdentifier = @"VMZReusableCellId";
         
         if(imageName)
         {
@@ -120,47 +149,18 @@
 
 - (void)dealloc
 {
-    [[VMZOwe sharedInstance] removeDelegate:self];
+    [[VMZOweController sharedInstance] removeDelegate:self];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [[VMZOwe sharedInstance] addDelegate:self];
+    [[VMZOweController sharedInstance] addDelegate:self];
     
-    //init instances
-    
-    _tableView = [[UITableView alloc] initWithFrame:self.view.frame style:UITableViewStyleGrouped];
-    _tableView.delegate = self;
-    _tableView.dataSource = self;
-    [self.view addSubview:self.tableView];
-    
-    [_tableView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.edges.equalTo(self.view);
-    }];
-    
-    _refreshControl = [[UIRefreshControl alloc] init];
-    self.tableView.refreshControl = self.refreshControl;
-    
-    //additional init
-    
-    self.tableView.estimatedRowHeight = 100.0;
-    self.tableView.rowHeight = UITableViewAutomaticDimension;
-    self.tableView.sectionHeaderHeight = 28;
-    self.tableView.sectionFooterHeight = 18;
-    
-    [self.tableView registerClass:[VMZOwesTableViewCell class] forCellReuseIdentifier:self.cellIdentifier];
-    
-    [self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
+    [self createUI];
     
     [self updateData];
     [self refresh:self.refreshControl];
-    
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
-    
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -211,7 +211,7 @@
         title = @"Active Owe";
         [actions addObject: [UIAlertAction actionWithTitle:@"Close Owe" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
             
-            [[VMZOwe sharedInstance] closeOwe:owe];
+            [[VMZOweController sharedInstance] closeOwe:owe];
             [self removeOweAtIndexPath:indexPath];
         }]];
     }
@@ -223,13 +223,13 @@
         {
             [actions addObject: [UIAlertAction actionWithTitle:@"Confirm request" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
                         
-                [[VMZOwe sharedInstance] confirmOwe:owe];
+                [[VMZOweController sharedInstance] confirmOwe:owe];
                 [self removeOweAtIndexPath:indexPath];
             }]];
         }
         [actions addObject: [UIAlertAction actionWithTitle:@"Cancel request" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                         
-            [[VMZOwe sharedInstance] cancelOwe:owe];
+            [[VMZOweController sharedInstance] cancelOwe:owe];
             [self removeOweAtIndexPath:indexPath];
         }]];
     }
@@ -247,13 +247,13 @@
     }
 }
 
+
+#pragma mark - UITableViewDataSource
+
 - (NSInteger)numberOfRowsInSection:(NSInteger)section
 {
     return [self.owesToDisplay[section] count];
 }
-
-
-#pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 2;
@@ -289,39 +289,5 @@
     
     return view;
 }
-
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
 
 @end

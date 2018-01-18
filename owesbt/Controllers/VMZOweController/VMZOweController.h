@@ -1,5 +1,5 @@
 //
-//  VMZOwe.h
+//  VMZOweController.h
 //  owesbt
 //
 //  Created by Вячеслав Живетьев on 05.01.2018.
@@ -12,10 +12,8 @@
 @protocol GIDSignInDelegate;
 @class FIRUser;
 @class VMZOweData;
-@class UIViewController;
-
-
-typedef void (^FirebaseRequestCallback)(NSDictionary *_Nullable data, NSError *_Nullable error);
+@class VMZCoreDataManager;
+@class VMZOweNetworking;
 
 
 @protocol VMZOweDelegate<NSObject>
@@ -47,23 +45,26 @@ typedef void (^FirebaseRequestCallback)(NSDictionary *_Nullable data, NSError *_
 @end
 
 
-@interface VMZOwe : NSObject <GIDSignInDelegate, VMZOweDelegate>
+@interface VMZOweController : NSObject <GIDSignInDelegate, VMZOweDelegate>
+
+@property (nonatomic, strong, readonly) VMZCoreDataManager* coreDataManager;
+@property (nonatomic, strong, readonly) VMZOweNetworking* networking;
 
 @property (nonatomic, strong) NSPointerArray * _Nonnull delegates;
 
 @property (nonatomic, strong) NSArray *_Nullable owes;
 
 
-+ (VMZOwe *_Nonnull)sharedInstance;
++ (VMZOweController *_Nonnull)sharedInstance;
 
 - (void)addDelegate:(nonnull NSObject<VMZOweDelegate> *)delegate;
 - (void)removeDelegate:(nonnull NSObject<VMZOweDelegate> *)delegate;
 
-- (void)setMyPhone:(NSString *_Nonnull)phone completion:(_Nullable FirebaseRequestCallback)completion;
-- (void)downloadOwes:(NSString*_Nonnull)status completion:(void(^_Nullable)(NSError * _Nullable error))completion;
-- (void)closeOwe:(VMZOweData *_Nonnull)owe;
-- (void)confirmOwe:(VMZOweData *_Nonnull)owe;
-- (void)cancelOwe:(VMZOweData *_Nonnull)owe;
+- (void)setMyPhone:(NSString *)phone completion:(void(^)(NSString *errorText))completion;
+- (void)refreshOwesWithStatus:(NSString *)status completion:(void(^)(NSError *error))completion;
+- (void)closeOwe:(VMZOweData *)owe;
+- (void)confirmOwe:(VMZOweData *)owe;
+- (void)cancelOwe:(VMZOweData *)owe;
 - (void)addNewOweFor:(NSString *)partner whichIsDebtor:(BOOL)partnerIsDebtor sum:(NSString*)sum descr:(NSString *)descr;
 
 

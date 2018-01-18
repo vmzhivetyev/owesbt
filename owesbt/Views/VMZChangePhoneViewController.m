@@ -9,9 +9,10 @@
 #import <Masonry.h>
 
 #import "VMZChangePhoneViewController.h"
-#import "VMZOwe.h"
-#import "UIViewController+VMZExtensions.h"
+#import "VMZOweController.h"
 #import "VMZNavigationController.h"
+
+#import "UIViewController+VMZExtensions.h"
 
 @interface VMZChangePhoneViewController ()
 
@@ -27,24 +28,14 @@
 - (void)doneButtonClick:(UIButton*)button
 {
     NSString* phone = self.phoneTextField.text;
-    [[VMZOwe sharedInstance] setMyPhone:phone completion:^(NSDictionary * _Nullable data, NSError * _Nullable error) {
-        if (data)
+    [[VMZOweController sharedInstance] setMyPhone:phone completion:^(NSString *errorText) {
+        if (errorText)
         {
-            NSString* phone = [data objectForKey:@"phone"];
-            NSString* errorText = [[data objectForKey:@"error"] objectForKey:@"message"];
-            
-            if (!phone)
-            {
-                [self showMessagePrompt:[NSString stringWithFormat:@"Error: %@", errorText]];
-            }
-            else
-            {
-                [self presentViewController:[[VMZNavigationController alloc] init] animated:YES completion:nil];
-            }
+            [self showMessagePrompt:[NSString stringWithFormat:@"Error: %@", errorText]];
         }
         else
         {
-            [self showMessagePrompt:[NSString stringWithFormat:@"Error: %@", error.localizedDescription]];
+            [self presentViewController:[[VMZNavigationController alloc] init] animated:YES completion:nil];
         }
     }];
 }

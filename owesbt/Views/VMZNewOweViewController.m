@@ -11,7 +11,7 @@
 #import <ContactsUI/ContactsUI.h>
 
 #import "VMZNewOweViewController.h"
-#import "VMZOwe.h"
+#import "VMZOweController.h"
 #import "VMZOweData+CoreDataClass.h"
 #import "UIViewController+VMZExtensions.h"
 #import "NSString+VMZExtensions.h"
@@ -77,7 +77,7 @@
     NSString *sum = self.sumTextField.text;
     NSString *descr = self.descriptionTextField.text;
     
-    [[VMZOwe sharedInstance] addNewOweFor:partner whichIsDebtor:partnerIsDebtor sum:sum descr:descr];
+    [[VMZOweController sharedInstance] addNewOweFor:partner whichIsDebtor:partnerIsDebtor sum:sum descr:descr];
     
     [self.navigationController popViewControllerAnimated:YES];
 }
@@ -96,8 +96,6 @@
     self = [super init];
     if(self)
     {
-        [[VMZOwe sharedInstance] addDelegate:self];
-        
         UITableView* tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
         _tableView = tableView;
         self.tableView.dataSource = self;
@@ -212,12 +210,14 @@
 
 - (void)dealloc
 {
-    [[VMZOwe sharedInstance] removeDelegate:self];
+    [[VMZOweController sharedInstance] removeDelegate:self];
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    [[VMZOweController sharedInstance] addDelegate:self];
 }
 
 - (void)viewWillAppear:(BOOL)animated
