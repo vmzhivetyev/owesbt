@@ -12,6 +12,7 @@
 #import "VMZOweData+CoreDataClass.h"
 #import "VMZContacts.h"
 
+
 @implementation VMZOweData
 
 + (instancetype)newOweInManagedObjectContext:(NSManagedObjectContext *)moc

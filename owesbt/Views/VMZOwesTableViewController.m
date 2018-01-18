@@ -24,7 +24,9 @@
 @property (nonatomic, weak) UIRefreshControl *refreshControl;
 @property (nonatomic, weak) UISearchController *searchController;
 
-@property (nonatomic, strong) NSArray *owesToDisplay;
+@property (nonatomic, strong) NSArray *owes;
+@property (nonatomic, strong) NSArray *owesFiltered;
+@property (nonatomic, strong) NSMutableArray *owesToDisplay;
 @property (nonatomic, copy, readonly) NSString *cellIdentifier;
 
 @end
@@ -32,22 +34,46 @@
 @implementation VMZOwesTableViewController
 
 
+- (NSArray *)owesToDisplay
+{
+    if (self.searchController.isActive && [self.searchController.searchBar.text length] > 0)
+    {
+        return _owesToDisplay;
+    }
+    return _owes;
+}
+
 - (void)updateData
 {
     VMZCoreDataManager *coreDataMgr = [VMZOweController sharedInstance].coreDataManager;
-    _owesToDisplay = @[
-                       [[coreDataMgr owesForStatus:self.owesStatus selfIsDebtor:YES] mutableCopy],
-                       [[coreDataMgr owesForStatus:self.owesStatus selfIsDebtor:NO]  mutableCopy]
-                       ];
+    _owes = @[
+              [[coreDataMgr owesForStatus:self.owesStatus selfIsDebtor:YES] mutableCopy],
+              [[coreDataMgr owesForStatus:self.owesStatus selfIsDebtor:NO]  mutableCopy]
+              ].mutableCopy;
     [self.tableView reloadData];
 }
 
 
-#pragma mark - UISearchController
+#pragma mark - UISearchResultsUpdating
 
 - (void)updateSearchResultsForSearchController:(UISearchController *)searchController
 {
-    
+    NSString *text = searchController.searchBar.text;
+    if ([text length] == 0)
+    {
+        [self.tableView reloadData];
+        return;
+    }
+    NSString *string = [NSString stringWithFormat:@"(descr CONTAINS[c] '%1$@') || (partnerName CONTAINS[c] '%1$@')", text];
+    NSLog(@"Search %@", string);
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:string];
+    for(NSInteger i = 0; i < 2; i++)
+    {
+        _owesToDisplay[i] = [_owes[i] filteredArrayUsingPredicate:predicate].mutableCopy;
+    }
+    BOOL eq = [_owes isEqualToArray:_owesToDisplay];
+    NSLog(eq ? @"EQUAL" : @"NOT EQUAL");
+    [self.tableView reloadData];
 }
 
 
@@ -127,14 +153,7 @@
     
     [self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
     
-    UISearchController *searchController = [[UISearchController alloc] initWithSearchResultsController:nil];
-    self.searchController = searchController;
-    self.searchController.searchResultsUpdater = self;
-    self.searchController.searchBar.delegate = self;
-    //self.tableView.tableHeaderView = self.searchController.searchBar;
-    self.searchController.searchBar.placeholder = @"Enter name or email";
-    self.parentViewController.navigationItem.searchController = self.searchController;
-    [self.searchController.searchBar sizeToFit];
+    self.searchController = self.parentViewController.navigationItem.searchController;
 }
 
 
@@ -155,6 +174,7 @@
     {
         _owesStatus = status;
         _cellIdentifier = @"VMZReusableCellId";
+        _owesToDisplay = @[@[],@[]].mutableCopy;
         
         if(imageName)
         {
@@ -188,6 +208,8 @@
     [super viewDidAppear:animated];
     
     [self updateData];
+    self.searchController.searchResultsUpdater = self;
+    [self updateSearchResultsForSearchController:self.searchController];
     
     self.parentViewController.title = [[self.owesStatus uppercaseFirstLetter] stringByAppendingString:@" Owes"];
 }

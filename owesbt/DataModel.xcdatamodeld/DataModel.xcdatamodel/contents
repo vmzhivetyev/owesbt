@@ -6,6 +6,7 @@
         <attribute name="creditor" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="debtor" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="descr" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="partnerName" optional="YES" transient="YES" attributeType="String" syncable="YES"/>
         <attribute name="status" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="sum" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="uid" optional="YES" attributeType="String" syncable="YES"/>
@@ -17,7 +18,7 @@
         <relationship name="owe" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Owe" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Owe" positionX="-54" positionY="-9" width="128" height="165"/>
+        <element name="Owe" positionX="-54" positionY="-9" width="128" height="180"/>
         <element name="OweAction" positionX="-45" positionY="63" width="128" height="105"/>
     </elements>
 </model>

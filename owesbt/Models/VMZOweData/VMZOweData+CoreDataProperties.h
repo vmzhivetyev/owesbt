@@ -2,7 +2,7 @@
 //  VMZOweData+CoreDataProperties.h
 //  owesbt
 //
-//  Created by Вячеслав Живетьев on 11.01.2018.
+//  Created by Вячеслав Живетьев on 19.01.2018.
 //  Copyright © 2018 Вячеслав Живетьев. All rights reserved.
 //
 //
@@ -22,8 +22,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, copy) NSString *debtor;
 @property (nullable, nonatomic, copy) NSString *descr;
 @property (nullable, nonatomic, copy) NSString *status;
-@property (nullable, nonatomic, copy) NSString *uid;
 @property (nullable, nonatomic, copy) NSString *sum;
+@property (nullable, nonatomic, copy) NSString *uid;
+@property (nullable, nonatomic, copy) NSString *partnerName;
 
 @end
 

@@ -2,14 +2,12 @@
 //  VMZOweData+CoreDataProperties.m
 //  owesbt
 //
-//  Created by Вячеслав Живетьев on 11.01.2018.
+//  Created by Вячеслав Живетьев on 19.01.2018.
 //  Copyright © 2018 Вячеслав Живетьев. All rights reserved.
 //
 //
 
-#import <Foundation/Foundation.h>
 #import "VMZOweData+CoreDataProperties.h"
-
 
 @implementation VMZOweData (CoreDataProperties)
 
@@ -23,7 +21,8 @@
 @dynamic debtor;
 @dynamic descr;
 @dynamic status;
-@dynamic uid;
 @dynamic sum;
+@dynamic uid;
+@dynamic partnerName;
 
 @end

@@ -109,12 +109,18 @@
 {
     if (owe)
     {
-        NSString *partnerPhone = [owe selfIsCreditor] ? owe.debtor : owe.creditor;
-        CNPhoneNumber *phone = nil;
-        CNContact* partnerContact = [VMZContacts contactWithPhoneNumber:partnerPhone phoneNumberRef:&phone];
+        
+        
+        if(!owe.partnerName)
+        {
+            NSString *partnerPhone = [owe selfIsCreditor] ? owe.debtor : owe.creditor;
+            CNPhoneNumber *phone = nil;
+            CNContact* partnerContact = [VMZContacts contactWithPhoneNumber:partnerPhone phoneNumberRef:&phone];
+            owe.partnerName = partnerContact ? [partnerContact valueForKey: @"fullName"] : partnerPhone;
+        }
         
         self.sumLabel.text = owe.sum;
-        self.mainLabel.text = partnerContact ? [partnerContact valueForKey: @"fullName"] : partnerPhone;
+        self.mainLabel.text = owe.partnerName;
         self.secondLabel.text = owe.descr;
         
         if ([owe.status isEqualToString: @"active"])
