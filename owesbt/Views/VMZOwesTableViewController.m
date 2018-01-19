@@ -25,10 +25,12 @@
 @property (nonatomic, weak) UISearchController *searchController;
 
 @property (nonatomic, strong) NSArray *owes;
-@property (nonatomic, strong) NSArray *owesFiltered;
 @property (nonatomic, strong) NSMutableArray *owesToDisplay;
+@property (nonatomic, strong) NSArray<NSNumber *> *sums;
+
 @property (nonatomic, copy, readonly) NSString *cellIdentifier;
 @property (nonatomic, copy, readonly) NSString *headerIdentifier;
+@property (nonatomic, copy, readonly) NSString *footerIdentifier;
 
 @property (nonatomic, strong) id<UIViewControllerPreviewing> previewingContext;
 
@@ -36,6 +38,18 @@
 
 @implementation VMZOwesTableViewController
 
+- (void)recountSums
+{
+    __block NSInteger first = 0;
+    __block NSInteger second = 0;
+    [self.owesToDisplay[0] enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        first += [((VMZOweData *)obj).sum integerValue];
+    }];
+    [self.owesToDisplay[1] enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        second += [((VMZOweData *)obj).sum integerValue];
+    }];
+    self.sums = @[@(first), @(second)];
+}
 
 - (NSArray *)owesToDisplay
 {
@@ -53,6 +67,9 @@
               [[coreDataMgr owesForStatus:self.owesStatus selfIsDebtor:YES] mutableCopy],
               [[coreDataMgr owesForStatus:self.owesStatus selfIsDebtor:NO]  mutableCopy]
               ].mutableCopy;
+    
+    [self recountSums];
+    
     [self.tableView reloadData];
 }
 
@@ -67,15 +84,16 @@
         [self.tableView reloadData];
         return;
     }
-    NSString *string = [NSString stringWithFormat:@"(descr CONTAINS[c] '%1$@') || (partnerName CONTAINS[c] '%1$@')", text];
-    NSLog(@"Search %@", string);
+    NSString *string =
+        [NSString stringWithFormat:@"(descr CONTAINS[c] '%1$@') || (partnerName CONTAINS[c] '%1$@')", text];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:string];
     for(NSInteger i = 0; i < 2; i++)
     {
         _owesToDisplay[i] = [_owes[i] filteredArrayUsingPredicate:predicate].mutableCopy;
     }
-    BOOL eq = [_owes isEqualToArray:_owesToDisplay];
-    NSLog(eq ? @"EQUAL" : @"NOT EQUAL");
+    
+    [self recountSums];
+    
     [self.tableView reloadData];
 }
 
@@ -249,6 +267,8 @@
     [self.tableView registerClass:[VMZOwesTableViewCell class] forCellReuseIdentifier:self.cellIdentifier];
     [self.tableView
      registerClass:[UITableViewHeaderFooterView class] forHeaderFooterViewReuseIdentifier:self.headerIdentifier];
+    [self.tableView
+     registerClass:[UITableViewHeaderFooterView class] forHeaderFooterViewReuseIdentifier:self.footerIdentifier];
     
     
     self.searchController = self.parentViewController.navigationItem.searchController;
@@ -305,6 +325,7 @@
         _owesStatus = status;
         _cellIdentifier = @"VMZReusableCellId";
         _headerIdentifier = @"VMZHeaderId";
+        _footerIdentifier = @"VMZFooterId";
         _owesToDisplay = @[@[],@[]].mutableCopy;
         
         if(imageName)
@@ -419,10 +440,31 @@
     return cell;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+    return 30;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return 40;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
+{
+    UITableViewHeaderFooterView *footer = [tableView dequeueReusableHeaderFooterViewWithIdentifier:self.footerIdentifier];
+    footer.textLabel.text = [NSString stringWithFormat:@"Total: %@", self.sums[section]];
+    footer.frame = self.tableView.frame;
+    footer.textLabel.textAlignment = NSTextAlignmentLeft;
+    
+    return footer;
+}
+
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     UITableViewHeaderFooterView *header = [tableView dequeueReusableHeaderFooterViewWithIdentifier:self.headerIdentifier];
     header.textLabel.text = @[@"You owe", @"You are creditor"][section];
+    header.textLabel.textAlignment = NSTextAlignmentLeft;
     
     return header;
 }
