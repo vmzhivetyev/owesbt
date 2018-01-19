@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1301110B2014D8F70067D4D0 /* NSStringVMZExtensionsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1301110A2014D8F70067D4D0 /* NSStringVMZExtensionsTests.m */; };
+		130111122014D9BC0067D4D0 /* libPods-owesbt.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5E1D06296C3086E2EDF00CF /* libPods-owesbt.a */; };
+		130111152014DB830067D4D0 /* libOCMock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 130111162014DB830067D4D0 /* libOCMock.a */; };
+		130111172014DB870067D4D0 /* libOHHTTPStubs.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 130111182014DB870067D4D0 /* libOHHTTPStubs.a */; };
+		130111192014DB8B0067D4D0 /* libExpecta.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1301111A2014DB8B0067D4D0 /* libExpecta.a */; };
+		1301111E2014E45E0067D4D0 /* UIViewControllerVMZExtensionsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1301111D2014E45E0067D4D0 /* UIViewControllerVMZExtensionsTests.m */; };
 		130EDA98200E7E400040AA32 /* VMZOweAction+CoreDataClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 130EDA96200E7E400040AA32 /* VMZOweAction+CoreDataClass.m */; };
 		130EDA99200E7E400040AA32 /* VMZOweAction+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 130EDA97200E7E400040AA32 /* VMZOweAction+CoreDataProperties.m */; };
 		130EDA9C200ED53A0040AA32 /* NSString+VMZExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 130EDA9B200ED53A0040AA32 /* NSString+VMZExtensions.m */; };
@@ -30,9 +36,29 @@
 		13D715BF2008438100B7CAA6 /* VMZOwesTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 13D715BE2008438100B7CAA6 /* VMZOwesTableViewCell.m */; };
 		13D715C2200E289000B7CAA6 /* VMZNewOweViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 13D715C1200E289000B7CAA6 /* VMZNewOweViewController.m */; };
 		9A6D641767896D3658626337 /* libPods-owesbt.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5E1D06296C3086E2EDF00CF /* libPods-owesbt.a */; };
+		C022D840AD137302836FDA40 /* libPods-owesbtTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C39C9CFB49A9EE611C36C6F3 /* libPods-owesbtTests.a */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		1301110D2014D8F70067D4D0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 131E76701FFAAEDD00F8FA71 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 131E76771FFAAEDD00F8FA71;
+			remoteInfo = owesbt;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		130110F32012912F0067D4D0 /* libOCMock.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libOCMock.a; path = usr/lib/libOCMock.a; sourceTree = "<group>"; };
+		130111082014D8F70067D4D0 /* owesbtTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = owesbtTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1301110A2014D8F70067D4D0 /* NSStringVMZExtensionsTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NSStringVMZExtensionsTests.m; sourceTree = "<group>"; };
+		1301110C2014D8F70067D4D0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		130111142014DB740067D4D0 /* libOCMock.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libOCMock.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		130111162014DB830067D4D0 /* libOCMock.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libOCMock.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		130111182014DB870067D4D0 /* libOHHTTPStubs.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libOHHTTPStubs.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		1301111A2014DB8B0067D4D0 /* libExpecta.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libExpecta.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		1301111D2014E45E0067D4D0 /* UIViewControllerVMZExtensionsTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UIViewControllerVMZExtensionsTests.m; sourceTree = "<group>"; };
 		130EDA94200E7E400040AA32 /* VMZOweAction+CoreDataProperties.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "VMZOweAction+CoreDataProperties.h"; sourceTree = "<group>"; };
 		130EDA95200E7E400040AA32 /* VMZOweAction+CoreDataClass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "VMZOweAction+CoreDataClass.h"; sourceTree = "<group>"; };
 		130EDA96200E7E400040AA32 /* VMZOweAction+CoreDataClass.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "VMZOweAction+CoreDataClass.m"; sourceTree = "<group>"; };
@@ -76,10 +102,25 @@
 		13D715C1200E289000B7CAA6 /* VMZNewOweViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VMZNewOweViewController.m; sourceTree = "<group>"; };
 		25308D0FBE45B45C3EA65635 /* Pods-owesbt.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-owesbt.release.xcconfig"; path = "Pods/Target Support Files/Pods-owesbt/Pods-owesbt.release.xcconfig"; sourceTree = "<group>"; };
 		2BBB001AA2F4B164C73B1C61 /* Pods-owesbt.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-owesbt.debug.xcconfig"; path = "Pods/Target Support Files/Pods-owesbt/Pods-owesbt.debug.xcconfig"; sourceTree = "<group>"; };
+		6808E6EF728DF3B8FD3BAAB7 /* Pods-owesbtTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-owesbtTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-owesbtTests/Pods-owesbtTests.release.xcconfig"; sourceTree = "<group>"; };
+		90C5EE9E05135ACBFAEDF8E8 /* Pods-owesbtTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-owesbtTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-owesbtTests/Pods-owesbtTests.debug.xcconfig"; sourceTree = "<group>"; };
+		C39C9CFB49A9EE611C36C6F3 /* libPods-owesbtTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-owesbtTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5E1D06296C3086E2EDF00CF /* libPods-owesbt.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-owesbt.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		130111052014D8F70067D4D0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				130111192014DB8B0067D4D0 /* libExpecta.a in Frameworks */,
+				130111172014DB870067D4D0 /* libOHHTTPStubs.a in Frameworks */,
+				130111152014DB830067D4D0 /* libOCMock.a in Frameworks */,
+				130111122014D9BC0067D4D0 /* libPods-owesbt.a in Frameworks */,
+				C022D840AD137302836FDA40 /* libPods-owesbtTests.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		131E76751FFAAEDD00F8FA71 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -91,6 +132,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		130111092014D8F70067D4D0 /* owesbtTests */ = {
+			isa = PBXGroup;
+			children = (
+				1301110A2014D8F70067D4D0 /* NSStringVMZExtensionsTests.m */,
+				1301111D2014E45E0067D4D0 /* UIViewControllerVMZExtensionsTests.m */,
+				1301110C2014D8F70067D4D0 /* Info.plist */,
+			);
+			path = owesbtTests;
+			sourceTree = "<group>";
+		};
 		130EDAA02011003C0040AA32 /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -209,6 +260,7 @@
 			isa = PBXGroup;
 			children = (
 				131E767A1FFAAEDD00F8FA71 /* owesbt */,
+				130111092014D8F70067D4D0 /* owesbtTests */,
 				131E76791FFAAEDD00F8FA71 /* Products */,
 				7736BDCDE37BA9477854598A /* Pods */,
 				4FA5FA2F6697ABCD19A6728C /* Frameworks */,
@@ -219,6 +271,7 @@
 			isa = PBXGroup;
 			children = (
 				131E76781FFAAEDD00F8FA71 /* owesbt.app */,
+				130111082014D8F70067D4D0 /* owesbtTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -247,7 +300,13 @@
 		4FA5FA2F6697ABCD19A6728C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1301111A2014DB8B0067D4D0 /* libExpecta.a */,
+				130111182014DB870067D4D0 /* libOHHTTPStubs.a */,
+				130111162014DB830067D4D0 /* libOCMock.a */,
+				130111142014DB740067D4D0 /* libOCMock.a */,
+				130110F32012912F0067D4D0 /* libOCMock.a */,
 				F5E1D06296C3086E2EDF00CF /* libPods-owesbt.a */,
+				C39C9CFB49A9EE611C36C6F3 /* libPods-owesbtTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -257,6 +316,8 @@
 			children = (
 				2BBB001AA2F4B164C73B1C61 /* Pods-owesbt.debug.xcconfig */,
 				25308D0FBE45B45C3EA65635 /* Pods-owesbt.release.xcconfig */,
+				90C5EE9E05135ACBFAEDF8E8 /* Pods-owesbtTests.debug.xcconfig */,
+				6808E6EF728DF3B8FD3BAAB7 /* Pods-owesbtTests.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -264,6 +325,27 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		130111072014D8F70067D4D0 /* owesbtTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1301110F2014D8F70067D4D0 /* Build configuration list for PBXNativeTarget "owesbtTests" */;
+			buildPhases = (
+				2213D686BA66229281C5AA24 /* [CP] Check Pods Manifest.lock */,
+				130111042014D8F70067D4D0 /* Sources */,
+				130111052014D8F70067D4D0 /* Frameworks */,
+				130111062014D8F70067D4D0 /* Resources */,
+				39E2C471B41907BBC27A6DA9 /* [CP] Embed Pods Frameworks */,
+				58EA95F491E5D79FBE5228AB /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1301110E2014D8F70067D4D0 /* PBXTargetDependency */,
+			);
+			name = owesbtTests;
+			productName = owesbtTests;
+			productReference = 130111082014D8F70067D4D0 /* owesbtTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		131E76771FFAAEDD00F8FA71 /* owesbt */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 131E768E1FFAAEDD00F8FA71 /* Build configuration list for PBXNativeTarget "owesbt" */;
@@ -293,6 +375,11 @@
 				LastUpgradeCheck = 0920;
 				ORGANIZATIONNAME = "Вячеслав Живетьев";
 				TargetAttributes = {
+					130111072014D8F70067D4D0 = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+						TestTargetID = 131E76771FFAAEDD00F8FA71;
+					};
 					131E76771FFAAEDD00F8FA71 = {
 						CreatedOnToolsVersion = 9.2;
 						LastSwiftMigration = 0920;
@@ -314,11 +401,19 @@
 			projectRoot = "";
 			targets = (
 				131E76771FFAAEDD00F8FA71 /* owesbt */,
+				130111072014D8F70067D4D0 /* owesbtTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		130111062014D8F70067D4D0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		131E76761FFAAEDD00F8FA71 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -332,6 +427,58 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		2213D686BA66229281C5AA24 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-owesbtTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		39E2C471B41907BBC27A6DA9 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-owesbtTests/Pods-owesbtTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		58EA95F491E5D79FBE5228AB /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-owesbtTests/Pods-owesbtTests-resources.sh",
+				"${PODS_ROOT}/GTMOAuth2/Source/Touch/GTMOAuth2ViewTouch.xib",
+				"${PODS_ROOT}/GoogleSignIn/Resources/GoogleSignIn.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-owesbtTests/Pods-owesbtTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		5CE7129247EA8710594F935D /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -387,6 +534,15 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		130111042014D8F70067D4D0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1301111E2014E45E0067D4D0 /* UIViewControllerVMZExtensionsTests.m in Sources */,
+				1301110B2014D8F70067D4D0 /* NSStringVMZExtensionsTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		131E76741FFAAEDD00F8FA71 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -415,6 +571,14 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		1301110E2014D8F70067D4D0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 131E76771FFAAEDD00F8FA71 /* owesbt */;
+			targetProxy = 1301110D2014D8F70067D4D0 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXVariantGroup section */
 		131E76861FFAAEDD00F8FA71 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
@@ -427,6 +591,214 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		130111102014D8F70067D4D0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 90C5EE9E05135ACBFAEDF8E8 /* Pods-owesbtTests.debug.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = L89AMX7695;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
+					"\"$(PLATFORM_DIR)/Developer/Library/Frameworks\"",
+					"\"${PODS_ROOT}/FirebaseAnalytics/Frameworks\"",
+					"\"${PODS_ROOT}/FirebaseAuth/Frameworks\"",
+					"\"${PODS_ROOT}/FirebaseCore/Frameworks\"",
+					"\"${PODS_ROOT}/FirebaseInstanceID/Frameworks\"",
+					"\"${PODS_ROOT}/GoogleSignIn/Frameworks\"",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"${PODS_ROOT}/Firebase/Core/Sources",
+					"$(inherited)",
+					"\"${PODS_ROOT}/Headers/Public\"",
+					"\"${PODS_ROOT}/Headers/Public/Expecta\"",
+					"\"${PODS_ROOT}/Headers/Public/Firebase\"",
+					"\"${PODS_ROOT}/Headers/Public/FirebaseAnalytics\"",
+					"\"${PODS_ROOT}/Headers/Public/FirebaseAuth\"",
+					"\"${PODS_ROOT}/Headers/Public/FirebaseCore\"",
+					"\"${PODS_ROOT}/Headers/Public/FirebaseInstanceID\"",
+					"\"${PODS_ROOT}/Headers/Public/GTMOAuth2\"",
+					"\"${PODS_ROOT}/Headers/Public/GTMSessionFetcher\"",
+					"\"${PODS_ROOT}/Headers/Public/GoogleSignIn\"",
+					"\"${PODS_ROOT}/Headers/Public/GoogleToolboxForMac\"",
+					"\"${PODS_ROOT}/Headers/Public/Masonry\"",
+					"\"${PODS_ROOT}/Headers/Public/OCMock\"",
+					"\"${PODS_ROOT}/Headers/Public/OHHTTPStubs\"",
+					"\"${PODS_ROOT}/Headers/Public/nanopb\"",
+				);
+				INFOPLIST_FILE = owesbtTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/Expecta\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/GTMOAuth2\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/GTMSessionFetcher\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/GoogleToolboxForMac\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/Masonry\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/OCMock\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/OHHTTPStubs\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/nanopb\"",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-l\"Expecta\"",
+					"-l\"GTMOAuth2\"",
+					"-l\"GTMSessionFetcher\"",
+					"-l\"GoogleToolboxForMac\"",
+					"-l\"Masonry\"",
+					"-l\"OCMock\"",
+					"-l\"OHHTTPStubs\"",
+					"-l\"c++\"",
+					"-l\"nanopb\"",
+					"-l\"sqlite3\"",
+					"-l\"z\"",
+					"-framework",
+					"\"CFNetwork\"",
+					"-framework",
+					"\"CoreText\"",
+					"-framework",
+					"\"FirebaseAnalytics\"",
+					"-framework",
+					"\"FirebaseAuth\"",
+					"-framework",
+					"\"FirebaseCore\"",
+					"-framework",
+					"\"FirebaseCoreDiagnostics\"",
+					"-framework",
+					"\"FirebaseInstanceID\"",
+					"-framework",
+					"\"FirebaseNanoPB\"",
+					"-framework",
+					"\"Foundation\"",
+					"-framework",
+					"\"GoogleSignIn\"",
+					"-framework",
+					"\"SafariServices\"",
+					"-framework",
+					"\"Security\"",
+					"-framework",
+					"\"StoreKit\"",
+					"-framework",
+					"\"SystemConfiguration\"",
+					"-framework",
+					"\"UIKit\"",
+					"-framework",
+					"\"XCTest\"",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.vmz.owesbtTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/owesbt.app/owesbt";
+			};
+			name = Debug;
+		};
+		130111112014D8F70067D4D0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6808E6EF728DF3B8FD3BAAB7 /* Pods-owesbtTests.release.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = L89AMX7695;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
+					"\"$(PLATFORM_DIR)/Developer/Library/Frameworks\"",
+					"\"${PODS_ROOT}/FirebaseAnalytics/Frameworks\"",
+					"\"${PODS_ROOT}/FirebaseAuth/Frameworks\"",
+					"\"${PODS_ROOT}/FirebaseCore/Frameworks\"",
+					"\"${PODS_ROOT}/FirebaseInstanceID/Frameworks\"",
+					"\"${PODS_ROOT}/GoogleSignIn/Frameworks\"",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"${PODS_ROOT}/Firebase/Core/Sources",
+					"$(inherited)",
+					"\"${PODS_ROOT}/Headers/Public\"",
+					"\"${PODS_ROOT}/Headers/Public/Expecta\"",
+					"\"${PODS_ROOT}/Headers/Public/Firebase\"",
+					"\"${PODS_ROOT}/Headers/Public/FirebaseAnalytics\"",
+					"\"${PODS_ROOT}/Headers/Public/FirebaseAuth\"",
+					"\"${PODS_ROOT}/Headers/Public/FirebaseCore\"",
+					"\"${PODS_ROOT}/Headers/Public/FirebaseInstanceID\"",
+					"\"${PODS_ROOT}/Headers/Public/GTMOAuth2\"",
+					"\"${PODS_ROOT}/Headers/Public/GTMSessionFetcher\"",
+					"\"${PODS_ROOT}/Headers/Public/GoogleSignIn\"",
+					"\"${PODS_ROOT}/Headers/Public/GoogleToolboxForMac\"",
+					"\"${PODS_ROOT}/Headers/Public/Masonry\"",
+					"\"${PODS_ROOT}/Headers/Public/OCMock\"",
+					"\"${PODS_ROOT}/Headers/Public/OHHTTPStubs\"",
+					"\"${PODS_ROOT}/Headers/Public/nanopb\"",
+				);
+				INFOPLIST_FILE = owesbtTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/Expecta\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/GTMOAuth2\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/GTMSessionFetcher\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/GoogleToolboxForMac\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/Masonry\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/OCMock\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/OHHTTPStubs\"",
+					"\"$PODS_CONFIGURATION_BUILD_DIR/nanopb\"",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-l\"Expecta\"",
+					"-l\"GTMOAuth2\"",
+					"-l\"GTMSessionFetcher\"",
+					"-l\"GoogleToolboxForMac\"",
+					"-l\"Masonry\"",
+					"-l\"OCMock\"",
+					"-l\"OHHTTPStubs\"",
+					"-l\"c++\"",
+					"-l\"nanopb\"",
+					"-l\"sqlite3\"",
+					"-l\"z\"",
+					"-framework",
+					"\"CFNetwork\"",
+					"-framework",
+					"\"CoreText\"",
+					"-framework",
+					"\"FirebaseAnalytics\"",
+					"-framework",
+					"\"FirebaseAuth\"",
+					"-framework",
+					"\"FirebaseCore\"",
+					"-framework",
+					"\"FirebaseCoreDiagnostics\"",
+					"-framework",
+					"\"FirebaseInstanceID\"",
+					"-framework",
+					"\"FirebaseNanoPB\"",
+					"-framework",
+					"\"Foundation\"",
+					"-framework",
+					"\"GoogleSignIn\"",
+					"-framework",
+					"\"SafariServices\"",
+					"-framework",
+					"\"Security\"",
+					"-framework",
+					"\"StoreKit\"",
+					"-framework",
+					"\"SystemConfiguration\"",
+					"-framework",
+					"\"UIKit\"",
+					"-framework",
+					"\"XCTest\"",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.vmz.owesbtTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/owesbt.app/owesbt";
+			};
+			name = Release;
+		};
 		131E768C1FFAAEDD00F8FA71 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -539,6 +911,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = L89AMX7695;
+				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = owesbt/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.vmz.owesbt;
@@ -557,6 +930,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = L89AMX7695;
+				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = owesbt/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.vmz.owesbt;
@@ -569,6 +943,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		1301110F2014D8F70067D4D0 /* Build configuration list for PBXNativeTarget "owesbtTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				130111102014D8F70067D4D0 /* Debug */,
+				130111112014D8F70067D4D0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		131E76731FFAAEDD00F8FA71 /* Build configuration list for PBXProject "owesbt" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

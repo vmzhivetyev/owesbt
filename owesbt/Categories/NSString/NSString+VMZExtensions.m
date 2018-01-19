@@ -12,7 +12,16 @@
 
 - (NSString *)VMZUppercaseFirstLetter
 {
-    return [[[self substringToIndex:1] uppercaseString] stringByAppendingString:[self substringFromIndex:1]];
+    switch ([self length]) {
+        case 0:
+            return self.copy;
+        
+        case 1:
+            return [self uppercaseString];
+            
+        default:
+            return [[[self substringToIndex:1] uppercaseString] stringByAppendingString:[self substringFromIndex:1]];
+    }
 }
 
 - (NSString *)VMZPhoneNumberDigits
