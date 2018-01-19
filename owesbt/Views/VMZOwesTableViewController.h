@@ -12,10 +12,11 @@
 @protocol VMZOweDelegate;
 
 
-@interface VMZOwesTableViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, VMZOweDelegate, UISearchResultsUpdating, UISearchBarDelegate>
+@interface VMZOwesTableViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, VMZOweDelegate, UISearchResultsUpdating, UIViewControllerPreviewingDelegate>
 
 @property (nonatomic, strong, readonly) NSString* owesStatus;
 
 - (instancetype)initWithStatus:(NSString*)status tabBarImage:(NSString*)imageName;
+- (void)removeOweAtIndexPath:(NSIndexPath *)indexPath;
 
 @end

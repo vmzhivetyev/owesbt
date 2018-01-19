@@ -83,9 +83,9 @@
     return results;
 }
 
-- (void)updateOwes:(NSArray*)owesArray
+- (void)updateOwes:(NSArray*)owesArray status:(NSString *)status
 {
-    NSString *predicate = [NSString stringWithFormat:@"status = '%@'", [owesArray[0] valueForKey:@"status"]];
+    NSString *predicate = [NSString stringWithFormat:@"status = '%@'", status];
     
     [[self getOwesWithPredicate:predicate] enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         NSLog(@"Deleting %@",((VMZOweData*)obj).uid);

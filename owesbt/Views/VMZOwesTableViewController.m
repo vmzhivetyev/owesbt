@@ -29,6 +29,8 @@
 @property (nonatomic, strong) NSMutableArray *owesToDisplay;
 @property (nonatomic, copy, readonly) NSString *cellIdentifier;
 
+@property (nonatomic, strong) id<UIViewControllerPreviewing> previewingContext;
+
 @end
 
 @implementation VMZOwesTableViewController
@@ -128,6 +130,99 @@
     return (VMZOweData*)self.owesToDisplay[indexPath.section][indexPath.row];
 }
 
+- (void)presentOweActionsAlertViewAtIndexPath:(NSIndexPath *)indexPath
+{
+    VMZOweData *owe = [self oweAtIndexPath:indexPath];
+    if (!owe)
+    {
+        return;
+    }
+    
+    NSString *status = owe.status;
+    NSString *message, *title;
+    NSMutableArray *actions = [NSMutableArray new];
+    if ([status isEqualToString:@"active"])
+    {
+        message = @"Вы действительно вернули себе этот долг и хотите пометить его закрытым?";
+        title = @"Active Owe";
+        [actions addObject: [UIAlertAction actionWithTitle:@"Close Owe" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+            
+            [[VMZOweController sharedInstance] closeOwe:owe];
+            [self removeOweAtIndexPath:indexPath];
+        }]];
+    }
+    else if ([status isEqualToString:@"requested"])
+    {
+        message = [owe selfIsCreditor] ? @"Отменить запрос?" : @"Подтвердить вашу задолжность?";
+        title = @"Requested Owe";
+        if (![owe selfIsCreditor])
+        {
+            [actions addObject: [UIAlertAction actionWithTitle:@"Confirm request" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+                
+                [[VMZOweController sharedInstance] confirmOwe:owe];
+                [self removeOweAtIndexPath:indexPath];
+            }]];
+        }
+        [actions addObject: [UIAlertAction actionWithTitle:@"Cancel request" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            
+            [[VMZOweController sharedInstance] cancelOwe:owe];
+            [self removeOweAtIndexPath:indexPath];
+        }]];
+    }
+    
+    if (message)
+    {
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleActionSheet];
+        
+        for(UIAlertAction *action in actions)
+        {
+            [alert addAction:action];
+        }
+        [alert addAction: [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+        [self presentViewController:alert animated:YES completion:nil];
+    }
+}
+
+- (NSArray *)forceTouchActionsForOweAtIndexPath:(NSIndexPath *)indexPath
+{
+    VMZOweData *owe = [self oweAtIndexPath:indexPath];
+    
+    NSString *status = owe.status;
+    NSString *message, *title;
+    NSMutableArray *actions = [NSMutableArray new];
+    if ([status isEqualToString:@"active"] && [owe selfIsCreditor])
+    {
+        message = @"Вы действительно вернули себе этот долг и хотите пометить его закрытым?";
+        title = @"Active Owe";
+        
+        [actions addObject: [UIPreviewAction actionWithTitle:@"Close Owe" style:UIPreviewActionStyleDestructive handler:^(UIPreviewAction *action, UIViewController *previewViewController) {
+            
+            [[VMZOweController sharedInstance] closeOwe:owe];
+            [self removeOweAtIndexPath:indexPath];
+        }]];
+    }
+    else if ([status isEqualToString:@"requested"])
+    {
+        message = [owe selfIsCreditor] ? @"Отменить запрос?" : @"Подтвердить вашу задолжность?";
+        title = @"Requested Owe";
+        if (![owe selfIsCreditor])
+        {
+            [actions addObject: [UIPreviewAction actionWithTitle:@"Confirm request" style:UIPreviewActionStyleDestructive handler:^(UIPreviewAction *action, UIViewController *previewViewController) {
+                
+                [[VMZOweController sharedInstance] confirmOwe:owe];
+                [self removeOweAtIndexPath:indexPath];
+            }]];
+        }
+        [actions addObject: [UIPreviewAction actionWithTitle:@"Cancel request" style:UIPreviewActionStyleDefault handler:^(UIPreviewAction *action, UIViewController *previewViewController) {
+            
+            [[VMZOweController sharedInstance] cancelOwe:owe];
+            [self removeOweAtIndexPath:indexPath];
+        }]];
+    }
+    
+    return actions;
+}
+
 - (void)createUI
 {
     UITableView *tableView = [[UITableView alloc] initWithFrame:self.view.frame style:UITableViewStyleGrouped];
@@ -143,6 +238,7 @@
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
     self.refreshControl = refreshControl;
     self.tableView.refreshControl = self.refreshControl;
+    [self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
     
     self.tableView.estimatedRowHeight = 100.0;
     self.tableView.rowHeight = UITableViewAutomaticDimension;
@@ -151,9 +247,41 @@
     
     [self.tableView registerClass:[VMZOwesTableViewCell class] forCellReuseIdentifier:self.cellIdentifier];
     
-    [self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
+    
     
     self.searchController = self.parentViewController.navigationItem.searchController;
+}
+
+
+#pragma mark - UIViewControllerPreviewingDelegate
+
+- (UIViewController *)previewingContext:(id<UIViewControllerPreviewing>)previewingContext viewControllerForLocation:(CGPoint)location
+{
+    CGPoint cellPostion = [self.tableView convertPoint:location fromView:self.view];
+    
+    NSIndexPath *path = [self.tableView indexPathForRowAtPoint:cellPostion];
+    
+    if (path)
+    {
+        VMZOweData *owe = [self oweAtIndexPath:path];
+        if (owe)
+        {
+            UITableViewCell *tableCell = [self.tableView cellForRowAtIndexPath:path];
+            
+            VMZNewOweViewController *previewController =
+                [[VMZNewOweViewController alloc] initWithOwe:owe forceTouchActions:[self forceTouchActionsForOweAtIndexPath:path]];
+            
+            previewingContext.sourceRect = [self.view convertRect:tableCell.frame fromView:self.tableView];
+            return previewController;
+        }
+    }
+    
+    return nil;
+}
+
+-(void)previewingContext:(id )previewingContext commitViewController: (UIViewController *)viewControllerToCommit
+{
+    [self.navigationController showViewController:viewControllerToCommit sender:nil];
 }
 
 
@@ -219,6 +347,27 @@
     [super didReceiveMemoryWarning];
 }
 
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection
+{
+    [super traitCollectionDidChange:previousTraitCollection];
+    
+    if ([self.traitCollection respondsToSelector:@selector(forceTouchCapability)])
+    {
+        if (self.traitCollection.forceTouchCapability == UIForceTouchCapabilityAvailable)
+        {
+            if (!self.previewingContext)
+            {
+                self.previewingContext = [self registerForPreviewingWithDelegate:self sourceView:self.view];
+            }
+        }
+        else
+        {
+            [self unregisterForPreviewingWithContext:self.previewingContext];
+            self.previewingContext = nil;
+        }
+    }
+}
+
 
 #pragma mark - UITableViewDelegate
 
@@ -232,61 +381,13 @@
         return;
     }
     
-    UIViewController *view = [[VMZNewOweViewController alloc] initWithOwe:owe];
+    UIViewController *view = [[VMZNewOweViewController alloc] initWithOwe:owe forceTouchActions:nil];
     [self.navigationController pushViewController:view animated:YES];
 }
 
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
 {
-    VMZOweData *owe = [self oweAtIndexPath:indexPath];
-    if (!owe)
-    {
-        return;
-    }
-    
-    NSString *status = owe.status;
-    NSString *message, *title;
-    NSMutableArray *actions = [NSMutableArray new];
-    if ([status isEqualToString:@"active"])
-    {
-        message = @"Вы действительно вернули себе этот долг и хотите пометить его закрытым?";
-        title = @"Active Owe";
-        [actions addObject: [UIAlertAction actionWithTitle:@"Close Owe" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-            
-            [[VMZOweController sharedInstance] closeOwe:owe];
-            [self removeOweAtIndexPath:indexPath];
-        }]];
-    }
-    else if ([status isEqualToString:@"requested"])
-    {
-        message = [owe selfIsCreditor] ? @"Отменить запрос?" : @"Подтвердить вашу задолжность?";
-        title = @"Requested Owe";
-        if (![owe selfIsCreditor])
-        {
-            [actions addObject: [UIAlertAction actionWithTitle:@"Confirm request" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-                        
-                [[VMZOweController sharedInstance] confirmOwe:owe];
-                [self removeOweAtIndexPath:indexPath];
-            }]];
-        }
-        [actions addObject: [UIAlertAction actionWithTitle:@"Cancel request" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                        
-            [[VMZOweController sharedInstance] cancelOwe:owe];
-            [self removeOweAtIndexPath:indexPath];
-        }]];
-    }
-    
-    if (message)
-    {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleActionSheet];
-        
-        for(UIAlertAction *action in actions)
-        {
-            [alert addAction:action];
-        }
-        [alert addAction: [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
-        [self presentViewController:alert animated:YES completion:nil];
-    }
+    [self presentOweActionsAlertViewAtIndexPath:indexPath];
 }
 
 

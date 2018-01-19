@@ -11,6 +11,7 @@
 #import <ContactsUI/ContactsUI.h>
 
 #import "VMZNewOweViewController.h"
+#import "VMZOwesTableViewController.h"
 #import "VMZOweController.h"
 #import "VMZOweData+CoreDataClass.h"
 #import "UIViewController+VMZExtensions.h"
@@ -18,6 +19,8 @@
 #import "VMZContacts.h"
 
 @interface VMZNewOweViewController ()
+
+@property (nonatomic, strong) NSArray *forceTouchActions;
 
 @property (nonatomic, weak, readonly) UITableView *tableView;
 @property (nonatomic, strong) NSArray *cells;
@@ -176,6 +179,14 @@
 }
 
 
+#pragma mark - UIViewController
+
+- (NSArray<id> *)previewActionItems
+{
+    return self.forceTouchActions;
+}
+
+
 #pragma mark - Lifecycle
 
 - (instancetype)init
@@ -188,32 +199,37 @@
     return self;
 }
 
-- (instancetype)initWithOwe:(VMZOweData *)owe
+- (instancetype)initWithOwe:(VMZOweData *)owe forceTouchActions:(NSArray *)actions
 {
     self = [self init];
     if (self)
     {
-        self.title = [[owe.status uppercaseFirstLetter] stringByAppendingString:@" Owe"];
-        
-        NSString *partnerPhone = [owe selfIsCreditor] ? owe.debtor : owe.creditor;
-        CNPhoneNumber *phone = nil;
-        CNContact* partnerContact = [VMZContacts contactWithPhoneNumber:partnerPhone phoneNumberRef:&phone];
-        
-        self.nameTextField.text = partnerContact ? [partnerContact valueForKey: @"fullName"] : @"Unnamed";
-        self.phoneTextField.text = phone ? phone.stringValue : partnerPhone;
-        self.sumTextField.text = owe.sum;
-        self.descriptionTextField.text = owe.descr;
-        self.roleSegmentedControl.selectedSegmentIndex = [owe selfIsCreditor] ? 1 : 0;
-        self.roleSegmentedControl.enabled = NO;
-        
-        // чтобы клавиатура не показывалась при тапе по текстфилду, при этом текст можно выделять
-        self.sumTextField.inputView = [[UIView alloc] initWithFrame:CGRectZero];
-        self.descriptionTextField.inputView = [[UIView alloc] initWithFrame:CGRectZero];
-        
-        self.readonlyMode = YES;
-        
-        self.navigationItem.rightBarButtonItem = nil;
-        ((UITableViewCell*)self.nameTextField.superview).accessoryType = UITableViewCellAccessoryCheckmark;
+        if(owe)
+        {
+            self.forceTouchActions = actions;
+            
+            self.title = [[owe.status uppercaseFirstLetter] stringByAppendingString:@" Owe"];
+            
+            NSString *partnerPhone = [owe selfIsCreditor] ? owe.debtor : owe.creditor;
+            CNPhoneNumber *phone = nil;
+            CNContact* partnerContact = [VMZContacts contactWithPhoneNumber:partnerPhone phoneNumberRef:&phone];
+            
+            self.nameTextField.text = partnerContact ? [partnerContact valueForKey: @"fullName"] : @"Unnamed";
+            self.phoneTextField.text = phone ? phone.stringValue : partnerPhone;
+            self.sumTextField.text = owe.sum;
+            self.descriptionTextField.text = owe.descr;
+            self.roleSegmentedControl.selectedSegmentIndex = [owe selfIsCreditor] ? 1 : 0;
+            self.roleSegmentedControl.enabled = NO;
+            
+            // чтобы клавиатура не показывалась при тапе по текстфилду, при этом текст можно выделять
+            self.sumTextField.inputView = [[UIView alloc] initWithFrame:CGRectZero];
+            self.descriptionTextField.inputView = [[UIView alloc] initWithFrame:CGRectZero];
+            
+            self.readonlyMode = YES;
+            
+            self.navigationItem.rightBarButtonItem = nil;
+            ((UITableViewCell*)self.nameTextField.superview).accessoryType = UITableViewCellAccessoryCheckmark;
+        }
     }
     return self;
 }

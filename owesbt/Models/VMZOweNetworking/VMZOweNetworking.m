@@ -261,7 +261,7 @@
         }
         else
         {
-            [self.coreDataManager updateOwes:owesArray];
+            [self.coreDataManager updateOwes:owesArray status:status];
             if (completion)
             {
                 completion(nil);

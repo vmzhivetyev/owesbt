@@ -11,11 +11,12 @@
 
 @protocol CNContactPickerDelegate;
 @protocol VMZOweDelegate;
+@class VMZOwesTableViewController;
 @class VMZOweData;
 
 
 @interface VMZNewOweViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, VMZOweDelegate, UITextFieldDelegate, CNContactPickerDelegate>
 
-- (instancetype)initWithOwe:(VMZOweData *)owe;
+- (instancetype)initWithOwe:(VMZOweData *)owe forceTouchActions:(NSArray *)actions;
 
 @end
