@@ -54,6 +54,7 @@
                                                   target:self
                                                   action:@selector(plusButtonClicked:)];
     tabBarController.navigationItem.rightBarButtonItem = plusButton;
+    self.navigationBar.prefersLargeTitles = YES;
 }
 
 

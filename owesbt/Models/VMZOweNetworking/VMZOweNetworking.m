@@ -201,7 +201,7 @@
 {
     if(!self.requestsTimer)
     {
-        self.requestsTimer = [NSTimer scheduledTimerWithTimeInterval:5 repeats:YES block:^(NSTimer * _Nonnull timer) {
+        self.requestsTimer = [NSTimer scheduledTimerWithTimeInterval:15 repeats:YES block:^(NSTimer * _Nonnull timer) {
             [self doOweActionsAsync];
         }];
     }
