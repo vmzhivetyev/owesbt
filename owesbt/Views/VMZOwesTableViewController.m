@@ -28,6 +28,7 @@
 @property (nonatomic, strong) NSArray *owesFiltered;
 @property (nonatomic, strong) NSMutableArray *owesToDisplay;
 @property (nonatomic, copy, readonly) NSString *cellIdentifier;
+@property (nonatomic, copy, readonly) NSString *headerIdentifier;
 
 @property (nonatomic, strong) id<UIViewControllerPreviewing> previewingContext;
 
@@ -246,7 +247,8 @@
     self.tableView.sectionFooterHeight = 18;
     
     [self.tableView registerClass:[VMZOwesTableViewCell class] forCellReuseIdentifier:self.cellIdentifier];
-    
+    [self.tableView
+     registerClass:[UITableViewHeaderFooterView class] forHeaderFooterViewReuseIdentifier:self.headerIdentifier];
     
     
     self.searchController = self.parentViewController.navigationItem.searchController;
@@ -302,6 +304,7 @@
     {
         _owesStatus = status;
         _cellIdentifier = @"VMZReusableCellId";
+        _headerIdentifier = @"VMZHeaderId";
         _owesToDisplay = @[@[],@[]].mutableCopy;
         
         if(imageName)
@@ -418,19 +421,10 @@
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    UIView *view = [UIView new];
-    UILabel *label = [UILabel new];
-    [label setFont:[UIFont boldSystemFontOfSize:12]];
-    [label setText: @[@"You owe", @"You are creditor"][section] ];
-    label.textAlignment = NSTextAlignmentNatural;
-    [view addSubview:label];
+    UITableViewHeaderFooterView *header = [tableView dequeueReusableHeaderFooterViewWithIdentifier:self.headerIdentifier];
+    header.textLabel.text = @[@"You owe", @"You are creditor"][section];
     
-    [label mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.equalTo(view).offset(-5);
-        make.left.equalTo(view).offset(10);
-    }];
-    
-    return view;
+    return header;
 }
 
 @end
