@@ -19,7 +19,7 @@
 @property (nonatomic, strong, readonly) NSPersistentContainer *persistentContainer;
 @property (nonatomic, weak, readonly) NSManagedObjectContext *managedObjectContext;
 
-- (void)saveManagedObjectContext;
+//- (void)saveManagedObjectContext;
 
 - (NSArray *_Nonnull)owesForStatus:(NSString *_Nonnull)status selfIsDebtor:(BOOL)selfIsDebtor;
 - (void)updateOwes:(NSArray * _Nonnull)owesArray status:(NSString *)status;

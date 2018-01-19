@@ -50,7 +50,7 @@
         for (NSString *param in parameters)
         {
             NSString *value = parameters[param];
-            NSString *escapedValue = [value stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLHostAllowedCharacterSet]];
+            NSString *escapedValue = [value stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
             [resultUrl appendString:[NSString stringWithFormat:@"%@=%@&", param, escapedValue]];
         }
         [resultUrl deleteCharactersInRange:NSMakeRange(resultUrl.length-1, 1)];
@@ -152,7 +152,7 @@
                 {
                     NSLog(@"ERROR: %@", error.localizedDescription);
                     stop = YES;
-                    [[VMZOweController sharedInstance] VMZOweErrorOccured:error.localizedDescription];
+                    //[[VMZOweController sharedInstance] VMZOweErrorOccured:error.localizedDescription];
                 }
                 else if (data)
                 {

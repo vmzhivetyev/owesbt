@@ -11,7 +11,7 @@
 
 @implementation VMZOweAction
 
-+ (instancetype)newAction:(NSString*)action withParameters:(NSDictionary *)params forOwe:(VMZOweData *)owe managedObjectContext:(NSManagedObjectContext*)moc
++ (instancetype)createNewActionObject:(NSString*)action withParameters:(NSDictionary *)params forOwe:(VMZOweData *)owe managedObjectContext:(NSManagedObjectContext*)moc
 {
     VMZOweAction *newAction = [NSEntityDescription insertNewObjectForEntityForName:@"OweAction" inManagedObjectContext:moc];
     newAction.action = action;

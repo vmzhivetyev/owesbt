@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface VMZOweAction : NSManagedObject
 
-+ (instancetype)newAction:(NSString*)action withParameters:(NSDictionary *)params forOwe:(VMZOweData *)owe managedObjectContext:(NSManagedObjectContext*)moc;
++ (instancetype)createNewActionObject:(NSString*)action withParameters:(NSDictionary *)params forOwe:(VMZOweData *)owe managedObjectContext:(NSManagedObjectContext*)moc;
 
 @end
 

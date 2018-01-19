@@ -11,6 +11,7 @@
 #import "VMZOweAction+CoreDataClass.h"
 #import "VMZOweController.h"
 #import "NSString+VMZExtensions.h"
+#import "VMZOweNetworking.h"
 
 @implementation VMZCoreDataManager
 
@@ -35,16 +36,17 @@
     return self;
 }
 
-- (void)saveManagedObjectContext
+- (BOOL)saveManagedObjectContext
 {
     NSError *saveError = nil;
     if (![self.managedObjectContext save:&saveError])
     {
         NSLog(@"CoreData save error: %@", saveError.localizedDescription);
+        return NO;
     }
     else
     {
-        [[VMZOweController sharedInstance] VMZOwesCoreDataDidUpdate];
+        return YES;
     }
 }
 
@@ -99,6 +101,7 @@
     }];
     
     [self saveManagedObjectContext];
+    [[VMZOweController sharedInstance] VMZOwesCoreDataDidUpdate];
 }
 
 - (VMZOweData *)createNewOweObject
@@ -108,7 +111,8 @@
 
 - (void)addNewAction:(NSString *)action parameters:(NSDictionary *)params owe:(VMZOweData *)owe
 {
-    [VMZOweAction newAction:action withParameters:params forOwe:owe managedObjectContext:self.managedObjectContext];
+    [VMZOweAction createNewActionObject:action withParameters:params forOwe:owe managedObjectContext:self.managedObjectContext];
+    [[VMZOweController sharedInstance].networking doOweActionsAsync];
 }
 
 - (void)addNewOweWithActionFor:(NSString *)partner whichIsDebtor:(BOOL)partnerIsDebtor sum:(NSString*)sum descr:(NSString *)descr
@@ -116,8 +120,8 @@
     VMZOweData *owe = [self createNewOweObject];
     owe.created = [NSDate date];
     owe.closed = nil;
-    owe.creditor = partnerIsDebtor ? @"self" : partner.copy;//.phoneNumberDigits;
-    owe.debtor = !partnerIsDebtor ? @"self" : partner.copy;//.phoneNumberDigits;
+    owe.creditor = partnerIsDebtor ? @"self" : partner.copy;
+    owe.debtor = !partnerIsDebtor ? @"self" : partner.copy;
     owe.descr = descr.copy;
     owe.status = partnerIsDebtor ? @"requested" : @"active";
     owe.uid = nil;
@@ -127,6 +131,7 @@
     [self addNewAction:@"addOwe" parameters:params owe:owe];
     
     [self saveManagedObjectContext];
+    [[VMZOweController sharedInstance] VMZOwesCoreDataDidUpdate];
 }
 
 - (NSArray *)getActions
