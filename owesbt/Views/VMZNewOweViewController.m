@@ -23,7 +23,7 @@
 @property (nonatomic, strong) NSArray *forceTouchActions;
 
 @property (nonatomic, weak, readonly) UITableView *tableView;
-@property (nonatomic, strong) NSArray *cells;
+@property (nonatomic, strong) NSMutableArray *cells;
 
 @property (nonatomic, weak) UITextField *nameTextField;
 @property (nonatomic, weak) UITextField *phoneTextField;
@@ -31,6 +31,7 @@
 
 @property (nonatomic, weak) UITextField *sumTextField;
 @property (nonatomic, weak) UITextField *descriptionTextField;
+@property (nonatomic, weak) UITextField *createdTextField;
 
 @property (nonatomic, assign) BOOL readonlyMode;
 
@@ -103,6 +104,14 @@
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     
+    self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.frame.size.width, 40)];
+    self.tableView.allowsSelection = NO;
+    
+    UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                                                target:self
+                                                                                action:@selector(doneButtonClicked:)];
+    self.navigationItem.rightBarButtonItem = doneButton;
+    
     // cells
     
     self.title = @"New Owe";
@@ -139,15 +148,25 @@
     self.descriptionTextField.placeholder = @"Description";
     self.descriptionTextField.delegate = self;
     
-    /// UITextField * = [UITextField new]; [sumField setUserInteractionEnabled:NO];
+    UITableViewCell *createdCell = [UITableViewCell new];
+    UITextField *createdTextField = [UITextField new];
+    self.createdTextField = createdTextField;
+    self.createdTextField.placeholder = @"Created";
+    self.createdTextField.delegate = self;
+    self.createdTextField.inputView = [[UIView alloc] initWithFrame:CGRectZero];
+    
     [self.view addSubview:self.tableView];
     [nameCell addSubview:self.nameTextField];
     [phoneCell addSubview:self.phoneTextField];
     [roleCell addSubview:self.roleSegmentedControl];
     [sumCell addSubview:self.sumTextField];
     [infoCell addSubview:self.descriptionTextField];
+    [createdCell addSubview:self.createdTextField];
     
-    self.cells = @[@[nameCell, phoneCell, roleCell], @[sumCell, infoCell]];
+    self.cells = @[@[nameCell, phoneCell, roleCell], @[sumCell, infoCell], @[createdCell]].mutableCopy;
+    
+    //constraints
+    
     UIEdgeInsets insets = UIEdgeInsetsMake(10, 20, 10, 10);
     
     [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -168,14 +187,9 @@
     [self.descriptionTextField mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.equalTo(infoCell).insets(insets);
     }];
-    
-    self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.frame.size.width, 40)];
-    self.tableView.allowsSelection = NO;
-    
-    UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
-                                                                                target:self
-                                                                                action:@selector(doneButtonClicked:)];
-    self.navigationItem.rightBarButtonItem = doneButton;
+    [self.createdTextField mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.equalTo(createdCell).insets(insets);
+    }];
 }
 
 
@@ -191,19 +205,21 @@
 
 - (instancetype)init
 {
-    self = [super init];
+    self = [self initWithOwe:nil forceTouchActions:nil];
     if(self)
     {
-        [self createUI];
+        
     }
     return self;
 }
 
 - (instancetype)initWithOwe:(VMZOweData *)owe forceTouchActions:(NSArray *)actions
 {
-    self = [self init];
+    self = [super init];
     if (self)
     {
+        [self createUI];
+        
         if(owe)
         {
             self.forceTouchActions = actions;
@@ -221,7 +237,12 @@
             self.roleSegmentedControl.selectedSegmentIndex = [owe selfIsCreditor] ? 1 : 0;
             self.roleSegmentedControl.enabled = NO;
             
-            // чтобы клавиатура не показывалась при тапе по текстфилду, при этом текст можно выделять
+            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+            [formatter setDateFormat:@"dd MMM yyyy HH:MM"];
+            [formatter setTimeZone:[NSTimeZone localTimeZone]];
+            NSString *dateStr = [formatter stringFromDate:owe.created];
+            self.createdTextField.text = [@"Created: " stringByAppendingString:dateStr];
+            
             self.sumTextField.inputView = [[UIView alloc] initWithFrame:CGRectZero];
             self.descriptionTextField.inputView = [[UIView alloc] initWithFrame:CGRectZero];
             
@@ -229,6 +250,10 @@
             
             self.navigationItem.rightBarButtonItem = nil;
             ((UITableViewCell*)self.nameTextField.superview).accessoryType = UITableViewCellAccessoryCheckmark;
+        }
+        else
+        {
+            [self.cells removeLastObject];
         }
     }
     return self;
@@ -289,7 +314,7 @@
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
-    if (textField == self.nameTextField || textField == self.phoneTextField)
+    if (textField == self.nameTextField || textField == self.phoneTextField || textField == self.createdTextField)
         return NO;
     
     if (textField == self.sumTextField && !self.readonlyMode)
