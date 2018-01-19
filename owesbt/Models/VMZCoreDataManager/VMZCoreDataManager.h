@@ -22,7 +22,7 @@
 - (void)saveManagedObjectContext;
 
 - (NSArray *_Nonnull)owesForStatus:(NSString *_Nonnull)status selfIsDebtor:(BOOL)selfIsDebtor;
-- (void)updateOwes:(NSArray * _Nonnull)owesArray;
+- (void)updateOwes:(NSArray * _Nonnull)owesArray status:(NSString *)status;
 - (void)addNewAction:(NSString *_Nonnull)action parameters:(NSDictionary *_Nonnull)params owe:(VMZOweData *_Nonnull)owe;
 - (void)addNewOweWithActionFor:(NSString * _Nonnull)partner
                  whichIsDebtor:(BOOL)partnerIsDebtor

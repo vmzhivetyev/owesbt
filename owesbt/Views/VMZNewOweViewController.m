@@ -11,6 +11,7 @@
 #import <ContactsUI/ContactsUI.h>
 
 #import "VMZNewOweViewController.h"
+#import "VMZOwesTableViewController.h"
 #import "VMZOweController.h"
 #import "VMZOweData+CoreDataClass.h"
 #import "UIViewController+VMZExtensions.h"
@@ -18,6 +19,8 @@
 #import "VMZContacts.h"
 
 @interface VMZNewOweViewController ()
+
+@property (nonatomic, strong) NSArray *forceTouchActions;
 
 @property (nonatomic, weak, readonly) UITableView *tableView;
 @property (nonatomic, strong) NSArray *cells;
@@ -176,6 +179,14 @@
 }
 
 
+#pragma mark - UIViewController
+
+- (NSArray<id> *)previewActionItems
+{
+    return self.forceTouchActions;
+}
+
+
 #pragma mark - Lifecycle
 
 - (instancetype)init
@@ -188,13 +199,15 @@
     return self;
 }
 
-- (instancetype)initWithOwe:(VMZOweData *)owe
+- (instancetype)initWithOwe:(VMZOweData *)owe forceTouchActions:(NSArray *)actions
 {
     self = [self init];
     if (self)
     {
         if(owe)
         {
+            self.forceTouchActions = actions;
+            
             self.title = [[owe.status uppercaseFirstLetter] stringByAppendingString:@" Owe"];
             
             NSString *partnerPhone = [owe selfIsCreditor] ? owe.debtor : owe.creditor;
