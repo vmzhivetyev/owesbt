@@ -32,6 +32,7 @@
 @property (nonatomic, weak) UITextField *sumTextField;
 @property (nonatomic, weak) UITextField *descriptionTextField;
 @property (nonatomic, weak) UITextField *createdTextField;
+@property (nonatomic, weak) UITextField *closedTextField;
 
 @property (nonatomic, assign) BOOL readonlyMode;
 
@@ -155,6 +156,13 @@
     self.createdTextField.delegate = self;
     self.createdTextField.inputView = [[UIView alloc] initWithFrame:CGRectZero];
     
+    UITableViewCell *closedCell = [UITableViewCell new];
+    UITextField *closedTextField = [UITextField new];
+    self.closedTextField = closedTextField;
+    self.closedTextField.placeholder = @"Closed";
+    self.closedTextField.delegate = self;
+    self.closedTextField.inputView = [[UIView alloc] initWithFrame:CGRectZero];
+    
     [self.view addSubview:self.tableView];
     [nameCell addSubview:self.nameTextField];
     [phoneCell addSubview:self.phoneTextField];
@@ -162,8 +170,9 @@
     [sumCell addSubview:self.sumTextField];
     [infoCell addSubview:self.descriptionTextField];
     [createdCell addSubview:self.createdTextField];
+    [closedCell addSubview:self.closedTextField];
     
-    self.cells = @[@[nameCell, phoneCell, roleCell], @[sumCell, infoCell], @[createdCell]].mutableCopy;
+    self.cells = @[@[nameCell, phoneCell, roleCell], @[sumCell, infoCell], @[createdCell, closedCell]].mutableCopy;
     
     //constraints
     
@@ -189,6 +198,9 @@
     }];
     [self.createdTextField mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.equalTo(createdCell).insets(insets);
+    }];
+    [self.closedTextField mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.equalTo(closedCell).insets(insets);
     }];
 }
 
@@ -243,6 +255,18 @@
             NSString *dateStr = [formatter stringFromDate:owe.created];
             self.createdTextField.text = [@"Created: " stringByAppendingString:dateStr];
             
+            if (owe.closed)
+            {
+                dateStr = [formatter stringFromDate:owe.closed];
+                self.closedTextField.text = [@"Closed: " stringByAppendingString:dateStr];
+            }
+            else
+            {
+                NSMutableArray* dateCells = ((NSArray *)[self.cells lastObject]).mutableCopy;
+                [dateCells removeLastObject];
+                self.cells[[self.cells count]-1] = dateCells;
+            }
+                
             self.sumTextField.inputView = [[UIView alloc] initWithFrame:CGRectZero];
             self.descriptionTextField.inputView = [[UIView alloc] initWithFrame:CGRectZero];
             
@@ -314,7 +338,10 @@
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
-    if (textField == self.nameTextField || textField == self.phoneTextField || textField == self.createdTextField)
+    if (textField == self.nameTextField ||
+        textField == self.phoneTextField ||
+        textField == self.createdTextField ||
+        textField == self.closedTextField)
         return NO;
     
     if (textField == self.sumTextField && !self.readonlyMode)

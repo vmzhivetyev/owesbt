@@ -22,8 +22,22 @@
 
 - (void)loadFromDictionary:(NSDictionary * _Nonnull)dict
 {
-    self.created = [NSDate dateWithTimeIntervalSince1970:[[dict objectForKey:@"created"] integerValue]/1000.0];
-    self.closed = [NSDate dateWithTimeIntervalSince1970:[[dict objectForKey:@"closed"] integerValue]/1000.0];
+    if ([[dict objectForKey:@"created"] integerValue] == 0)
+    {
+        self.created = nil;
+    }
+    else
+    {
+        self.created = [NSDate dateWithTimeIntervalSince1970:[[dict objectForKey:@"created"] integerValue]/1000.0];
+    }
+    if ([[dict objectForKey:@"closed"] integerValue] == 0)
+    {
+        self.closed = nil;
+    }
+    else
+    {
+        self.closed = [NSDate dateWithTimeIntervalSince1970:[[dict objectForKey:@"closed"] integerValue]/1000.0];
+    }
     self.creditor = [dict objectForKey:@"to"];
     self.debtor = [dict objectForKey:@"who"];
     self.descr = [dict objectForKey:@"descr"];
