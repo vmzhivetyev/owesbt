@@ -33,7 +33,7 @@
 {
     if (error)
     {
-        [self showMessagePrompt: [NSString stringWithFormat:@"Error: %@", error.localizedDescription]];
+        [self VMZShowMessagePrompt: [NSString stringWithFormat:@"Error: %@", error.localizedDescription]];
         return;
     }
     
@@ -56,7 +56,7 @@
 
 - (void)VMZOweErrorOccured:(NSString *)error
 {
-    [self showMessagePrompt:error];
+    [self VMZShowMessagePrompt:error];
 }
 
 
@@ -67,11 +67,11 @@
     NSError *signOutError;
     if([[FIRAuth auth] signOut:&signOutError])
     {
-        [self showMessagePrompt:@"Signed out"];
+        [self VMZShowMessagePrompt:@"Signed out"];
     }
     else
     {
-        [self showMessagePrompt:[NSString stringWithFormat:@"Sign out error: %@", signOutError.localizedDescription]];
+        [self VMZShowMessagePrompt:[NSString stringWithFormat:@"Sign out error: %@", signOutError.localizedDescription]];
     }
 }
 

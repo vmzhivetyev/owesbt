@@ -16,6 +16,8 @@
 
 @interface VMZOweController ()
 
+@property (nonatomic, strong) NSPointerArray * _Nonnull delegates;
+
 @property (nonatomic, strong) id<NSObject> firebaseAuthStateDidChangeHandler;
 
 @end
@@ -219,9 +221,9 @@ didDisconnectWithUser:(GIDGoogleUser *)user
         return;
     }
 
-    if ([owe.status isEqualToString:@"active"])
+    if (owe.statusType == VMZOweStatusActive)
     {
-        owe.status = @"closed";
+        owe.statusType = VMZOweStatusClosed;
     }
     
     [self.coreDataManager addNewAction:@"changeOwe"
@@ -237,9 +239,9 @@ didDisconnectWithUser:(GIDGoogleUser *)user
         return;
     }
     
-    if ([owe.status isEqualToString:@"requested"])
+    if (owe.statusType == VMZOweStatusRequested)
     {
-        owe.status = @"active";
+        owe.statusType = VMZOweStatusActive;
     }
     
     [self.coreDataManager addNewAction:@"changeOwe"
@@ -249,9 +251,9 @@ didDisconnectWithUser:(GIDGoogleUser *)user
 
 - (void)cancelOwe:(VMZOweData *)owe
 {
-    if ([owe.status isEqualToString:@"requested"])
+    if (owe.statusType == VMZOweStatusRequested)
     {
-        owe.status = @"closed";
+        owe.statusType = VMZOweStatusClosed;
     }
     
     [self.coreDataManager addNewAction:@"changeOwe"

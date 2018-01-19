@@ -36,22 +36,32 @@
     return [NSArray arrayWithArray:results];
 }
 
++ (CNPhoneNumber *)numberFromContact:(CNContact *)contact equalsToString:(NSString *)phoneString
+{
+    for (CNLabeledValue<CNPhoneNumber*>* phoneNumber in contact.phoneNumbers)
+    {
+        if ([phoneNumber.value.stringValue.VMZPhoneNumberDigits isEqualToString:phoneString])
+        {
+            return phoneNumber.value;
+        }
+    }
+    return nil;
+}
+
 + (CNContact *)contactWithPhoneNumber:(NSString *)phoneNumber phoneNumberRef:(CNPhoneNumber **)ref
 {
-    NSString *phoneNumberToCompareAgainst = [phoneNumber phoneNumberDigits];
+    NSString *phoneNumberToCompareAgainst = [phoneNumber VMZPhoneNumberDigits];
     
     for (CNContact *contact in [self fetchContacts])
     {
-        for (CNLabeledValue<CNPhoneNumber*>* phoneNumber in contact.phoneNumbers)
+        CNPhoneNumber *number = [self numberFromContact:contact equalsToString:phoneNumberToCompareAgainst];
+        if (number)
         {
-            if ([phoneNumber.value.stringValue.phoneNumberDigits isEqualToString:phoneNumberToCompareAgainst])
+            if(ref)
             {
-                if(ref)
-                {
-                    *ref = phoneNumber.value;
-                }
-                return contact;
+                *ref = number;
             }
+            return contact;
         }
     }
     

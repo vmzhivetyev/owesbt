@@ -50,8 +50,6 @@
 @property (nonatomic, strong, readonly) VMZCoreDataManager* coreDataManager;
 @property (nonatomic, strong, readonly) VMZOweNetworking* networking;
 
-@property (nonatomic, strong) NSPointerArray * _Nonnull delegates;
-
 @property (nonatomic, strong) NSArray *_Nullable owes;
 
 

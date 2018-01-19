@@ -10,7 +10,6 @@
 
 @interface UIViewController (VMZExtensions)
 
-- (CGFloat)statusBarHeight;
-- (void)showMessagePrompt:(NSString *)message;
+- (void)VMZShowMessagePrompt:(NSString *)message;
 
 @end

@@ -10,7 +10,7 @@
 
 @interface NSString (VMZExtensions)
 
-- (NSString *)uppercaseFirstLetter;
-- (NSString *)phoneNumberDigits;
+- (NSString *)VMZUppercaseFirstLetter;
+- (NSString *)VMZPhoneNumberDigits;
 
 @end

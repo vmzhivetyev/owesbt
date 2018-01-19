@@ -10,6 +10,7 @@
 #import "VMZOwesTableViewController.h"
 #import "VMZNewOweViewController.h"
 #import "VMZOweController.h"
+#import "VMZOweData+CoreDataClass.h"
 
 @interface VMZNavigationController ()
 
@@ -43,11 +44,15 @@
     self.searchController.obscuresBackgroundDuringPresentation = NO;
     tabBarController.navigationItem.searchController = self.searchController;
     
-    UIViewController *view1 = [[VMZOwesTableViewController alloc] initWithStatus:@"active" tabBarImage:@"list1"];
-    UIViewController *view2 = [[VMZOwesTableViewController alloc] initWithStatus:@"requested" tabBarImage:@"pending1"];
-    UIViewController *view3 = [[VMZOwesTableViewController alloc] initWithStatus:@"closed" tabBarImage:@"stack"];
+    NSArray *statuses = @[[VMZOweData stringFromStatus:VMZOweStatusActive],
+                          [VMZOweData stringFromStatus:VMZOweStatusRequested],
+                          [VMZOweData stringFromStatus:VMZOweStatusClosed]];
+    NSArray *images = @[@"list1", @"pending1", @"stack"];
     
-    [tabBarController setViewControllers:@[view1, view2, view3]];
+    for(NSInteger i = 0; i < [statuses count]; i++)
+    {
+        [tabBarController addChildViewController:[[VMZOwesTableViewController alloc] initWithStatus:statuses[i] tabBarImage:images[i]]];
+    }
     
     UIBarButtonItem *plusButton =
     [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd

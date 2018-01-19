@@ -123,14 +123,13 @@
         self.mainLabel.text = owe.partnerName;
         self.secondLabel.text = owe.descr;
         
-        if ([owe.status isEqualToString: @"active"])
+        if (owe.statusType == VMZOweStatusActive)
         {
             self.accessoryType = [owe selfIsCreditor] ? UITableViewCellAccessoryDetailDisclosureButton : UITableViewCellAccessoryDisclosureIndicator;
         }
-        else if ([owe.status isEqualToString: @"requested"])
+        else if (owe.statusType == VMZOweStatusRequested)
         {
             self.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
-            //self.accessoryType = ![owe selfIsCreditor] ? UITableViewCellAccessoryDetailDisclosureButton : UITableViewCellAccessoryDisclosureIndicator;
         }
     }
     else

@@ -107,7 +107,7 @@
 
 - (void)VMZOweErrorOccured:(NSString *)error
 {
-    [self showMessagePrompt:error];
+    [self VMZShowMessagePrompt:error];
 }
 
 
@@ -120,7 +120,7 @@
         
         if (error)
         {
-            [self showMessagePrompt:error.localizedDescription];
+            [self VMZShowMessagePrompt:error.localizedDescription];
         }
     }];
 }
@@ -157,10 +157,9 @@
         return;
     }
     
-    NSString *status = owe.status;
     NSString *message, *title;
     NSMutableArray *actions = [NSMutableArray new];
-    if ([status isEqualToString:@"active"])
+    if (owe.statusType == VMZOweStatusActive)
     {
         message = @"Вы действительно вернули себе этот долг и хотите пометить его закрытым?";
         title = @"Active Owe";
@@ -170,7 +169,7 @@
             [self removeOweAtIndexPath:indexPath];
         }]];
     }
-    else if ([status isEqualToString:@"requested"])
+    else if (owe.statusType == VMZOweStatusRequested)
     {
         message = [owe selfIsCreditor] ? @"Отменить запрос?" : @"Подтвердить вашу задолжность?";
         title = @"Requested Owe";
@@ -209,7 +208,7 @@
     NSString *status = owe.status;
     NSString *message, *title;
     NSMutableArray *actions = [NSMutableArray new];
-    if ([status isEqualToString:@"active"] && [owe selfIsCreditor])
+    if (owe.statusType == VMZOweStatusActive && [owe selfIsCreditor])
     {
         message = @"Вы действительно вернули себе этот долг и хотите пометить его закрытым?";
         title = @"Active Owe";
@@ -220,7 +219,7 @@
             [self removeOweAtIndexPath:indexPath];
         }]];
     }
-    else if ([status isEqualToString:@"requested"])
+    else if (owe.statusType == VMZOweStatusRequested)
     {
         message = [owe selfIsCreditor] ? @"Отменить запрос?" : @"Подтвердить вашу задолжность?";
         title = @"Requested Owe";
@@ -363,7 +362,7 @@
     self.searchController.searchResultsUpdater = self;
     [self updateSearchResultsForSearchController:self.searchController];
     
-    self.parentViewController.title = [[self.owesStatus uppercaseFirstLetter] stringByAppendingString:@" Owes"];
+    self.parentViewController.title = [[self.owesStatus VMZUppercaseFirstLetter] stringByAppendingString:@" Owes"];
 }
 
 - (void)didReceiveMemoryWarning

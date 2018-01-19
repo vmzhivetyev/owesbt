@@ -31,7 +31,7 @@
     [[VMZOweController sharedInstance] setMyPhone:phone completion:^(NSString *errorText) {
         if (errorText)
         {
-            [self showMessagePrompt:[NSString stringWithFormat:@"Error: %@", errorText]];
+            [self VMZShowMessagePrompt:[NSString stringWithFormat:@"Error: %@", errorText]];
         }
         else
         {

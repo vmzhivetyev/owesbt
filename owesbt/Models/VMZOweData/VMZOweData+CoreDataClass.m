@@ -15,6 +15,45 @@
 
 @implementation VMZOweData
 
++ (NSString *)stringFromStatus:(VMZOweStatus)status
+{
+    return @[@"active", @"requested", @"closed"][status];
+}
+
++ (VMZOweStatus)statusFromName:(NSString *)name
+{
+    if([@"active" isEqualToString:name])
+    {
+        return VMZOweStatusActive;
+    }
+    if([@"requested" isEqualToString:name])
+    {
+        return VMZOweStatusRequested;
+    }
+    if([@"closed" isEqualToString:name])
+    {
+        return VMZOweStatusClosed;
+    }
+    @throw [NSException exceptionWithName:NSInvalidArgumentException
+                                   reason:[NSString stringWithFormat:@"The enum VMZOweStatus has no value %@", name]
+                                 userInfo:nil];
+}
+
+- (NSString *)partner
+{
+    return [self selfIsCreditor] ? self.debtor : self.creditor;
+}
+
+- (VMZOweStatus)statusType
+{
+    return [VMZOweData statusFromName:self.status];
+}
+
+- (void)setStatusType:(VMZOweStatus)status
+{
+    self.status = [VMZOweData stringFromStatus:status];
+}
+
 + (instancetype)newOweInManagedObjectContext:(NSManagedObjectContext *)moc
 {
     return [NSEntityDescription insertNewObjectForEntityForName:@"Owe" inManagedObjectContext:moc];
@@ -49,11 +88,6 @@
 - (BOOL)selfIsCreditor
 {
     return [self.creditor isEqualToString:@"self"];
-}
-
-- (NSString *)partner
-{
-    return [self selfIsCreditor] ? self.debtor : self.creditor;
 }
 
 @end

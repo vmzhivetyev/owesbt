@@ -14,11 +14,24 @@
 @class CNContact;
 
 
+typedef enum {
+    VMZOweStatusActive,
+    VMZOweStatusRequested,
+    VMZOweStatusClosed
+} VMZOweStatus;
+
+
 NS_ASSUME_NONNULL_BEGIN
+
 
 @interface VMZOweData : NSManagedObject
 
++ (NSString *)stringFromStatus:(VMZOweStatus)status;
++ (VMZOweStatus)statusFromName:(NSString *)name;
+
 - (NSString *)partner;
+- (VMZOweStatus)statusType;
+- (void)setStatusType:(VMZOweStatus)status;
 
 + (instancetype)newOweInManagedObjectContext:(NSManagedObjectContext *)moc;
 - (void)loadFromDictionary:(NSDictionary *)dict;

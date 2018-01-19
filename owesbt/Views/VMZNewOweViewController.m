@@ -45,7 +45,7 @@
 
 - (void)VMZOweErrorOccured:(NSString *)error
 {
-    [self showMessagePrompt:error];
+    [self VMZShowMessagePrompt:error];
 }
 
 
@@ -74,17 +74,17 @@
 {
     if (self.roleSegmentedControl.selectedSegmentIndex < 0)
     {
-        [self showMessagePrompt:@"Please select your partner's role"];
+        [self VMZShowMessagePrompt:@"Please select your partner's role"];
         return;
     }
     if ([self.phoneTextField.text length] == 0)
     {
-        [self showMessagePrompt:@"Please select a phone number of your partner with (i) button"];
+        [self VMZShowMessagePrompt:@"Please select a phone number of your partner with (i) button"];
         return;
     }
     if ([self.sumTextField.text length] == 0)
     {
-        [self showMessagePrompt:@"Please enter sum"];
+        [self VMZShowMessagePrompt:@"Please enter sum"];
         return;
     }
     
@@ -236,7 +236,7 @@
         {
             self.forceTouchActions = actions;
             
-            self.title = [[owe.status uppercaseFirstLetter] stringByAppendingString:@" Owe"];
+            self.title = [[owe.status VMZUppercaseFirstLetter] stringByAppendingString:@" Owe"];
             
             NSString *partnerPhone = [owe selfIsCreditor] ? owe.debtor : owe.creditor;
             CNPhoneNumber *phone = nil;

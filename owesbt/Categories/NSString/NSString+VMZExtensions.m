@@ -10,12 +10,12 @@
 
 @implementation NSString (VMZExtensions)
 
-- (NSString *)uppercaseFirstLetter
+- (NSString *)VMZUppercaseFirstLetter
 {
     return [[[self substringToIndex:1] uppercaseString] stringByAppendingString:[self substringFromIndex:1]];
 }
 
-- (NSString *)phoneNumberDigits
+- (NSString *)VMZPhoneNumberDigits
 {
     NSError *error;
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"^\\+7"

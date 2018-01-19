@@ -123,7 +123,7 @@
     owe.creditor = partnerIsDebtor ? @"self" : partner.copy;
     owe.debtor = !partnerIsDebtor ? @"self" : partner.copy;
     owe.descr = descr.copy;
-    owe.status = partnerIsDebtor ? @"requested" : @"active";
+    owe.statusType = partnerIsDebtor ? VMZOweStatusRequested : VMZOweStatusActive;
     owe.uid = nil;
     owe.sum = sum.copy;
     

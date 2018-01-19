@@ -11,15 +11,7 @@
 
 @implementation UIViewController (VMZExtensions)
 
-- (CGFloat)statusBarHeight
-{
-    CGRect statusBarFrame = [[UIApplication sharedApplication] statusBarFrame];
-    CGRect statusBarWindowRect = [self.view.window convertRect:statusBarFrame fromWindow: nil];
-    CGRect statusBarViewRect = [self.view convertRect:statusBarWindowRect fromView: nil];
-    return CGRectGetMaxY(statusBarViewRect);
-}
-
-- (void)showMessagePrompt:(NSString *)message
+- (void)VMZShowMessagePrompt:(NSString *)message
 {
     UIAlertController *alert =
     [UIAlertController alertControllerWithTitle:nil
