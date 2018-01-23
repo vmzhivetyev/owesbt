@@ -77,12 +77,25 @@
     {
         self.closed = [NSDate dateWithTimeIntervalSince1970:[[dict objectForKey:@"closed"] integerValue]/1000.0];
     }
-    self.creditor = [dict objectForKey:@"to"];
-    self.debtor = [dict objectForKey:@"who"];
-    self.descr = [dict objectForKey:@"descr"];
-    self.status = [dict objectForKey:@"status"];
-    self.uid = [dict objectForKey:@"id"];
-    self.sum = [dict objectForKey:@"sum"];
+    self.creditor = dict[@"to"];
+    self.debtor = dict[@"who"];
+    self.descr = dict[@"descr"];
+    self.status = dict[@"status"];
+    self.uid = dict[@"id"];
+    self.sum = dict[@"sum"];
+    [self updatePartnerName];
+}
+
+- (void)updatePartnerName
+{
+    self.partnerName = [self findPartnerName];
+}
+
+- (NSString *)findPartnerName
+{
+    CNPhoneNumber *phone = nil;
+    CNContact* partnerContact = [VMZContacts contactWithPhoneNumber:self.partner phoneNumberRef:&phone];
+    return partnerContact ? [partnerContact valueForKey: @"fullName"] : self.partner;
 }
 
 - (BOOL)selfIsCreditor

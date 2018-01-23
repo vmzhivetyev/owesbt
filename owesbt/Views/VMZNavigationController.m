@@ -37,7 +37,7 @@
 
 - (void)createUI:(UITabBarController *)tabBarController
 {
-    UISearchController *searchController = [[UISearchController alloc] initWithSearchResultsController:nil];
+    UISearchController *searchController = [[UISearchController alloc] initWithSearchResultsController:self];
     self.searchController = searchController;
     self.searchController.searchBar.placeholder = @"Search by description or name";
     self.searchController.dimsBackgroundDuringPresentation = NO;

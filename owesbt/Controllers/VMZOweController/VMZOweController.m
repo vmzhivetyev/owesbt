@@ -16,14 +16,19 @@
 
 @interface VMZOweController ()
 
-@property (nonatomic, strong) NSPointerArray * _Nonnull delegates;
-
 @property (nonatomic, strong) id<NSObject> firebaseAuthStateDidChangeHandler;
 
 @end
 
 
 @implementation VMZOweController
+
+- (void)setDelegate:(id<VMZOweDelegate>)delegate
+{
+    _delegate = delegate;
+    
+    [self createFirebaseAuthStateListener];
+}
 
 - (void)checkPhoneNumberForFIRUser:(FIRUser *)user
 {
@@ -105,53 +110,41 @@ didDisconnectWithUser:(GIDGoogleUser *)user
 
 - (void)VMZAuthDidSignInForUser:(FIRUser*)user withError:(NSError*)error
 {
-    for (NSObject<VMZOweDelegate> *delegate in self.delegates)
+    if ([self.delegate respondsToSelector:@selector(VMZAuthDidSignInForUser:withError:)])
     {
-        if ([delegate respondsToSelector:@selector(VMZAuthDidSignInForUser:withError:)])
-        {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [delegate VMZAuthDidSignInForUser:user withError:error];
-            });
-        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.delegate VMZAuthDidSignInForUser:user withError:error];
+        });
     }
 }
 
 - (void)VMZPhoneNumberCheckedWithResult:(BOOL)success
 {
-    for (NSObject<VMZOweDelegate> *delegate in self.delegates)
+    if ([self.delegate respondsToSelector:@selector(VMZPhoneNumberCheckedWithResult:)])
     {
-        if ([delegate respondsToSelector:@selector(VMZPhoneNumberCheckedWithResult:)])
-        {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [delegate VMZPhoneNumberCheckedWithResult:success];
-            });
-        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.delegate VMZPhoneNumberCheckedWithResult:success];
+        });
     }
 }
 
 - (void)VMZOwesCoreDataDidUpdate
 {
-    for (NSObject<VMZOweDelegate> *delegate in self.delegates)
+    if ([self.delegate respondsToSelector:@selector(VMZOwesCoreDataDidUpdate)])
     {
-        if ([delegate respondsToSelector:@selector(VMZOwesCoreDataDidUpdate)])
-        {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [delegate VMZOwesCoreDataDidUpdate];
-            });
-        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.delegate VMZOwesCoreDataDidUpdate];
+        });
     }
 }
 
 - (void)VMZOweErrorOccured:(NSString *)error
 {
-    for (NSObject<VMZOweDelegate> *delegate in self.delegates)
+    if ([self.delegate respondsToSelector:@selector(VMZOweErrorOccured:)])
     {
-        if ([delegate respondsToSelector:@selector(VMZOweErrorOccured:)])
-        {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [delegate VMZOweErrorOccured:error];
-            });
-        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.delegate VMZOweErrorOccured:error];
+        });
     }
 }
 
@@ -174,7 +167,6 @@ didDisconnectWithUser:(GIDGoogleUser *)user
     self = [super init];
     if(self)
     {
-        _delegates = [NSPointerArray new];
         _coreDataManager = [[VMZCoreDataManager alloc] init];
         _networking = [[VMZOweNetworking alloc] initWithCoreDataManager:_coreDataManager];
     }
@@ -187,26 +179,6 @@ didDisconnectWithUser:(GIDGoogleUser *)user
 }
 
 #pragma mark - Public
-
-- (void)addDelegate:(nonnull NSObject<VMZOweDelegate> *)delegate
-{
-    [self.delegates addPointer:(__bridge void * _Nullable)(delegate)];
-    
-    [self createFirebaseAuthStateListener];
-}
-
-- (void)removeDelegate:(nonnull NSObject<VMZOweDelegate> *)delegate
-{
-    for(int i = 0; i < self.delegates.count; i++)
-    {
-        if(delegate == [self.delegates pointerAtIndex:i])
-        {
-            [self.delegates removePointerAtIndex: i];
-            return;
-        }
-    }
-    //@throw @"Your are trying to delete unexisting pointer from delegates.";
-}
 
 - (void)loggedInViewControllerDidLoad
 {

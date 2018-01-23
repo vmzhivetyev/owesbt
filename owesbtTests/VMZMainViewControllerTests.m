@@ -130,14 +130,4 @@
     expect(_mainViewController.spinnerImageView).toNot.equal(nil);
 }
 
-- (void)testDealloc
-{
-    id oweController = OCMClassMock([VMZOweController class]);
-    OCMStub(ClassMethod([oweController sharedInstance])).andReturn(oweController);
-    
-    OCMExpect([oweController removeDelegate:_mainViewController]);
-    //[_mainViewController dealloc];
-    //OCMVerifyAll(oweController);
-}
-
 @end

@@ -82,23 +82,44 @@
         NSLog(@"Fetching error: %@", error);
     }];
     
+    for (VMZOweData *owe in results)
+    {
+        if (!owe.partnerName)
+        {
+            [owe updatePartnerName];
+        }
+    }
+    
     return results;
 }
 
 - (void)updateOwes:(NSArray*)owesArray status:(NSString *)status
 {
+    NSMutableSet<VMZOweData *> *set = [NSMutableSet new];
+    for (NSDictionary *oweDict in owesArray)
+    {
+        NSString *predicate = [NSString stringWithFormat:@"uid = '%@'", oweDict[@"id"]];
+        NSArray *coreDataOwe = [self getOwesWithPredicate:predicate];
+       
+        for (NSInteger i = 1; i < coreDataOwe.count; i++)
+        {
+            [self.managedObjectContext deleteObject:coreDataOwe[i]];
+        }
+        
+        VMZOweData *oweData = coreDataOwe.count == 0 ? [self createNewOweObject] : coreDataOwe[0];
+        [oweData loadFromDictionary:oweDict];
+        [set addObject:oweData];
+    }
+    
     NSString *predicate = [NSString stringWithFormat:@"status = '%@'", status];
-    
-    [[self getOwesWithPredicate:predicate] enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        NSLog(@"Deleting %@",((VMZOweData*)obj).uid);
-        [self.managedObjectContext deleteObject:obj];
-    }];
-    
-    [owesArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        VMZOweData *newManagedObject = [self createNewOweObject];
-        [newManagedObject loadFromDictionary:obj];
-        NSLog(@"Added %@", newManagedObject.uid);
-    }];
+    NSArray *owesWithStatus = [self getOwesWithPredicate:predicate];
+    for (VMZOweData *owe in owesWithStatus)
+    {
+        if (![set containsObject:owe])
+        {
+            [self.managedObjectContext deleteObject:owe];
+        }
+    }
     
     [self saveManagedObjectContext];
     [[VMZOweController sharedInstance] VMZOwesCoreDataDidUpdate];

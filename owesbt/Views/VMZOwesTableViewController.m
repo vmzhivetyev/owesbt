@@ -65,10 +65,10 @@
 - (void)updateData
 {
     VMZCoreDataManager *coreDataMgr = [VMZOweController sharedInstance].coreDataManager;
-    _owes = @[
-              [[coreDataMgr owesForStatus:self.owesStatus selfIsDebtor:YES] mutableCopy],
-              [[coreDataMgr owesForStatus:self.owesStatus selfIsDebtor:NO]  mutableCopy]
-              ].mutableCopy;
+    self.owes = @[
+                  [[coreDataMgr owesForStatus:self.owesStatus selfIsDebtor:YES] mutableCopy],
+                  [[coreDataMgr owesForStatus:self.owesStatus selfIsDebtor:NO]  mutableCopy]
+                  ].mutableCopy;
     
     [self recountSums];
     
@@ -86,12 +86,14 @@
         [self.tableView reloadData];
         return;
     }
-    NSString *string =
-        [NSString stringWithFormat:@"(descr CONTAINS[c] '%1$@') || (partnerName CONTAINS[c] '%1$@')", text];
+    NSString *string = [NSString stringWithFormat:
+            @"(descr CONTAINS[c] '%1$@') || (partnerName CONTAINS[c] '%1$@') || (partner CONTAINS[c] '%1$@')", text];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:string];
-    for(NSInteger i = 0; i < 2; i++)
+    self.owesToDisplay = [NSMutableArray new];
+    for(NSInteger i = 0; i < self.owes.count; i++)
     {
-        _owesToDisplay[i] = [_owes[i] filteredArrayUsingPredicate:predicate].mutableCopy;
+        [self.owesToDisplay addObject:[NSMutableArray new]];
+        self.owesToDisplay[i] = [self.owes[i] filteredArrayUsingPredicate:predicate].mutableCopy;
     }
     
     [self recountSums];
@@ -260,8 +262,8 @@
     self.tableView.refreshControl = self.refreshControl;
     [self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
     
-    self.tableView.estimatedRowHeight = 100.0;
-    self.tableView.rowHeight = UITableViewAutomaticDimension;
+//    self.tableView.estimatedRowHeight = 60;
+//    self.tableView.rowHeight = UITableViewAutomaticDimension;
     self.tableView.sectionHeaderHeight = 28;
     self.tableView.sectionFooterHeight = 18;
     
@@ -270,9 +272,6 @@
      registerClass:[UITableViewHeaderFooterView class] forHeaderFooterViewReuseIdentifier:self.headerIdentifier];
     [self.tableView
      registerClass:[UITableViewHeaderFooterView class] forHeaderFooterViewReuseIdentifier:self.footerIdentifier];
-    
-    
-    self.searchController = self.parentViewController.navigationItem.searchController;
 }
 
 
@@ -324,7 +323,6 @@
         _cellIdentifier = @"VMZReusableCellId";
         _headerIdentifier = @"VMZHeaderId";
         _footerIdentifier = @"VMZFooterId";
-        _owesToDisplay = @[@[].mutableCopy,@[].mutableCopy].mutableCopy;
         
         if(imageName)
         {
@@ -339,15 +337,15 @@
 
 - (void)dealloc
 {
-    [[VMZOweController sharedInstance] removeDelegate:self];
+    
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [[VMZOweController sharedInstance] addDelegate:self];
-    
     [self createUI];
+    
+    self.searchController = self.parentViewController.navigationItem.searchController;
     
     [self updateData];
     [self refresh:self.refreshControl];
@@ -355,13 +353,22 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    [super viewDidAppear:animated];
+    [super viewWillAppear:animated];
+    
+    [VMZOweController sharedInstance].delegate = self;
+    
+    self.searchController.searchResultsUpdater = self;
     
     [self updateData];
-    self.searchController.searchResultsUpdater = self;
+    
     [self updateSearchResultsForSearchController:self.searchController];
     
     self.parentViewController.title = [[self.owesStatus VMZUppercaseFirstLetter] stringByAppendingString:@" Owes"];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
 }
 
 - (void)didReceiveMemoryWarning
@@ -465,6 +472,10 @@
     header.textLabel.textAlignment = NSTextAlignmentLeft;
     
     return header;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return UITableViewAutomaticDimension;
 }
 
 @end

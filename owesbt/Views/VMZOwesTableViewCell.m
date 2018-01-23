@@ -37,18 +37,18 @@
     {
         UILabel *sumLabel = [UILabel new];
         _sumLabel = sumLabel;
-        _sumLabel.text = @"Text";
+        _sumLabel.text = @"Sum";
         _sumLabel.adjustsFontSizeToFitWidth = YES;
         [self.contentView addSubview:_sumLabel];
         
         UILabel *mainLabel = [UILabel new];
         _mainLabel = mainLabel;
-        _mainLabel.text = @"Text";
+        _mainLabel.text = @"Main";
         [self.contentView addSubview:_mainLabel];
         
         UILabel *secondLabel = [UILabel new];
         _secondLabel = secondLabel;
-        _secondLabel.text = @"Text";
+        _secondLabel.text = @"Second";
         _secondLabel.textColor = [UIColor grayColor];
         _secondLabel.font = [UIFont systemFontOfSize:15];
         [self.contentView addSubview:_secondLabel];
@@ -65,11 +65,11 @@
 
 - (void)updateConstraints
 {
-    [self.sumLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.sumLabel mas_updateConstraints:^(MASConstraintMaker *make) {
         make.left.top.equalTo(self.contentView).insets(UIEdgeInsetsMake(10, 20, 10, 10));
         make.width.equalTo(@50);
     }];
-    [self.mainLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+    [self.mainLabel mas_updateConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.sumLabel.mas_right).offset(10);
         make.right.equalTo(self.contentView).offset(-10);
         make.top.equalTo(self.sumLabel);
@@ -78,7 +78,7 @@
         make.left.equalTo(self.contentView).offset(20);
         make.right.equalTo(self.contentView).offset(-10);
        
-        if ([self.secondLabel.text isEqualToString:@""])
+        if (self.secondLabel.text.length == 0)
         {
             make.top.equalTo(self.mainLabel.mas_bottom);
         }
@@ -109,16 +109,6 @@
 {
     if (owe)
     {
-        
-        
-        if(!owe.partnerName)
-        {
-            NSString *partnerPhone = [owe selfIsCreditor] ? owe.debtor : owe.creditor;
-            CNPhoneNumber *phone = nil;
-            CNContact* partnerContact = [VMZContacts contactWithPhoneNumber:partnerPhone phoneNumberRef:&phone];
-            owe.partnerName = partnerContact ? [partnerContact valueForKey: @"fullName"] : partnerPhone;
-        }
-        
         self.sumLabel.text = owe.sum;
         self.mainLabel.text = owe.partnerName;
         self.secondLabel.text = owe.descr;

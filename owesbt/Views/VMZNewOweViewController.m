@@ -285,19 +285,19 @@
 
 - (void)dealloc
 {
-    [[VMZOweController sharedInstance] removeDelegate:self];
+    
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    [[VMZOweController sharedInstance] addDelegate:self];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    [super viewDidAppear:animated];
+    [super viewWillAppear:animated];
+    
+    [VMZOweController sharedInstance].delegate = self;
 }
 
 - (void)didReceiveMemoryWarning

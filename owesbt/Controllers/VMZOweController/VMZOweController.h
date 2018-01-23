@@ -52,11 +52,9 @@
 
 @property (nonatomic, strong) NSArray *_Nullable owes;
 
+@property (nonatomic, strong) id<VMZOweDelegate> delegate;
 
 + (VMZOweController *_Nonnull)sharedInstance;
-
-- (void)addDelegate:(nonnull NSObject<VMZOweDelegate> *)delegate;
-- (void)removeDelegate:(nonnull NSObject<VMZOweDelegate> *)delegate;
 
 - (void)loggedInViewControllerDidLoad;
 

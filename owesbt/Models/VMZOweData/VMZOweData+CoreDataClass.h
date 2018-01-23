@@ -30,6 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (VMZOweStatus)statusFromName:(NSString *)name;
 
 - (NSString *)partner;
+- (void)updatePartnerName;
 - (VMZOweStatus)statusType;
 - (void)setStatusType:(VMZOweStatus)status;
 

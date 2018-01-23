@@ -45,7 +45,6 @@
 {
     if (success)
     {
-        [[VMZOweController sharedInstance] removeDelegate:self];
         [self presentViewController:[[VMZNavigationController alloc] init] animated:YES completion:nil];
     }
     else
@@ -124,14 +123,14 @@
 
 - (void)dealloc
 {
-    [[VMZOweController sharedInstance] removeDelegate:self];
+    
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
-    [[VMZOweController sharedInstance] addDelegate:self];
+    [VMZOweController sharedInstance].delegate = self;
     [GIDSignIn sharedInstance].uiDelegate = self;
     
     [self createUI];
