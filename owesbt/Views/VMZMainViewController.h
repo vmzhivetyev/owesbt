@@ -12,7 +12,7 @@
 @protocol VMZOweDelegate;
 
 
-@interface VMZMainViewController : UIViewController <VMZOweDelegate>
+@interface VMZMainViewController : UIViewController <VMZOweDelegate, GIDSignInUIDelegate>
 
 @end
 

@@ -132,6 +132,7 @@
     [super viewDidLoad];
     
     [[VMZOweController sharedInstance] addDelegate:self];
+    [GIDSignIn sharedInstance].uiDelegate = self;
     
     [self createUI];
 }

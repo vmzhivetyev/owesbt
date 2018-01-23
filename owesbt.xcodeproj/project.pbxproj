@@ -13,6 +13,7 @@
 		130111172014DB870067D4D0 /* libOHHTTPStubs.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 130111182014DB870067D4D0 /* libOHHTTPStubs.a */; };
 		130111192014DB8B0067D4D0 /* libExpecta.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1301111A2014DB8B0067D4D0 /* libExpecta.a */; };
 		1301111E2014E45E0067D4D0 /* UIViewControllerVMZExtensionsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1301111D2014E45E0067D4D0 /* UIViewControllerVMZExtensionsTests.m */; };
+		130111202017B7DE0067D4D0 /* VMZMainViewControllerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1301111F2017B7DE0067D4D0 /* VMZMainViewControllerTests.m */; };
 		130EDA98200E7E400040AA32 /* VMZOweAction+CoreDataClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 130EDA96200E7E400040AA32 /* VMZOweAction+CoreDataClass.m */; };
 		130EDA99200E7E400040AA32 /* VMZOweAction+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 130EDA97200E7E400040AA32 /* VMZOweAction+CoreDataProperties.m */; };
 		130EDA9C200ED53A0040AA32 /* NSString+VMZExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 130EDA9B200ED53A0040AA32 /* NSString+VMZExtensions.m */; };
@@ -59,6 +60,7 @@
 		130111182014DB870067D4D0 /* libOHHTTPStubs.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libOHHTTPStubs.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		1301111A2014DB8B0067D4D0 /* libExpecta.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libExpecta.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		1301111D2014E45E0067D4D0 /* UIViewControllerVMZExtensionsTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UIViewControllerVMZExtensionsTests.m; sourceTree = "<group>"; };
+		1301111F2017B7DE0067D4D0 /* VMZMainViewControllerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VMZMainViewControllerTests.m; sourceTree = "<group>"; };
 		130EDA94200E7E400040AA32 /* VMZOweAction+CoreDataProperties.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "VMZOweAction+CoreDataProperties.h"; sourceTree = "<group>"; };
 		130EDA95200E7E400040AA32 /* VMZOweAction+CoreDataClass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "VMZOweAction+CoreDataClass.h"; sourceTree = "<group>"; };
 		130EDA96200E7E400040AA32 /* VMZOweAction+CoreDataClass.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "VMZOweAction+CoreDataClass.m"; sourceTree = "<group>"; };
@@ -137,6 +139,7 @@
 			children = (
 				1301110A2014D8F70067D4D0 /* NSStringVMZExtensionsTests.m */,
 				1301111D2014E45E0067D4D0 /* UIViewControllerVMZExtensionsTests.m */,
+				1301111F2017B7DE0067D4D0 /* VMZMainViewControllerTests.m */,
 				1301110C2014D8F70067D4D0 /* Info.plist */,
 			);
 			path = owesbtTests;
@@ -540,6 +543,7 @@
 			files = (
 				1301111E2014E45E0067D4D0 /* UIViewControllerVMZExtensionsTests.m in Sources */,
 				1301110B2014D8F70067D4D0 /* NSStringVMZExtensionsTests.m in Sources */,
+				130111202017B7DE0067D4D0 /* VMZMainViewControllerTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
