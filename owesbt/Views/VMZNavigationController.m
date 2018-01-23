@@ -49,7 +49,7 @@
                           [VMZOweData stringFromStatus:VMZOweStatusClosed]];
     NSArray *images = @[@"list1", @"pending1", @"stack"];
     
-    for(NSInteger i = 0; i < [statuses count]; i++)
+    for(NSInteger i = 0; i < statuses.count; i++)
     {
         [tabBarController addChildViewController:[[VMZOwesTableViewController alloc] initWithStatus:statuses[i] tabBarImage:images[i]]];
     }

@@ -69,7 +69,7 @@
     {
         self.created = [NSDate dateWithTimeIntervalSince1970:[[dict objectForKey:@"created"] integerValue]/1000.0];
     }
-    if ([[dict objectForKey:@"closed"] integerValue] == 0)
+    if ([dict[@"closed"] integerValue] == 0)
     {
         self.closed = nil;
     }

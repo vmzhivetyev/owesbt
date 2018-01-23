@@ -131,13 +131,13 @@
     self.doingActions = YES;
     
     NSArray *actions = [self.coreDataManager getActions];
-    if ([actions count] == 0)
+    if (actions.count == 0)
     {
         self.doingActions = NO;
         return;
     }
     
-    while ([actions count] > 0)
+    while (actions.count > 0)
     {
         dispatch_semaphore_t sema = dispatch_semaphore_create(0);
         __block BOOL stop = NO;

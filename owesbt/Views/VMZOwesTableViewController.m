@@ -24,8 +24,8 @@
 @property (nonatomic, weak) UIRefreshControl *refreshControl;
 @property (nonatomic, weak) UISearchController *searchController;
 
-@property (nonatomic, strong) NSArray *owes;
-@property (nonatomic, strong) NSMutableArray *owesToDisplay;
+@property (nonatomic, strong) NSMutableArray<NSMutableArray *> *owes;
+@property (nonatomic, strong) NSMutableArray<NSMutableArray *> *owesToDisplay;
 @property (nonatomic, strong) NSArray<NSNumber *> *sums;
 
 @property (nonatomic, copy, readonly) NSString *cellIdentifier;
@@ -40,18 +40,20 @@
 
 - (void)recountSums
 {
-    __block NSInteger first = 0;
-    __block NSInteger second = 0;
-    [self.owesToDisplay[0] enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        first += [((VMZOweData *)obj).sum integerValue];
-    }];
-    [self.owesToDisplay[1] enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        second += [((VMZOweData *)obj).sum integerValue];
-    }];
-    self.sums = @[@(first), @(second)];
+    NSMutableArray *sums = @[@0, @0].mutableCopy;
+    for(NSInteger i = 0; i < self.owesToDisplay.count; i++)
+    {
+        __block NSInteger count = 0;
+        for (VMZOweData *data in self.owesToDisplay[i])
+        {
+            count += [data.sum integerValue];
+        }
+        sums[i] = @(count);
+    }
+    self.sums = sums;
 }
 
-- (NSArray *)owesToDisplay
+- (NSMutableArray<NSMutableArray *> *)owesToDisplay
 {
     if (self.searchController.isActive && [self.searchController.searchBar.text length] > 0)
     {
@@ -129,7 +131,7 @@
 {
     [self.tableView beginUpdates];
     [self.owesToDisplay[indexPath.section] removeObjectAtIndex:indexPath.row];
-    if ([self.owesToDisplay[indexPath.section] count] == 0)
+    if (self.owesToDisplay[indexPath.section].count == 0)
     {
         [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
     }
@@ -142,7 +144,7 @@
 
 - (VMZOweData *)oweAtIndexPath:(NSIndexPath *)indexPath
 {
-    if ([self.owesToDisplay[indexPath.section] count] == 0)
+    if (self.owesToDisplay[indexPath.section].count == 0)
     {
         return nil;
     }
@@ -310,9 +312,6 @@
 
 - (instancetype)init
 {
-    @throw [NSException exceptionWithName:NSInternalInconsistencyException
-                                   reason:@"-init is not a valid initializer for the class VMZOwesTableViewController"
-                                 userInfo:nil];
     return nil;
 }
 
@@ -325,7 +324,7 @@
         _cellIdentifier = @"VMZReusableCellId";
         _headerIdentifier = @"VMZHeaderId";
         _footerIdentifier = @"VMZFooterId";
-        _owesToDisplay = @[@[],@[]].mutableCopy;
+        _owesToDisplay = @[@[].mutableCopy,@[].mutableCopy].mutableCopy;
         
         if(imageName)
         {
@@ -418,7 +417,7 @@
 
 - (NSInteger)numberOfRowsInSection:(NSInteger)section
 {
-    return [self.owesToDisplay[section] count];
+    return self.owesToDisplay[section].count;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {

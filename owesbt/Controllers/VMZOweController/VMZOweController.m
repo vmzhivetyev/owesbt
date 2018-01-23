@@ -25,31 +25,41 @@
 
 @implementation VMZOweController
 
+- (void)checkPhoneNumberForFIRUser:(FIRUser *)user
+{
+    [self VMZAuthDidSignInForUser:user withError:nil];
+    
+    [self.networking getMyPhoneWithCompletion:^(NSString * _Nullable phone, NSError * error) {
+        NSLog(@"Got my phone: %@",phone);
+        
+        [self VMZPhoneNumberCheckedWithResult: phone != nil];
+        
+        [self VMZOweErrorOccured:error.localizedDescription];
+    }];
+}
+
+- (void)FIRAuthStateChangedForUser:(FIRUser *)user
+{
+    NSLog(@"Auth state changed %@", user);
+    
+    if(user)
+    {
+        [self checkPhoneNumberForFIRUser:user];
+    }
+    else
+    {
+        [self.networking clearCachedPhoneNumber];
+        [self VMZAuthDidSignInForUser:nil withError:nil];
+    }
+}
+
 - (void)createFirebaseAuthStateListener
 {
     if (!self.firebaseAuthStateDidChangeHandler)
     {
         self.firebaseAuthStateDidChangeHandler =
         [[FIRAuth auth] addAuthStateDidChangeListener:^(FIRAuth *_Nonnull auth, FIRUser *_Nullable user) {
-            NSLog(@"Auth state changed %@", user);
-            
-            if(user)
-            {
-                [self VMZAuthDidSignInForUser:user withError:nil];
-                
-                [self.networking getMyPhoneWithCompletion:^(NSString * _Nullable phone, NSError * error) {
-                    NSLog(@"Got my phone: %@",phone);
-                    
-                    [self VMZPhoneNumberCheckedWithResult: phone != nil];
-                    
-                    [self VMZOweErrorOccured:error.localizedDescription];
-                }];
-            }
-            else
-            {
-                [self.networking clearCachedPhoneNumber];
-                [self VMZAuthDidSignInForUser:nil withError:nil];
-            }
+            [self FIRAuthStateChangedForUser:user];
         }];
     }
 }
@@ -187,7 +197,7 @@ didDisconnectWithUser:(GIDGoogleUser *)user
 
 - (void)removeDelegate:(nonnull NSObject<VMZOweDelegate> *)delegate
 {
-    for(int i = 0; i < [self.delegates count]; i++)
+    for(int i = 0; i < self.delegates.count; i++)
     {
         if(delegate == [self.delegates pointerAtIndex:i])
         {

@@ -264,7 +264,7 @@
             {
                 NSMutableArray* dateCells = ((NSArray *)[self.cells lastObject]).mutableCopy;
                 [dateCells removeLastObject];
-                self.cells[[self.cells count]-1] = dateCells;
+                self.cells[self.cells.count-1] = dateCells;
             }
                 
             self.sumTextField.inputView = [[UIView alloc] initWithFrame:CGRectZero];
@@ -322,11 +322,11 @@
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return [self.cells count];
+    return self.cells.count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [self.cells[section] count];
+    return ((NSArray *)self.cells[section]).count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {

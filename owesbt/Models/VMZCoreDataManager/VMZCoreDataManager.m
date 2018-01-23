@@ -149,9 +149,9 @@
         NSLog(@"Fetching error: %@", error);
     }];
     
-    NSLog(@"ACTIONS: %ld", [results count]);
+    NSLog(@"ACTIONS: %ld", results.count);
     
-    return results;//[results count] > 0 ? results[0] : nil;
+    return results;
 }
 
 - (void)removeAction:(VMZOweAction *)action
