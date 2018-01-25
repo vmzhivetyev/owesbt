@@ -14,9 +14,15 @@
 #import "VMZOweData+CoreDataClass.h"
 #import "VMZCoreDataManager.h"
 #import "VMZOwesTableViewCell.h"
-#import "UIViewController+VMZExtensions.h"
+#import "UIViewController+MessagePrompt.h"
 #import "VMZNewOweViewController.h"
-#import "NSString+VMZExtensions.h"
+#import "NSString+Formatting.h"
+
+
+NSString *const cellIdentifier = @"VMZReusableCellId";
+NSString *const headerIdentifier = @"VMZReusableHeaderId";
+NSString *const footerIdentifier = @"VMZReusableFooterId";
+
 
 @interface VMZOwesTableViewController ()
 
@@ -28,9 +34,6 @@
 @property (nonatomic, strong) NSMutableArray<NSMutableArray *> *owesToDisplay;
 @property (nonatomic, strong) NSArray<NSNumber *> *sums;
 
-@property (nonatomic, copy, readonly) NSString *cellIdentifier;
-@property (nonatomic, copy, readonly) NSString *headerIdentifier;
-@property (nonatomic, copy, readonly) NSString *footerIdentifier;
 
 @property (nonatomic, strong) id<UIViewControllerPreviewing> previewingContext;
 
@@ -111,7 +114,7 @@
 
 - (void)VMZOweErrorOccured:(NSString *)error
 {
-    [self VMZShowMessagePrompt:error];
+    [self mp_showMessagePrompt:error];
 }
 
 
@@ -124,7 +127,7 @@
         
         if (error)
         {
-            [self VMZShowMessagePrompt:error.localizedDescription];
+            [self mp_showMessagePrompt:error.localizedDescription];
         }
     }];
 }
@@ -209,7 +212,6 @@
 {
     VMZOweData *owe = [self oweAtIndexPath:indexPath];
     
-    NSString *status = owe.status;
     NSString *message, *title;
     NSMutableArray *actions = [NSMutableArray new];
     if (owe.statusType == VMZOweStatusActive && [owe selfIsCreditor])
@@ -267,11 +269,11 @@
     self.tableView.sectionHeaderHeight = 28;
     self.tableView.sectionFooterHeight = 18;
     
-    [self.tableView registerClass:[VMZOwesTableViewCell class] forCellReuseIdentifier:self.cellIdentifier];
+    [self.tableView registerClass:[VMZOwesTableViewCell class] forCellReuseIdentifier:cellIdentifier];
     [self.tableView
-     registerClass:[UITableViewHeaderFooterView class] forHeaderFooterViewReuseIdentifier:self.headerIdentifier];
+     registerClass:[UITableViewHeaderFooterView class] forHeaderFooterViewReuseIdentifier:headerIdentifier];
     [self.tableView
-     registerClass:[UITableViewHeaderFooterView class] forHeaderFooterViewReuseIdentifier:self.footerIdentifier];
+     registerClass:[UITableViewHeaderFooterView class] forHeaderFooterViewReuseIdentifier:footerIdentifier];
 }
 
 
@@ -320,9 +322,6 @@
     if(self)
     {
         _owesStatus = status;
-        _cellIdentifier = @"VMZReusableCellId";
-        _headerIdentifier = @"VMZHeaderId";
-        _footerIdentifier = @"VMZFooterId";
         
         if(imageName)
         {
@@ -358,7 +357,7 @@
     
     [self updateSearchResultsForSearchController:self.searchController];
     
-    self.parentViewController.title = [[self.owesStatus VMZUppercaseFirstLetter] stringByAppendingString:@" Owes"];
+    self.parentViewController.title = [[self.owesStatus ft_uppercaseFirstLetter] stringByAppendingString:@" Owes"];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
@@ -432,7 +431,7 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    VMZOwesTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
+    VMZOwesTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
     
     VMZOweData *owe = [self oweAtIndexPath:indexPath];
     [cell loadOweData:owe];
@@ -452,9 +451,8 @@
 
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
-    UITableViewHeaderFooterView *footer = [tableView dequeueReusableHeaderFooterViewWithIdentifier:self.footerIdentifier];
+    UITableViewHeaderFooterView *footer = [tableView dequeueReusableHeaderFooterViewWithIdentifier:footerIdentifier];
     footer.textLabel.text = [NSString stringWithFormat:@"Total: %@", self.sums[section]];
-    footer.frame = self.tableView.frame;
     footer.textLabel.textAlignment = NSTextAlignmentLeft;
     
     return footer;
@@ -462,7 +460,7 @@
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    UITableViewHeaderFooterView *header = [tableView dequeueReusableHeaderFooterViewWithIdentifier:self.headerIdentifier];
+    UITableViewHeaderFooterView *header = [tableView dequeueReusableHeaderFooterViewWithIdentifier:headerIdentifier];
     header.textLabel.text = @[@"You owe", @"You are creditor"][section];
     header.textLabel.textAlignment = NSTextAlignmentLeft;
     

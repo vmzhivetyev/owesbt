@@ -8,8 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface UIViewController (VMZExtensions)
+@interface UIViewController (MessagePrompt)
 
-- (void)VMZShowMessagePrompt:(NSString *)message;
+- (void)mp_showMessagePrompt:(NSString *)message;
 
 @end

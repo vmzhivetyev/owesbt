@@ -1,16 +1,16 @@
 //
-//  NSString+VMZExtensions.m
+//  NSString+Formatting.m
 //  owesbt
 //
 //  Created by Вячеслав Живетьев on 17.01.2018.
 //  Copyright © 2018 Вячеслав Живетьев. All rights reserved.
 //
 
-#import "NSString+VMZExtensions.h"
+#import "NSString+Formatting.h"
 
-@implementation NSString (VMZExtensions)
+@implementation NSString (Formatting)
 
-- (NSString *)VMZUppercaseFirstLetter
+- (NSString *)ft_uppercaseFirstLetter
 {
     switch ([self length]) {
         case 0:
@@ -24,7 +24,7 @@
     }
 }
 
-- (NSString *)VMZPhoneNumberDigits
+- (NSString *)ft_phoneNumberDigits
 {
     NSError *error;
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"^\\+7"

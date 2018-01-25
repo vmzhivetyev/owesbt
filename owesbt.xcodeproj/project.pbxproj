@@ -18,7 +18,7 @@
 		130111262019CEA20067D4D0 /* VMZOweNetworkingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 130111252019CEA20067D4D0 /* VMZOweNetworkingTests.m */; };
 		130EDA98200E7E400040AA32 /* VMZOweAction+CoreDataClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 130EDA96200E7E400040AA32 /* VMZOweAction+CoreDataClass.m */; };
 		130EDA99200E7E400040AA32 /* VMZOweAction+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 130EDA97200E7E400040AA32 /* VMZOweAction+CoreDataProperties.m */; };
-		130EDA9C200ED53A0040AA32 /* NSString+VMZExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 130EDA9B200ED53A0040AA32 /* NSString+VMZExtensions.m */; };
+		130EDA9C200ED53A0040AA32 /* NSString+Formatting.m in Sources */ = {isa = PBXBuildFile; fileRef = 130EDA9B200ED53A0040AA32 /* NSString+Formatting.m */; };
 		130EDA9F200F7ADC0040AA32 /* VMZContacts.m in Sources */ = {isa = PBXBuildFile; fileRef = 130EDA9E200F7ADC0040AA32 /* VMZContacts.m */; };
 		130EDAAC201105350040AA32 /* VMZOweNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 130EDAAB201105350040AA32 /* VMZOweNetworking.m */; };
 		131E767D1FFAAEDD00F8FA71 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 131E767C1FFAAEDD00F8FA71 /* AppDelegate.m */; };
@@ -29,7 +29,7 @@
 		131E769A1FFD3B2E00F8FA71 /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 131E76981FFD3B2E00F8FA71 /* DataModel.xcdatamodeld */; };
 		131E769D1FFEBCAF00F8FA71 /* VMZOweController.m in Sources */ = {isa = PBXBuildFile; fileRef = 131E769C1FFEBCAF00F8FA71 /* VMZOweController.m */; };
 		13826B751FFFA5C900ACB7F2 /* VMZChangePhoneViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 13826B741FFFA5C900ACB7F2 /* VMZChangePhoneViewController.m */; };
-		13826B782006A71000ACB7F2 /* UIViewController+VMZExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 13826B772006A71000ACB7F2 /* UIViewController+VMZExtensions.m */; };
+		13826B782006A71000ACB7F2 /* UIViewController+MessagePrompt.m in Sources */ = {isa = PBXBuildFile; fileRef = 13826B772006A71000ACB7F2 /* UIViewController+MessagePrompt.m */; };
 		13826B7A2006CA6700ACB7F2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13826B792006CA6600ACB7F2 /* Assets.xcassets */; };
 		13826B7D2007B70C00ACB7F2 /* VMZNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 13826B7C2007B70C00ACB7F2 /* VMZNavigationController.m */; };
 		13D715B52007F91F00B7CAA6 /* VMZOweData+CoreDataClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 13D715B32007F91F00B7CAA6 /* VMZOweData+CoreDataClass.m */; };
@@ -69,8 +69,8 @@
 		130EDA95200E7E400040AA32 /* VMZOweAction+CoreDataClass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "VMZOweAction+CoreDataClass.h"; sourceTree = "<group>"; };
 		130EDA96200E7E400040AA32 /* VMZOweAction+CoreDataClass.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "VMZOweAction+CoreDataClass.m"; sourceTree = "<group>"; };
 		130EDA97200E7E400040AA32 /* VMZOweAction+CoreDataProperties.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "VMZOweAction+CoreDataProperties.m"; sourceTree = "<group>"; };
-		130EDA9A200ED53A0040AA32 /* NSString+VMZExtensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+VMZExtensions.h"; sourceTree = "<group>"; };
-		130EDA9B200ED53A0040AA32 /* NSString+VMZExtensions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+VMZExtensions.m"; sourceTree = "<group>"; };
+		130EDA9A200ED53A0040AA32 /* NSString+Formatting.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+Formatting.h"; sourceTree = "<group>"; };
+		130EDA9B200ED53A0040AA32 /* NSString+Formatting.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+Formatting.m"; sourceTree = "<group>"; };
 		130EDA9D200F7ADC0040AA32 /* VMZContacts.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VMZContacts.h; sourceTree = "<group>"; };
 		130EDA9E200F7ADC0040AA32 /* VMZContacts.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VMZContacts.m; sourceTree = "<group>"; };
 		130EDAAA201105350040AA32 /* VMZOweNetworking.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VMZOweNetworking.h; sourceTree = "<group>"; };
@@ -89,8 +89,8 @@
 		131E769C1FFEBCAF00F8FA71 /* VMZOweController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VMZOweController.m; sourceTree = "<group>"; };
 		13826B731FFFA5C800ACB7F2 /* VMZChangePhoneViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VMZChangePhoneViewController.h; sourceTree = "<group>"; };
 		13826B741FFFA5C900ACB7F2 /* VMZChangePhoneViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VMZChangePhoneViewController.m; sourceTree = "<group>"; };
-		13826B762006A71000ACB7F2 /* UIViewController+VMZExtensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIViewController+VMZExtensions.h"; sourceTree = "<group>"; };
-		13826B772006A71000ACB7F2 /* UIViewController+VMZExtensions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+VMZExtensions.m"; sourceTree = "<group>"; };
+		13826B762006A71000ACB7F2 /* UIViewController+MessagePrompt.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIViewController+MessagePrompt.h"; sourceTree = "<group>"; };
+		13826B772006A71000ACB7F2 /* UIViewController+MessagePrompt.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+MessagePrompt.m"; sourceTree = "<group>"; };
 		13826B792006CA6600ACB7F2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		13826B7B2007B70C00ACB7F2 /* VMZNavigationController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VMZNavigationController.h; sourceTree = "<group>"; };
 		13826B7C2007B70C00ACB7F2 /* VMZNavigationController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VMZNavigationController.m; sourceTree = "<group>"; };
@@ -214,8 +214,8 @@
 		130EDAA6201101AA0040AA32 /* UIViewController */ = {
 			isa = PBXGroup;
 			children = (
-				13826B762006A71000ACB7F2 /* UIViewController+VMZExtensions.h */,
-				13826B772006A71000ACB7F2 /* UIViewController+VMZExtensions.m */,
+				13826B762006A71000ACB7F2 /* UIViewController+MessagePrompt.h */,
+				13826B772006A71000ACB7F2 /* UIViewController+MessagePrompt.m */,
 			);
 			path = UIViewController;
 			sourceTree = "<group>";
@@ -223,8 +223,8 @@
 		130EDAA7201101B90040AA32 /* NSString */ = {
 			isa = PBXGroup;
 			children = (
-				130EDA9A200ED53A0040AA32 /* NSString+VMZExtensions.h */,
-				130EDA9B200ED53A0040AA32 /* NSString+VMZExtensions.m */,
+				130EDA9A200ED53A0040AA32 /* NSString+Formatting.h */,
+				130EDA9B200ED53A0040AA32 /* NSString+Formatting.m */,
 			);
 			path = NSString;
 			sourceTree = "<group>";
@@ -562,11 +562,11 @@
 				131E76801FFAAEDD00F8FA71 /* VMZMainViewController.m in Sources */,
 				130EDA98200E7E400040AA32 /* VMZOweAction+CoreDataClass.m in Sources */,
 				130EDAAC201105350040AA32 /* VMZOweNetworking.m in Sources */,
-				130EDA9C200ED53A0040AA32 /* NSString+VMZExtensions.m in Sources */,
+				130EDA9C200ED53A0040AA32 /* NSString+Formatting.m in Sources */,
 				131E769A1FFD3B2E00F8FA71 /* DataModel.xcdatamodeld in Sources */,
 				131E768B1FFAAEDD00F8FA71 /* main.m in Sources */,
 				13D715BF2008438100B7CAA6 /* VMZOwesTableViewCell.m in Sources */,
-				13826B782006A71000ACB7F2 /* UIViewController+VMZExtensions.m in Sources */,
+				13826B782006A71000ACB7F2 /* UIViewController+MessagePrompt.m in Sources */,
 				13826B751FFFA5C900ACB7F2 /* VMZChangePhoneViewController.m in Sources */,
 				130EDA99200E7E400040AA32 /* VMZOweAction+CoreDataProperties.m in Sources */,
 				131E769D1FFEBCAF00F8FA71 /* VMZOweController.m in Sources */,

@@ -10,7 +10,7 @@
 #import <ContactsUI/ContactsUI.h>
 
 #import "VMZContacts.h"
-#import "NSString+VMZExtensions.h"
+#import "NSString+Formatting.h"
 
 
 @implementation VMZContacts
@@ -44,7 +44,7 @@
 {
     for (CNLabeledValue<CNPhoneNumber*>* phoneNumber in contact.phoneNumbers)
     {
-        if ([phoneNumber.value.stringValue.VMZPhoneNumberDigits isEqualToString:phoneString])
+        if ([[phoneNumber.value.stringValue ft_phoneNumberDigits] isEqualToString:phoneString])
         {
             return phoneNumber.value;
         }
@@ -54,7 +54,7 @@
 
 + (CNContact *)contactWithPhoneNumber:(NSString *)phoneNumber phoneNumberRef:(CNPhoneNumber **)ref
 {
-    NSString *phoneNumberToCompareAgainst = [phoneNumber VMZPhoneNumberDigits];
+    NSString *phoneNumberToCompareAgainst = [phoneNumber ft_phoneNumberDigits];
     
     for (CNContact *contact in [self fetchContacts])
     {

@@ -10,7 +10,7 @@
 #import <OCMock/OCMock.h>
 #import <Expecta/Expecta.h>
 
-#import "NSString+VMZExtensions.h"
+#import "NSString+Formatting.h"
 
 @interface NSStringVMZExtensionsTests : XCTestCase
 
@@ -29,20 +29,20 @@
 }
 
 - (void)testVMZUppercaseFirstLetter {
-    expect([@"" VMZUppercaseFirstLetter]).equal(@"");
-    expect([@"s" VMZUppercaseFirstLetter]).equal(@"S");
-    expect([@"с" VMZUppercaseFirstLetter]).equal(@"С");
-    expect([@"string" VMZUppercaseFirstLetter]).equal(@"String");
-    expect([@"строка" VMZUppercaseFirstLetter]).equal(@"Строка");
-    expect([@"String" VMZUppercaseFirstLetter]).equal(@"String");
-    expect([@"100" VMZUppercaseFirstLetter]).equal(@"100");
+    expect([@"" ft_uppercaseFirstLetter]).equal(@"");
+    expect([@"s" ft_uppercaseFirstLetter]).equal(@"S");
+    expect([@"с" ft_uppercaseFirstLetter]).equal(@"С");
+    expect([@"string" ft_uppercaseFirstLetter]).equal(@"String");
+    expect([@"строка" ft_uppercaseFirstLetter]).equal(@"Строка");
+    expect([@"String" ft_uppercaseFirstLetter]).equal(@"String");
+    expect([@"100" ft_uppercaseFirstLetter]).equal(@"100");
 }
 
 - (void)testVMZPhoneNumberDigits {
-    expect([@"" VMZPhoneNumberDigits]).equal(@"");
-    expect([@"+7+7+7" VMZPhoneNumberDigits]).equal(@"8+7+7");
-    expect([@"8abcdefr1ghiklmno2pqrstxyz()a-a=a %$#3" VMZPhoneNumberDigits]).equal(@"8123");
-    expect([@"1234567890" VMZPhoneNumberDigits]).equal(@"1234567890");
+    expect([@"" ft_phoneNumberDigits]).equal(@"");
+    expect([@"+7+7+7" ft_phoneNumberDigits]).equal(@"8+7+7");
+    expect([@"8abcdefr1ghiklmno2pqrstxyz()a-a=a %$#3" ft_phoneNumberDigits]).equal(@"8123");
+    expect([@"1234567890" ft_phoneNumberDigits]).equal(@"1234567890");
 }
 
 @end

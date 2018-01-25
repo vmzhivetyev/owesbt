@@ -6,12 +6,12 @@
 //  Copyright © 2018 Вячеслав Живетьев. All rights reserved.
 //
 
-#import "UIViewController+VMZExtensions.h"
+#import "UIViewController+MessagePrompt.h"
 
 
-@implementation UIViewController (VMZExtensions)
+@implementation UIViewController (MessagePrompt)
 
-- (void)VMZShowMessagePrompt:(NSString *)message
+- (void)mp_showMessagePrompt:(NSString *)message
 {
     UIAlertController *alert =
     [UIAlertController alertControllerWithTitle:nil

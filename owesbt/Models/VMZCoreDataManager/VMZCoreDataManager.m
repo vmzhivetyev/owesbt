@@ -10,7 +10,7 @@
 #import "VMZOweData+CoreDataClass.h"
 #import "VMZOweAction+CoreDataClass.h"
 #import "VMZOweController.h"
-#import "NSString+VMZExtensions.h"
+#import "NSString+Formatting.h"
 #import "VMZOweNetworking.h"
 
 @implementation VMZCoreDataManager

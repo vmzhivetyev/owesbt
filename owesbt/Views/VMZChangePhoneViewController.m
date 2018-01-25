@@ -12,7 +12,7 @@
 #import "VMZOweController.h"
 #import "VMZNavigationController.h"
 
-#import "UIViewController+VMZExtensions.h"
+#import "UIViewController+MessagePrompt.h"
 
 @interface VMZChangePhoneViewController ()
 
@@ -31,7 +31,7 @@
     [[VMZOweController sharedInstance] setMyPhone:phone completion:^(NSString *errorText) {
         if (errorText)
         {
-            [self VMZShowMessagePrompt:[NSString stringWithFormat:@"Error: %@", errorText]];
+            [self mp_showMessagePrompt:[NSString stringWithFormat:@"Error: %@", errorText]];
         }
         else
         {

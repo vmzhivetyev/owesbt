@@ -30,7 +30,7 @@
 
 - (void)testVMZShowMessagePrompt {
     id mock = OCMPartialMock([UIViewController new]);
-    [mock VMZShowMessagePrompt:@""];
+    [mock mp_showMessagePrompt:@""];
     OCMVerify([mock presentViewController:[OCMArg any] animated:[OCMArg any] completion:[OCMArg any]]);
 }
 

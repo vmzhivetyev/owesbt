@@ -14,8 +14,8 @@
 #import "VMZOwesTableViewController.h"
 #import "VMZOweController.h"
 #import "VMZOweData+CoreDataClass.h"
-#import "UIViewController+VMZExtensions.h"
-#import "NSString+VMZExtensions.h"
+#import "UIViewController+MessagePrompt.h"
+#import "NSString+Formatting.h"
 #import "VMZContacts.h"
 
 @interface VMZNewOweViewController ()
@@ -45,7 +45,7 @@
 
 - (void)VMZOweErrorOccured:(NSString *)error
 {
-    [self VMZShowMessagePrompt:error];
+    [self mp_showMessagePrompt:error];
 }
 
 
@@ -74,17 +74,17 @@
 {
     if (self.roleSegmentedControl.selectedSegmentIndex < 0)
     {
-        [self VMZShowMessagePrompt:@"Please select your partner's role"];
+        [self mp_showMessagePrompt:@"Please select your partner's role"];
         return;
     }
     if ([self.phoneTextField.text length] == 0)
     {
-        [self VMZShowMessagePrompt:@"Please select a phone number of your partner with (i) button"];
+        [self mp_showMessagePrompt:@"Please select a phone number of your partner with (i) button"];
         return;
     }
     if ([self.sumTextField.text length] == 0)
     {
-        [self VMZShowMessagePrompt:@"Please enter sum"];
+        [self mp_showMessagePrompt:@"Please enter sum"];
         return;
     }
     
@@ -236,7 +236,7 @@
         {
             self.forceTouchActions = actions;
             
-            self.title = [[owe.status VMZUppercaseFirstLetter] stringByAppendingString:@" Owe"];
+            self.title = [[owe.status ft_uppercaseFirstLetter] stringByAppendingString:@" Owe"];
             
             NSString *partnerPhone = [owe selfIsCreditor] ? owe.debtor : owe.creditor;
             CNPhoneNumber *phone = nil;

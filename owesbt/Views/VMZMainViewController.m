@@ -14,7 +14,7 @@
 #import "VMZMainViewController.h"
 #import "VMZChangePhoneViewController.h"
 #import "VMZNavigationController.h"
-#import "UIViewController+VMZExtensions.h"
+#import "UIViewController+MessagePrompt.h"
 
 @interface VMZMainViewController ()
 
@@ -33,7 +33,7 @@
 {
     if (error)
     {
-        [self VMZShowMessagePrompt: [NSString stringWithFormat:@"Error: %@", error.localizedDescription]];
+        [self mp_showMessagePrompt: [NSString stringWithFormat:@"Error: %@", error.localizedDescription]];
         return;
     }
     
@@ -55,7 +55,7 @@
 
 - (void)VMZOweErrorOccured:(NSString *)error
 {
-    [self VMZShowMessagePrompt:error];
+    [self mp_showMessagePrompt:error];
 }
 
 

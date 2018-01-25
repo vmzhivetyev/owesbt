@@ -1,5 +1,5 @@
 //
-//  NSString+VMZExtensions.h
+//  NSString+Formatting.h
 //  owesbt
 //
 //  Created by Вячеслав Живетьев on 17.01.2018.
@@ -8,9 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
-@interface NSString (VMZExtensions)
+@interface NSString (Formatting)
 
-- (NSString *)VMZUppercaseFirstLetter;
-- (NSString *)VMZPhoneNumberDigits;
+- (NSString *)ft_uppercaseFirstLetter;
+- (NSString *)ft_phoneNumberDigits;
 
 @end
