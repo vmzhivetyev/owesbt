@@ -39,6 +39,7 @@ NSString *const footerIdentifier = @"VMZReusableFooterId";
 
 @end
 
+
 @implementation VMZOwesTableViewController
 
 - (void)recountSums
@@ -208,45 +209,6 @@ NSString *const footerIdentifier = @"VMZReusableFooterId";
     }
 }
 
-- (NSArray *)forceTouchActionsForOweAtIndexPath:(NSIndexPath *)indexPath
-{
-    VMZOweData *owe = [self oweAtIndexPath:indexPath];
-    
-    NSString *message, *title;
-    NSMutableArray *actions = [NSMutableArray new];
-    if (owe.statusType == VMZOweStatusActive && [owe selfIsCreditor])
-    {
-        message = @"Вы действительно вернули себе этот долг и хотите пометить его закрытым?";
-        title = @"Active Owe";
-        
-        [actions addObject: [UIPreviewAction actionWithTitle:@"Close Owe" style:UIPreviewActionStyleDestructive handler:^(UIPreviewAction *action, UIViewController *previewViewController) {
-            
-            [[VMZOweController sharedInstance] closeOwe:owe];
-            [self removeOweAtIndexPath:indexPath];
-        }]];
-    }
-    else if (owe.statusType == VMZOweStatusRequested)
-    {
-        message = [owe selfIsCreditor] ? @"Отменить запрос?" : @"Подтвердить вашу задолжность?";
-        title = @"Requested Owe";
-        if (![owe selfIsCreditor])
-        {
-            [actions addObject: [UIPreviewAction actionWithTitle:@"Confirm request" style:UIPreviewActionStyleDestructive handler:^(UIPreviewAction *action, UIViewController *previewViewController) {
-                
-                [[VMZOweController sharedInstance] confirmOwe:owe];
-                [self removeOweAtIndexPath:indexPath];
-            }]];
-        }
-        [actions addObject: [UIPreviewAction actionWithTitle:@"Cancel request" style:UIPreviewActionStyleDefault handler:^(UIPreviewAction *action, UIViewController *previewViewController) {
-            
-            [[VMZOweController sharedInstance] cancelOwe:owe];
-            [self removeOweAtIndexPath:indexPath];
-        }]];
-    }
-    
-    return actions;
-}
-
 - (void)createUI
 {
     UITableView *tableView = [[UITableView alloc] initWithFrame:self.view.frame style:UITableViewStyleGrouped];
@@ -264,10 +226,8 @@ NSString *const footerIdentifier = @"VMZReusableFooterId";
     self.tableView.refreshControl = self.refreshControl;
     [self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
     
-//    self.tableView.estimatedRowHeight = 60;
-//    self.tableView.rowHeight = UITableViewAutomaticDimension;
-    self.tableView.sectionHeaderHeight = 28;
-    self.tableView.sectionFooterHeight = 18;
+    self.tableView.sectionHeaderHeight = 40;
+    self.tableView.sectionFooterHeight = 30;
     
     [self.tableView registerClass:[VMZOwesTableViewCell class] forCellReuseIdentifier:cellIdentifier];
     [self.tableView
@@ -293,7 +253,7 @@ NSString *const footerIdentifier = @"VMZReusableFooterId";
             UITableViewCell *tableCell = [self.tableView cellForRowAtIndexPath:path];
             
             VMZNewOweViewController *previewController =
-                [[VMZNewOweViewController alloc] initWithOwe:owe forceTouchActions:[self forceTouchActionsForOweAtIndexPath:path]];
+                [[VMZNewOweViewController alloc] initWithOwe:owe forceTouchActions:nil];
             
             previewingContext.sourceRect = [self.view convertRect:tableCell.frame fromView:self.tableView];
             return previewController;
@@ -341,7 +301,6 @@ NSString *const footerIdentifier = @"VMZReusableFooterId";
     
     self.searchController = self.parentViewController.navigationItem.searchController;
     
-    [self updateData];
     [self refresh:self.refreshControl];
 }
 
@@ -437,16 +396,6 @@ NSString *const footerIdentifier = @"VMZReusableFooterId";
     [cell loadOweData:owe];
     
     return cell;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
-{
-    return 30;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
-{
-    return 40;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
