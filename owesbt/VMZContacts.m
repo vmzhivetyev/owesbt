@@ -23,6 +23,10 @@
     
     NSError *error;
     NSArray *allContainers = [store containersMatchingPredicate:nil error:&error];
+    if (error)
+    {
+        return nil;
+    }
     
     NSMutableArray *results = [NSMutableArray new];
     
@@ -65,6 +69,10 @@
         }
     }
     
+    if(ref)
+    {
+        *ref = nil;
+    }
     return nil;
 }
 

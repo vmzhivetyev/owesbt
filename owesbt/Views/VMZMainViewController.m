@@ -61,19 +61,6 @@
 
 #pragma mark - UI
 
-- (void)signOutButtonClicked:(UIButton*)button
-{
-    NSError *signOutError;
-    if([[FIRAuth auth] signOut:&signOutError])
-    {
-        [self VMZShowMessagePrompt:@"Signed out"];
-    }
-    else
-    {
-        [self VMZShowMessagePrompt:[NSString stringWithFormat:@"Sign out error: %@", signOutError.localizedDescription]];
-    }
-}
-
 - (void)presentChangePhoneView
 {
     UIViewController* view = [VMZChangePhoneViewController new];
@@ -102,12 +89,6 @@
     animation.repeatCount = INFINITY;
     [self.spinnerImageView.layer addAnimation:animation forKey:@"SpinAnimation"];
     
-    UIButton* signOutButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    signOutButton.frame = CGRectMake(25, CGRectGetMaxY(self.view.bounds) - 25, 60, 25);
-    [signOutButton setTitle:@"Sign out" forState:UIControlStateNormal];
-    [signOutButton addTarget:self action:@selector(signOutButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:signOutButton];
-    
     [self.spinnerImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.center.equalTo(self.view);
         make.size.mas_equalTo(image.size);
@@ -121,11 +102,6 @@
 
 #pragma mark - LifeCycle
 
-- (void)dealloc
-{
-    
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -134,11 +110,6 @@
     [GIDSignIn sharedInstance].uiDelegate = self;
     
     [self createUI];
-}
-
-- (void)viewDidAppear:(BOOL)animated
-{
-    
 }
 
 - (void)didReceiveMemoryWarning

@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 
+@protocol GIDSignInUIDelegate;
 @protocol VMZOweDelegate;
 
 

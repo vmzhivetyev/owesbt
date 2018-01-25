@@ -10,6 +10,8 @@
 
 
 @class CNContactPickerViewController;
+@class CNContact;
+@class CNPhoneNumber;
 
 
 @interface VMZContacts : NSObject
