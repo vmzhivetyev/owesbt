@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "VMZOweData+CoreDataClass.h"
 
 
 @protocol VMZOweDelegate;
@@ -16,7 +17,14 @@
 
 @property (nonatomic, strong, readonly) NSString* owesStatus;
 
-- (instancetype)initWithStatus:(NSString*)status tabBarImage:(NSString*)imageName;
+- (instancetype)initWithStatus:(VMZOweStatus)status tabBarImage:(NSString*)imageName NS_DESIGNATED_INITIALIZER;
+
+- (VMZOweData *)oweAtIndexPath:(NSIndexPath *)indexPath;
 - (void)removeOweAtIndexPath:(NSIndexPath *)indexPath;
+
+- (NSString *)titleForActionsAlertForOwe:(VMZOweData *)owe;
+- (NSString *)messageForActionsAlertForOwe:(VMZOweData *)owe;
+- (NSArray *)actionsForOwe:(VMZOweData*)owe atIndexPath:(NSIndexPath *)indexPath;
+- (UIAlertAction *)cancelActionForOwe:(VMZOweData *)owe;
 
 @end

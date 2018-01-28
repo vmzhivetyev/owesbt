@@ -38,8 +38,6 @@
         NSLog(@"Got my phone: %@",phone);
         
         [self VMZPhoneNumberCheckedWithResult: phone != nil];
-        
-        [self VMZOweErrorOccured:error.localizedDescription];
     }];
 }
 

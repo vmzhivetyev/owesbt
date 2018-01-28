@@ -12,6 +12,10 @@
 #import "VMZOweController.h"
 #import "VMZOweData+CoreDataClass.h"
 
+#import "VMZOwesActiveViewController.h"
+#import "VMZOwesRequestedViewController.h"
+#import "VMZOwesClosedViewController.h"
+
 @interface VMZNavigationController ()
 
 @property (nonatomic, weak) UISearchController *searchController;
@@ -44,15 +48,9 @@
     self.searchController.obscuresBackgroundDuringPresentation = NO;
     tabBarController.navigationItem.searchController = self.searchController;
     
-    NSArray *statuses = @[[VMZOweData stringFromStatus:VMZOweStatusActive],
-                          [VMZOweData stringFromStatus:VMZOweStatusRequested],
-                          [VMZOweData stringFromStatus:VMZOweStatusClosed]];
-    NSArray *images = @[@"list1", @"pending1", @"stack"];
-    
-    for(NSInteger i = 0; i < statuses.count; i++)
-    {
-        [tabBarController addChildViewController:[[VMZOwesTableViewController alloc] initWithStatus:statuses[i] tabBarImage:images[i]]];
-    }
+    [tabBarController addChildViewController:[[VMZOwesActiveViewController alloc] init]];
+    [tabBarController addChildViewController:[[VMZOwesRequestedViewController alloc] init]];
+    [tabBarController addChildViewController:[[VMZOwesClosedViewController alloc] init]];
     
     UIBarButtonItem *plusButton =
     [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
@@ -89,15 +87,5 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
 }
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

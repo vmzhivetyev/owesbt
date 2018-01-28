@@ -25,11 +25,6 @@
 
 @implementation VMZOwesTableViewCell
 
-+ (CGFloat)heightForEmpty:(BOOL)emptyCell
-{
-    return emptyCell ? 37 : 58;
-}
-
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];

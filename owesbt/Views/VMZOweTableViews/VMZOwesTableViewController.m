@@ -79,19 +79,16 @@ NSString *const footerIdentifier = @"VMZReusableFooterId";
     [self.tableView reloadData];
 }
 
-
-#pragma mark - UISearchResultsUpdating
-
-- (void)updateSearchResultsForSearchController:(UISearchController *)searchController
+- (void)filterOwesToDisplayForText:(NSString *)text
 {
-    NSString *text = searchController.searchBar.text;
     if ([text length] == 0)
     {
         [self.tableView reloadData];
         return;
     }
+    
     NSString *string = [NSString stringWithFormat:
-            @"(descr CONTAINS[c] '%1$@') || (partnerName CONTAINS[c] '%1$@') || (partner CONTAINS[c] '%1$@')", text];
+                        @"(descr CONTAINS[c] '%1$@') || (partnerName CONTAINS[c] '%1$@') || (partner CONTAINS[c] '%1$@')", text];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:string];
     self.owesToDisplay = [NSMutableArray new];
     for(NSInteger i = 0; i < self.owes.count; i++)
@@ -103,6 +100,16 @@ NSString *const footerIdentifier = @"VMZReusableFooterId";
     [self recountSums];
     
     [self.tableView reloadData];
+}
+
+
+#pragma mark - UISearchResultsUpdating
+
+- (void)updateSearchResultsForSearchController:(UISearchController *)searchController
+{
+    NSString *text = searchController.searchBar.text;
+    
+    [self filterOwesToDisplayForText:text];
 }
 
 
@@ -133,6 +140,15 @@ NSString *const footerIdentifier = @"VMZReusableFooterId";
     }];
 }
 
+- (VMZOweData *)oweAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (self.owesToDisplay[indexPath.section].count == 0)
+    {
+        return nil;
+    }
+    return (VMZOweData*)self.owesToDisplay[indexPath.section][indexPath.row];
+}
+
 - (void)removeOweAtIndexPath:(NSIndexPath *)indexPath
 {
     [self.tableView beginUpdates];
@@ -148,13 +164,24 @@ NSString *const footerIdentifier = @"VMZReusableFooterId";
     [self.tableView endUpdates];
 }
 
-- (VMZOweData *)oweAtIndexPath:(NSIndexPath *)indexPath
+- (NSString *)titleForActionsAlertForOwe:(VMZOweData *)owe
 {
-    if (self.owesToDisplay[indexPath.section].count == 0)
-    {
-        return nil;
-    }
-    return (VMZOweData*)self.owesToDisplay[indexPath.section][indexPath.row];
+    return [[self.owesStatus stringByAppendingString:@" Owe"] ft_uppercaseFirstLetter];
+}
+
+- (NSString *)messageForActionsAlertForOwe:(VMZOweData *)owe
+{
+    return nil;
+}
+
+- (NSArray *)actionsForOwe:(VMZOweData*)owe atIndexPath:(NSIndexPath *)indexPath
+{
+    return @[ [self cancelActionForOwe: owe] ];
+}
+
+- (UIAlertAction *)cancelActionForOwe:(VMZOweData *)owe
+{
+    return [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
 }
 
 - (void)presentOweActionsAlertViewAtIndexPath:(NSIndexPath *)indexPath
@@ -165,46 +192,17 @@ NSString *const footerIdentifier = @"VMZReusableFooterId";
         return;
     }
     
-    NSString *message, *title;
-    NSMutableArray *actions = [NSMutableArray new];
-    if (owe.statusType == VMZOweStatusActive)
-    {
-        message = @"Вы действительно вернули себе этот долг и хотите пометить его закрытым?";
-        title = @"Active Owe";
-        [actions addObject: [UIAlertAction actionWithTitle:@"Close Owe" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-            
-            [[VMZOweController sharedInstance] closeOwe:owe];
-            [self removeOweAtIndexPath:indexPath];
-        }]];
-    }
-    else if (owe.statusType == VMZOweStatusRequested)
-    {
-        message = [owe selfIsCreditor] ? @"Отменить запрос?" : @"Подтвердить вашу задолжность?";
-        title = @"Requested Owe";
-        if (![owe selfIsCreditor])
-        {
-            [actions addObject: [UIAlertAction actionWithTitle:@"Confirm request" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-                
-                [[VMZOweController sharedInstance] confirmOwe:owe];
-                [self removeOweAtIndexPath:indexPath];
-            }]];
-        }
-        [actions addObject: [UIAlertAction actionWithTitle:@"Cancel request" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            
-            [[VMZOweController sharedInstance] cancelOwe:owe];
-            [self removeOweAtIndexPath:indexPath];
-        }]];
-    }
+    NSString *title = [self titleForActionsAlertForOwe: owe];
+    NSString *message = [self messageForActionsAlertForOwe: owe];
+    NSArray *actions = [self actionsForOwe:owe atIndexPath:indexPath];
     
-    if (message)
+    if (actions)
     {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleActionSheet];
-        
         for(UIAlertAction *action in actions)
         {
             [alert addAction:action];
         }
-        [alert addAction: [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
         [self presentViewController:alert animated:YES completion:nil];
     }
 }
@@ -276,12 +274,12 @@ NSString *const footerIdentifier = @"VMZReusableFooterId";
     return nil;
 }
 
-- (instancetype)initWithStatus:(NSString*)status tabBarImage:(NSString*)imageName
+- (instancetype)initWithStatus:(VMZOweStatus)status tabBarImage:(NSString*)imageName
 {
     self = [super init];
     if(self)
     {
-        _owesStatus = status;
+        _owesStatus = [VMZOweData stringFromStatus:status];
         
         if(imageName)
         {
@@ -319,20 +317,11 @@ NSString *const footerIdentifier = @"VMZReusableFooterId";
     self.parentViewController.title = [[self.owesStatus ft_uppercaseFirstLetter] stringByAppendingString:@" Owes"];
 }
 
-- (void)viewDidDisappear:(BOOL)animated
-{
-    [super viewDidDisappear:animated];
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-}
-
 - (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection
 {
     [super traitCollectionDidChange:previousTraitCollection];
     
+    //чекаем есть ли forcetouch
     if ([self.traitCollection respondsToSelector:@selector(forceTouchCapability)])
     {
         if (self.traitCollection.forceTouchCapability == UIForceTouchCapabilityAvailable)

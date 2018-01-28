@@ -10,4 +10,6 @@
 
 @interface VMZChangePhoneViewController : UIViewController
 
+- (instancetype)init NS_DESIGNATED_INITIALIZER;
+
 @end

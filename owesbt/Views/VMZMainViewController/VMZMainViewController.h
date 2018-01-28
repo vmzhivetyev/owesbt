@@ -15,5 +15,7 @@
 
 @interface VMZMainViewController : UIViewController <VMZOweDelegate, GIDSignInUIDelegate>
 
+- (instancetype)init NS_DESIGNATED_INITIALIZER;
+
 @end
 

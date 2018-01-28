@@ -14,7 +14,6 @@
 
 @interface VMZOwesTableViewCell : UITableViewCell
 
-+ (CGFloat)heightForEmpty:(BOOL)emptyCell;
 - (void)loadOweData:(VMZOweData *)owe;
 
 @end

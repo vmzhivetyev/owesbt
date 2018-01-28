@@ -20,23 +20,20 @@
 
 @optional
 
-/*
-    при успешном логине в firebase
-        user - not nil
-        error - nil
-    при ошибке логина в google/firebase или логауте из firebase
-        user - nil
-        error - nil / not nil
+/* при успешном логине в firebase
+    user - not nil
+    error - nil
+   при ошибке логина в google/firebase или логауте из firebase
+    user - nil
+    error - nil / not nil
  */
 - (void)VMZAuthDidSignInForUser:(FIRUser *_Nullable)user withError:(NSError *_Nullable)error;
 
-/*
-    success - номер телефона не пустой (из кэша либо получен от сервера)
+/* success - номер телефона не пустой (из кэша либо получен от сервера)
  */
 - (void)VMZPhoneNumberCheckedWithResult:(BOOL)success;
 
-/*
-    обновились данные в кордате для entity "Owe"
+/* обновились данные в кордате для entity "Owe"
  */
 - (void)VMZOwesCoreDataDidUpdate;
 
@@ -50,11 +47,15 @@
 @property (nonatomic, strong, readonly) VMZCoreDataManager* coreDataManager;
 @property (nonatomic, strong, readonly) VMZOweNetworking* networking;
 
-@property (nonatomic, strong) NSArray *_Nullable owes;
-
 @property (nonatomic, strong) id<VMZOweDelegate> delegate;
 
 + (VMZOweController *_Nonnull)sharedInstance;
+
+- (instancetype)init NS_DESIGNATED_INITIALIZER;
+
+/* сразу вызовется VMZAuthDidSignInForUser у delegate для текущего состояния авторизации
+ */
+- (void)setDelegate:(id<VMZOweDelegate>)delegate;
 
 - (void)loggedInViewControllerDidLoad;
 
