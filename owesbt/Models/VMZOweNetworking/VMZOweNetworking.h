@@ -10,12 +10,13 @@
 
 
 @class VMZCoreDataManager;
+@protocol VMZOweAuthDelegate;
 
 
 typedef void (^FirebaseRequestCallback)(NSDictionary *data, NSError *error);
 
 
-@interface VMZOweNetworking : NSObject
+@interface VMZOweNetworking : NSObject <VMZOweAuthDelegate>
 
 - (instancetype)initWithCoreDataManager:(VMZCoreDataManager *)manager;
 

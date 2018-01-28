@@ -21,20 +21,14 @@
 @implementation AppDelegate
 
 
-- (void)initFIRAppAndGIDAuth
-{
-    [FIRApp configure];
-    
-    [GIDSignIn sharedInstance].clientID = [FIRApp defaultApp].options.clientID;
-    [GIDSignIn sharedInstance].delegate = [VMZOweController sharedInstance];
-}
-
-
 #pragma mark - UIApplicationDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [self initFIRAppAndGIDAuth];
+    [FIRApp configure];
+    
+    [[GIDSignIn sharedInstance] signOut];
+    [[FIRAuth auth] signOut:nil];
     
     self.window = [UIWindow new];
     self.window.rootViewController = [VMZMainViewController new];

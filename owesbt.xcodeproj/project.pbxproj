@@ -35,6 +35,7 @@
 		13928740201E2A96008AFD8B /* VMZOwesActiveViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1392873F201E2A96008AFD8B /* VMZOwesActiveViewController.m */; };
 		13928743201E3218008AFD8B /* VMZOwesRequestedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 13928742201E3218008AFD8B /* VMZOwesRequestedViewController.m */; };
 		13928746201E36FF008AFD8B /* VMZOwesClosedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 13928745201E36FF008AFD8B /* VMZOwesClosedViewController.m */; };
+		1392874F201E6441008AFD8B /* VMZOweAuth.m in Sources */ = {isa = PBXBuildFile; fileRef = 1392874E201E6441008AFD8B /* VMZOweAuth.m */; };
 		13D715B52007F91F00B7CAA6 /* VMZOweData+CoreDataClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 13D715B32007F91F00B7CAA6 /* VMZOweData+CoreDataClass.m */; };
 		13D715B62007F91F00B7CAA6 /* VMZOweData+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 13D715B42007F91F00B7CAA6 /* VMZOweData+CoreDataProperties.m */; };
 		13D715B92007F9A000B7CAA6 /* VMZOwesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 13D715B82007F9A000B7CAA6 /* VMZOwesTableViewController.m */; };
@@ -103,6 +104,8 @@
 		13928742201E3218008AFD8B /* VMZOwesRequestedViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VMZOwesRequestedViewController.m; sourceTree = "<group>"; };
 		13928744201E36FF008AFD8B /* VMZOwesClosedViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VMZOwesClosedViewController.h; sourceTree = "<group>"; };
 		13928745201E36FF008AFD8B /* VMZOwesClosedViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VMZOwesClosedViewController.m; sourceTree = "<group>"; };
+		1392874D201E6441008AFD8B /* VMZOweAuth.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VMZOweAuth.h; sourceTree = "<group>"; };
+		1392874E201E6441008AFD8B /* VMZOweAuth.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VMZOweAuth.m; sourceTree = "<group>"; };
 		13D715B12007F91F00B7CAA6 /* VMZOweData+CoreDataProperties.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "VMZOweData+CoreDataProperties.h"; sourceTree = "<group>"; };
 		13D715B22007F91F00B7CAA6 /* VMZOweData+CoreDataClass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "VMZOweData+CoreDataClass.h"; sourceTree = "<group>"; };
 		13D715B32007F91F00B7CAA6 /* VMZOweData+CoreDataClass.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "VMZOweData+CoreDataClass.m"; sourceTree = "<group>"; };
@@ -254,6 +257,7 @@
 		130EDAA9201102490040AA32 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				13928750201E7C4D008AFD8B /* VMZOweAuth */,
 				130EDAA32011013E0040AA32 /* VMZOweController */,
 			);
 			path = Controllers;
@@ -367,6 +371,15 @@
 				130EDA9E200F7ADC0040AA32 /* VMZContacts.m */,
 			);
 			path = VMZContacts;
+			sourceTree = "<group>";
+		};
+		13928750201E7C4D008AFD8B /* VMZOweAuth */ = {
+			isa = PBXGroup;
+			children = (
+				1392874D201E6441008AFD8B /* VMZOweAuth.h */,
+				1392874E201E6441008AFD8B /* VMZOweAuth.m */,
+			);
+			path = VMZOweAuth;
 			sourceTree = "<group>";
 		};
 		4FA5FA2F6697ABCD19A6728C /* Frameworks */ = {
@@ -625,6 +638,7 @@
 				131E76801FFAAEDD00F8FA71 /* VMZMainViewController.m in Sources */,
 				13928743201E3218008AFD8B /* VMZOwesRequestedViewController.m in Sources */,
 				130EDA98200E7E400040AA32 /* VMZOweAction+CoreDataClass.m in Sources */,
+				1392874F201E6441008AFD8B /* VMZOweAuth.m in Sources */,
 				130EDAAC201105350040AA32 /* VMZOweNetworking.m in Sources */,
 				130EDA9C200ED53A0040AA32 /* NSString+Formatting.m in Sources */,
 				131E769A1FFD3B2E00F8FA71 /* DataModel.xcdatamodeld in Sources */,

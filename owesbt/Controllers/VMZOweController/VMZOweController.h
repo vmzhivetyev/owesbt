@@ -14,20 +14,12 @@
 @class VMZOweData;
 @class VMZCoreDataManager;
 @class VMZOweNetworking;
+@class VMZOweAuth;
 
 
 @protocol VMZOweDelegate<NSObject>
 
 @optional
-
-/* при успешном логине в firebase
-    user - not nil
-    error - nil
-   при ошибке логина в google/firebase или логауте из firebase
-    user - nil
-    error - nil / not nil
- */
-- (void)VMZAuthDidSignInForUser:(FIRUser *_Nullable)user withError:(NSError *_Nullable)error;
 
 /* success - номер телефона не пустой (из кэша либо получен от сервера)
  */
@@ -42,20 +34,15 @@
 @end
 
 
-@interface VMZOweController : NSObject <GIDSignInDelegate, VMZOweDelegate>
+@interface VMZOweController : NSObject <VMZOweDelegate>
 
 @property (nonatomic, strong, readonly) VMZCoreDataManager* coreDataManager;
 @property (nonatomic, strong, readonly) VMZOweNetworking* networking;
+@property (nonatomic, strong, readonly) VMZOweAuth *auth;
 
-@property (nonatomic, strong) id<VMZOweDelegate> delegate;
+@property (nonatomic, weak) id<VMZOweDelegate> delegate;
 
 + (VMZOweController *_Nonnull)sharedInstance;
-
-- (instancetype)init NS_DESIGNATED_INITIALIZER;
-
-/* сразу вызовется VMZAuthDidSignInForUser у delegate для текущего состояния авторизации
- */
-- (void)setDelegate:(id<VMZOweDelegate>)delegate;
 
 - (void)loggedInViewControllerDidLoad;
 

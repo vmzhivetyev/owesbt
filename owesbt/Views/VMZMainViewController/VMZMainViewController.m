@@ -15,6 +15,7 @@
 #import "VMZChangePhoneViewController.h"
 #import "VMZNavigationController.h"
 #import "UIViewController+MessagePrompt.h"
+#import "VMZOweAuth.h"
 
 @interface VMZMainViewController ()
 
@@ -27,9 +28,9 @@
 @implementation VMZMainViewController
 
 
-#pragma mark - VMZOweDelegate
+#pragma mark - VMZOweAuthDelegate
 
-- (void)VMZAuthDidSignInForUser:(FIRUser *_Nullable)user withError:(NSError *_Nullable)error
+- (void)VMZAuthStateChangedForUser:(FIRUser *_Nullable)user withError:(NSError *_Nullable)error
 {
     if (error)
     {
@@ -37,9 +38,16 @@
         return;
     }
     
-    self.spinnerImageView.hidden = !user;
     self.googleSignInButton.hidden = !!user;
+    self.spinnerImageView.hidden = !user;
+    if (!self.spinnerImageView.hidden)
+    {
+        [self createSpinnerAnimation];
+    }
 }
+
+
+#pragma mark - VMZOweDelegate
 
 - (void)VMZPhoneNumberCheckedWithResult:(BOOL)success
 {
@@ -53,11 +61,6 @@
     }
 }
 
-- (void)VMZOweErrorOccured:(NSString *)error
-{
-    [self mp_showMessagePrompt:error];
-}
-
 
 #pragma mark - UI
 
@@ -67,6 +70,17 @@
     [view setModalPresentationStyle:UIModalPresentationFullScreen];
     [view setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
     [self presentViewController:view animated:YES completion:nil];
+}
+
+- (void)createSpinnerAnimation
+{
+    CABasicAnimation* animation = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
+    animation.fromValue = [NSNumber numberWithFloat:0.0f];
+    animation.toValue = [NSNumber numberWithFloat: 2*M_PI];
+    animation.duration = 1.0f;
+    animation.repeatCount = INFINITY;
+    [self.spinnerImageView.layer removeAllAnimations];
+    [self.spinnerImageView.layer addAnimation:animation forKey:@"SpinAnimation"];
 }
 
 - (void)createUI
@@ -82,12 +96,10 @@
     self.spinnerImageView = spinnerImageView;
     [self.view addSubview:self.spinnerImageView];
     
-    CABasicAnimation* animation = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
-    animation.fromValue = [NSNumber numberWithFloat:0.0f];
-    animation.toValue = [NSNumber numberWithFloat: 2*M_PI];
-    animation.duration = 1.0f;
-    animation.repeatCount = INFINITY;
-    [self.spinnerImageView.layer addAnimation:animation forKey:@"SpinAnimation"];
+    [self createSpinnerAnimation];
+    
+    self.googleSignInButton.hidden = YES;
+    
     
     [self.spinnerImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.center.equalTo(self.view);
@@ -107,6 +119,7 @@
     [super viewDidLoad];
     
     [VMZOweController sharedInstance].delegate = self;
+    [VMZOweController sharedInstance].auth.delegate = self;
     [GIDSignIn sharedInstance].uiDelegate = self;
     
     [self createUI];

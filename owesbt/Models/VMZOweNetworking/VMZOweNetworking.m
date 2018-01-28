@@ -13,10 +13,13 @@
 #import "VMZOweController.h"
 #import "VMZOweAction+CoreDataClass.h"
 #import "VMZOweData+CoreDataClass.h"
+#import "VMZOweAuth.h"
 
 @interface VMZOweNetworking ()
 
 @property (nonatomic, strong, readonly) VMZCoreDataManager* coreDataManager;
+
+@property (nonatomic, strong) id<NSObject> firebaseAuthStateDidChangeHandler;
 
 @property (nonatomic, strong) NSTimer *requestsTimer;
 @property (atomic, assign) BOOL doingActions;
@@ -39,7 +42,32 @@
     return self;
 }
 
+
+#pragma mark - VMZOweAuthDelegate
+
+- (void)VMZAuthStateChangedForUser:(FIRUser *)user withError:(NSError *)error
+{
+    if(user)
+    {
+        [self checkPhoneNumberForFIRUser:user];
+    }
+    else
+    {
+        [self clearCachedPhoneNumber];
+    }
+}
+
+
 #pragma mark - FirebaseNetworking
+
+- (void)checkPhoneNumberForFIRUser:(FIRUser *)user
+{
+    [self getMyPhoneWithCompletion:^(NSString * _Nullable phone, NSError * error) {
+        NSLog(@"Got my phone: %@",phone);
+        
+        [[VMZOweController sharedInstance] VMZPhoneNumberCheckedWithResult: phone != nil];
+    }];
+}
 
 - (NSString*)firebaseUrlForFunction:(NSString *_Nonnull)function withParameters:(NSDictionary *_Nullable)parameters
 {

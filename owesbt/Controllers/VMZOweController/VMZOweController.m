@@ -7,114 +7,23 @@
 //
 
 #import <Firebase.h>
-#import <GoogleSignIn/GoogleSignIn.h>
 
 #import "VMZOweController.h"
 #import "VMZCoreDataManager.h"
 #import "VMZOweNetworking.h"
 #import "VMZOweData+CoreDataClass.h"
+#import "VMZOweAuth.h"
+
 
 @interface VMZOweController ()
-
-@property (nonatomic, strong) id<NSObject> firebaseAuthStateDidChangeHandler;
 
 @end
 
 
 @implementation VMZOweController
 
-- (void)setDelegate:(id<VMZOweDelegate>)delegate
-{
-    _delegate = delegate;
-    
-    [self createFirebaseAuthStateListener];
-}
-
-- (void)checkPhoneNumberForFIRUser:(FIRUser *)user
-{
-    [self VMZAuthDidSignInForUser:user withError:nil];
-    
-    [self.networking getMyPhoneWithCompletion:^(NSString * _Nullable phone, NSError * error) {
-        NSLog(@"Got my phone: %@",phone);
-        
-        [self VMZPhoneNumberCheckedWithResult: phone != nil];
-    }];
-}
-
-- (void)FIRAuthStateChangedForUser:(FIRUser *)user
-{
-    NSLog(@"Auth state changed %@", user);
-    
-    if(user)
-    {
-        [self checkPhoneNumberForFIRUser:user];
-    }
-    else
-    {
-        [self.networking clearCachedPhoneNumber];
-        [self VMZAuthDidSignInForUser:nil withError:nil];
-    }
-}
-
-- (void)createFirebaseAuthStateListener
-{
-    if (!self.firebaseAuthStateDidChangeHandler)
-    {
-        self.firebaseAuthStateDidChangeHandler =
-        [[FIRAuth auth] addAuthStateDidChangeListener:^(FIRAuth *_Nonnull auth, FIRUser *_Nullable user) {
-            [self FIRAuthStateChangedForUser:user];
-        }];
-    }
-}
-
-
-#pragma mark - GIDSignInDelegate
-
-- (void)signIn:(GIDSignIn *)signIn
-didSignInForUser:(GIDGoogleUser *)user
-     withError:(NSError *)error
-{
-    if (error == nil)
-    {
-        GIDAuthentication *authentication = user.authentication;
-        FIRAuthCredential *credential =
-        [FIRGoogleAuthProvider credentialWithIDToken:authentication.idToken
-                                         accessToken:authentication.accessToken];
-        
-        // и теперь авторизуемся в firebase с помощью гугловкого credential
-        
-        [[FIRAuth auth] signInWithCredential:credential completion:^(FIRUser *user, NSError *error) {
-            if (error)
-            {
-                [self VMZAuthDidSignInForUser:user withError:error];
-            }
-        }];
-    }
-    else
-    {
-        [self VMZAuthDidSignInForUser:nil withError:error];
-    }
-}
-
-- (void)signIn:(GIDSignIn *)signIn
-didDisconnectWithUser:(GIDGoogleUser *)user
-     withError:(NSError *)error
-{
-    
-}
-
 
 #pragma mark - VMZOweDelegate
-
-- (void)VMZAuthDidSignInForUser:(FIRUser*)user withError:(NSError*)error
-{
-    if ([self.delegate respondsToSelector:@selector(VMZAuthDidSignInForUser:withError:)])
-    {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.delegate VMZAuthDidSignInForUser:user withError:error];
-        });
-    }
-}
 
 - (void)VMZPhoneNumberCheckedWithResult:(BOOL)success
 {
@@ -167,30 +76,26 @@ didDisconnectWithUser:(GIDGoogleUser *)user
     {
         _coreDataManager = [[VMZCoreDataManager alloc] init];
         _networking = [[VMZOweNetworking alloc] initWithCoreDataManager:_coreDataManager];
+        _auth = [[VMZOweAuth alloc] init];
     }
     return self;
-}
-
-- (void)dealloc
-{
-    [[FIRAuth auth] removeAuthStateDidChangeListener:self.firebaseAuthStateDidChangeHandler];
 }
 
 #pragma mark - Public
 
 - (void)loggedInViewControllerDidLoad
 {
-    [[self networking] startActionsTimer];
+    [self.networking startActionsTimer];
 }
 
 - (void)setMyPhone:(NSString *)phone completion:(void(^)(NSString *errorText))completion
 {
-    [[self networking] setMyPhone:phone completion:completion];
+    [self.networking setMyPhone:phone completion:completion];
 }
 
 - (void)refreshOwesWithStatus:(NSString *)status completion:(void(^)(NSError *error))completion
 {
-    [[self networking] downloadOwes:status completion:completion];
+    [self.networking downloadOwes:status completion:completion];
 }
 
 - (void)closeOwe:(VMZOweData *)owe

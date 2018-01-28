@@ -133,7 +133,7 @@ NSString *const footerIdentifier = @"VMZReusableFooterId";
     [[VMZOweController sharedInstance] refreshOwesWithStatus:self.owesStatus completion:^(NSError * _Nullable error) {
         [sender endRefreshing];
         
-        if (error)
+        if (error && sender)
         {
             [self mp_showMessagePrompt:error.localizedDescription];
         }
@@ -299,7 +299,7 @@ NSString *const footerIdentifier = @"VMZReusableFooterId";
     
     self.searchController = self.parentViewController.navigationItem.searchController;
     
-    [self refresh:self.refreshControl];
+    [self refresh:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated

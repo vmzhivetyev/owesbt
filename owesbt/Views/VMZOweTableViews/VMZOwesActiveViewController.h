@@ -10,6 +10,4 @@
 
 @interface VMZOwesActiveViewController : VMZOwesTableViewController
 
-- (instancetype)init NS_DESIGNATED_INITIALIZER;
-
 @end

@@ -11,11 +11,10 @@
 
 @protocol GIDSignInUIDelegate;
 @protocol VMZOweDelegate;
+@protocol VMZOweAuthDelegate;
 
 
-@interface VMZMainViewController : UIViewController <VMZOweDelegate, GIDSignInUIDelegate>
-
-- (instancetype)init NS_DESIGNATED_INITIALIZER;
+@interface VMZMainViewController : UIViewController <VMZOweDelegate, VMZOweAuthDelegate>
 
 @end
 
