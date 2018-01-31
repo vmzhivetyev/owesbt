@@ -35,7 +35,7 @@
         }
         else
         {
-            [self presentViewController:[[VMZNavigationController alloc] init] animated:YES completion:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:VMZNotificationAuthSignedIn object:self];
         }
     }];
 }

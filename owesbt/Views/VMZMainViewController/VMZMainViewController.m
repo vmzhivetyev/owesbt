@@ -16,6 +16,7 @@
 #import "VMZNavigationController.h"
 #import "UIViewController+MessagePrompt.h"
 #import "VMZOweAuth.h"
+#import "VMZUIController.h"
 
 @interface VMZMainViewController ()
 
@@ -44,6 +45,11 @@
     {
         [self createSpinnerAnimation];
     }
+    
+    if (!user)
+    {
+        [[NSNotificationCenter defaultCenter] postNotificationName:VMZNotificationAuthNilUser object:self];
+    }
 }
 
 
@@ -53,7 +59,7 @@
 {
     if (success)
     {
-        [self presentViewController:[[VMZNavigationController alloc] init] animated:YES completion:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:VMZNotificationAuthSignedIn object:self];
     }
     else
     {
@@ -66,9 +72,8 @@
 
 - (void)presentChangePhoneView
 {
-    UIViewController* view = [VMZChangePhoneViewController new];
-    [view setModalPresentationStyle:UIModalPresentationFullScreen];
-    [view setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
+    UIViewController* view = [[VMZOweController sharedInstance].uiController phoneSetupViewController];
+    [view setModalTransitionStyle:UIModalTransitionStyleFlipHorizontal];
     [self presentViewController:view animated:YES completion:nil];
 }
 

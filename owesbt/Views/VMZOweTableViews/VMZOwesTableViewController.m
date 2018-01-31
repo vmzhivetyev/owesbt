@@ -271,7 +271,7 @@ NSString *const footerIdentifier = @"VMZReusableFooterId";
 
 - (instancetype)init
 {
-    return nil;
+    return [self initWithStatus:nil tabBarImage:nil];
 }
 
 - (instancetype)initWithStatus:(VMZOweStatus)status tabBarImage:(NSString*)imageName

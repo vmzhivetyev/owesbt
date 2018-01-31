@@ -31,4 +31,6 @@
 - (NSArray * _Nullable)getActions;
 - (void)removeAction:(VMZOweAction *_Nonnull)action;
 
+- (void)clearCoreData;
+
 @end

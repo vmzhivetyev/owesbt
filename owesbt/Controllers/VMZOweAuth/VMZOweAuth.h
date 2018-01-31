@@ -15,6 +15,7 @@
 
 @protocol VMZOweAuthDelegate <NSObject>
 
+@optional
 /* при успешном логине в firebase
  user - not nil
  error - nil

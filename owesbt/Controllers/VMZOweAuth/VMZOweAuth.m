@@ -62,6 +62,10 @@
             [self VMZAuthStateChangedForUser:user withError:nil];
         }];
     }
+    else
+    {
+        [self VMZAuthStateChangedForUser:[FIRAuth auth].currentUser withError:nil];
+    }
 }
 
 - (void)removeFirebaseAuthStateListener

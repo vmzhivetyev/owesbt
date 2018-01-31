@@ -6,13 +6,12 @@
 //  Copyright © 2018 Вячеслав Живетьев. All rights reserved.
 //
 
-#import <Firebase.h>
-
 #import "VMZOweController.h"
 #import "VMZCoreDataManager.h"
 #import "VMZOweNetworking.h"
 #import "VMZOweData+CoreDataClass.h"
 #import "VMZOweAuth.h"
+#import "VMZUIController.h"
 
 
 @interface VMZOweController ()
@@ -21,6 +20,72 @@
 
 
 @implementation VMZOweController
+
+
+#pragma mark - LifeCycle
+
++ (VMZOweController*)sharedInstance
+{
+    static id sharedInstance = nil;
+    
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedInstance = [[self alloc] init];
+    });
+    
+    return sharedInstance;
+}
+
+- (instancetype)init
+{
+    self = [super init];
+    if(self)
+    {
+        [self initInstances];
+        [self subscribeForNotificationCenter];
+    }
+    return self;
+}
+
+- (void)dealloc
+{
+    [self unsubscribeFromNotificationCenter];
+}
+
+- (void)initInstances
+{
+    _coreDataManager = [[VMZCoreDataManager alloc] init];
+    _networking = [[VMZOweNetworking alloc] initWithCoreDataManager:_coreDataManager];
+    _auth = [[VMZOweAuth alloc] init];
+    _uiController = [[VMZUIController alloc] init];
+}
+
+- (void)subscribeForNotificationCenter
+{
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(signedOut)
+                                                 name:VMZNotificationAuthSignedOut
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(signedOut)
+                                                 name:VMZNotificationAuthNilUser
+                                               object:nil];
+}
+
+- (void)unsubscribeFromNotificationCenter
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+
+#pragma mark - NSNotificationCenter Selectors
+
+- (void)signedOut
+{
+    [self.coreDataManager clearCoreData];
+    [self.networking clearCachedPhoneNumber];
+}
 
 
 #pragma mark - VMZOweDelegate
@@ -53,32 +118,6 @@
             [self.delegate VMZOweErrorOccured:error];
         });
     }
-}
-
-#pragma mark - LifeCycle
-
-+ (VMZOweController*)sharedInstance
-{
-    static id sharedInstance = nil;
-    
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        sharedInstance = [[self alloc] init];
-    });
-    
-    return sharedInstance;
-}
-
-- (instancetype)init
-{
-    self = [super init];
-    if(self)
-    {
-        _coreDataManager = [[VMZCoreDataManager alloc] init];
-        _networking = [[VMZOweNetworking alloc] initWithCoreDataManager:_coreDataManager];
-        _auth = [[VMZOweAuth alloc] init];
-    }
-    return self;
 }
 
 #pragma mark - Public

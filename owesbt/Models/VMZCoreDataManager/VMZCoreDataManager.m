@@ -15,6 +15,9 @@
 
 @implementation VMZCoreDataManager
 
+
+#pragma mark - Lifecycle
+
 - (instancetype)init
 {
     self = [super init];
@@ -35,6 +38,9 @@
     }
     return self;
 }
+
+
+#pragma mark - Public
 
 - (BOOL)saveManagedObjectContext
 {
@@ -178,6 +184,21 @@
 - (void)removeAction:(VMZOweAction *)action
 {
     [self.managedObjectContext deleteObject:action];
+    [self saveManagedObjectContext];
+}
+
+- (void)clearCoreData
+{
+    for (VMZOweData *owe in [self getOwesWithPredicate:nil])
+    {
+        [self.managedObjectContext deleteObject:owe];
+    }
+    
+    for (VMZOweAction *action in [self getActions])
+    {
+        [self.managedObjectContext deleteObject:action];
+    }
+    
     [self saveManagedObjectContext];
 }
 

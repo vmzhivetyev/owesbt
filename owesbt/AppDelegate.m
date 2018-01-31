@@ -12,6 +12,7 @@
 #import "AppDelegate.h"
 #import "VMZMainViewController.h"
 #import "VMZOweController.h"
+#import "VMZUIController.h"
 
 @interface AppDelegate ()
 
@@ -27,11 +28,11 @@
 {
     [FIRApp configure];
     
-    [[GIDSignIn sharedInstance] signOut];
-    [[FIRAuth auth] signOut:nil];
+//    [[GIDSignIn sharedInstance] signOut];
+//    [[FIRAuth auth] signOut:nil];
     
     self.window = [UIWindow new];
-    self.window.rootViewController = [VMZMainViewController new];
+    self.window.rootViewController = [[VMZOweController sharedInstance].uiController mainViewController];
     [self.window makeKeyAndVisible];
     
     return YES;
@@ -76,6 +77,5 @@
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
-
 
 @end

@@ -15,6 +15,14 @@
 @class VMZCoreDataManager;
 @class VMZOweNetworking;
 @class VMZOweAuth;
+@class VMZUIController;
+
+
+static NSString *const VMZNotificationAuthNilUser = @"VMZNotificationAuthNilUser";
+static NSString *const VMZNotificationAuthSignedIn = @"VMZNotificationAuthSignedIn";
+static NSString *const VMZNotificationAuthCheckedPhoneNumberBad = @"VMZNotificationAuthCheckedPhoneNumber";
+static NSString *const VMZNotificationAuthCheckedPhoneNumberGood = @"VMZNotificationAuthCheckedPhoneNumber";
+static NSString *const VMZNotificationAuthSignedOut = @"VMZNotificationAuthSignedOut";
 
 
 @protocol VMZOweDelegate<NSObject>
@@ -39,6 +47,7 @@
 @property (nonatomic, strong, readonly) VMZCoreDataManager* coreDataManager;
 @property (nonatomic, strong, readonly) VMZOweNetworking* networking;
 @property (nonatomic, strong, readonly) VMZOweAuth *auth;
+@property (nonatomic, strong, readonly) VMZUIController *uiController;
 
 @property (nonatomic, weak) id<VMZOweDelegate> delegate;
 

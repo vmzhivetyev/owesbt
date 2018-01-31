@@ -95,6 +95,16 @@
     NSString *url = [NSString stringWithFormat:@"https://us-central1-owe-ios.cloudfunctions.net/app/%@", functionWithEscapedParameters];
     
     [[FIRAuth auth].currentUser getIDTokenWithCompletion:^(NSString * _Nullable token, NSError * _Nullable error) {
+        if (!token)
+        {
+            [[NSNotificationCenter defaultCenter] postNotificationName:VMZNotificationAuthSignedOut object:self];
+            if(completion)
+            {
+                completion(nil, error);
+            }
+            return;
+        }
+        
         NSMutableURLRequest *urlRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:url]];
         
         [urlRequest setHTTPMethod:@"GET"];
@@ -104,40 +114,39 @@
         NSURLSession *session = [NSURLSession sharedSession];
         
         NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:urlRequest completionHandler:
-                                          ^(NSData *data, NSURLResponse *response, NSError *error)
-                                          {
-                                              if(error)
-                                              {
-                                                  if(completion)
-                                                  {
-                                                      dispatch_async(dispatch_get_main_queue(), ^{
-                                                          completion(nil, error);
-                                                      });
-                                                  }
-                                                  return;
-                                              }
-                                              
-                                              NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
-                                              
-                                              NSError *parseError = nil;
-                                              NSDictionary *responseDictionary = [NSJSONSerialization
-                                                                                  JSONObjectWithData:data
-                                                                                  options:0
-                                                                                  error:&parseError];
-                                              NSLog(@"parseError is - %@", parseError);
-                                              
-                                              if(completion)
-                                              {
-                                                  dispatch_async(dispatch_get_main_queue(), ^{
-                                                      completion(responseDictionary, parseError);
-                                                  });
-                                              }
-                                              
-                                              if(httpResponse.statusCode != 200)
-                                              {
-                                                  NSLog(@"Error, Server returned code %zd", httpResponse.statusCode);
-                                              }
-                                          }];
+          ^(NSData *data, NSURLResponse *response, NSError *error){
+              if(error)
+              {
+                  if(completion)
+                  {
+                      dispatch_async(dispatch_get_main_queue(), ^{
+                          completion(nil, error);
+                      });
+                  }
+                  return;
+              }
+              
+              NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+              
+              NSError *parseError = nil;
+              NSDictionary *responseDictionary = [NSJSONSerialization
+                                                  JSONObjectWithData:data
+                                                  options:0
+                                                  error:&parseError];
+              NSLog(@"parseError is - %@", parseError);
+              
+              if(completion)
+              {
+                  dispatch_async(dispatch_get_main_queue(), ^{
+                      completion(responseDictionary, parseError);
+                  });
+              }
+              
+              if(httpResponse.statusCode != 200)
+              {
+                  NSLog(@"Error, Server returned code %zd", httpResponse.statusCode);
+              }
+          }];
         [dataTask resume];
     }];
 }
