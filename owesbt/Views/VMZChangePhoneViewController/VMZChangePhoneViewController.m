@@ -35,6 +35,7 @@
         }
         else
         {
+            [self.phoneTextField endEditing:YES];
             [[NSNotificationCenter defaultCenter] postNotificationName:VMZNotificationAuthSignedIn object:self];
         }
     }];
