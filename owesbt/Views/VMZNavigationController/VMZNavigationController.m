@@ -15,6 +15,7 @@
 #import "VMZOwesActiveViewController.h"
 #import "VMZOwesRequestedViewController.h"
 #import "VMZOwesClosedViewController.h"
+#import "VMZGroupsViewController.h"
 
 @interface VMZNavigationController ()
 
@@ -30,8 +31,13 @@
 
 - (void)plusButtonClicked:(UIBarButtonItem *)button
 {
-    UIViewController *view = [VMZNewOweViewController new];
+    UIViewController *view = [[VMZNewOweViewController alloc] init];
     [self pushViewController:view animated:YES];
+}
+
+- (void)groupButtonClicked:(UIBarButtonItem *)button
+{
+    [self pushViewController:[[VMZGroupsViewController alloc] init] animated:YES];
 }
 
 - (void)dismissKeyboard
@@ -57,6 +63,13 @@
                                                   target:self
                                                   action:@selector(plusButtonClicked:)];
     tabBarController.navigationItem.rightBarButtonItem = plusButton;
+    
+    UIBarButtonItem *groupButton =
+    [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
+                                                  target:self
+                                                  action:@selector(groupButtonClicked:)];
+    tabBarController.navigationItem.leftBarButtonItem = groupButton;
+    
     self.navigationBar.prefersLargeTitles = YES;
 }
 

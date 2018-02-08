@@ -51,11 +51,6 @@
 
 #pragma mark - CNContactPickerDelegate
 
-- (void)contactPickerDidCancel:(CNContactPickerViewController *)picker
-{
-    
-}
-
 - (void)contactPicker:(CNContactPickerViewController *)picker didSelectContactProperty:(CNContactProperty *)contactProperty
 {
     CNPhoneNumber *phoneNumber = contactProperty.value;
@@ -163,14 +158,19 @@
     self.closedTextField.delegate = self;
     self.closedTextField.inputView = [[UIView alloc] initWithFrame:CGRectZero];
     
+    UIButton *groupButton = [[UIButton alloc] init];
+    groupButton.imageView.image = [UIImage imageNamed:@"group"];
+    
+    
     [self.view addSubview:self.tableView];
-    [nameCell addSubview:self.nameTextField];
-    [phoneCell addSubview:self.phoneTextField];
-    [roleCell addSubview:self.roleSegmentedControl];
-    [sumCell addSubview:self.sumTextField];
-    [infoCell addSubview:self.descriptionTextField];
-    [createdCell addSubview:self.createdTextField];
-    [closedCell addSubview:self.closedTextField];
+    [nameCell.contentView addSubview:self.nameTextField];
+    [phoneCell.contentView addSubview:self.phoneTextField];
+    [roleCell.contentView addSubview:self.roleSegmentedControl];
+    [sumCell.contentView addSubview:self.sumTextField];
+    [infoCell.contentView addSubview:self.descriptionTextField];
+    [createdCell.contentView addSubview:self.createdTextField];
+    [closedCell.contentView addSubview:self.closedTextField];
+    //[roleCell.contentView addSubview:groupButton];
     
     self.cells = @[@[nameCell, phoneCell, roleCell], @[sumCell, infoCell], @[createdCell, closedCell]].mutableCopy;
     
@@ -181,24 +181,36 @@
     [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.equalTo(self.view);
     }];
+    
     [self.nameTextField mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.equalTo(nameCell).insets(insets);
     }];
+    
     [self.phoneTextField mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.equalTo(phoneCell).insets(insets);
     }];
+    
     [self.roleSegmentedControl mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.edges.equalTo(roleCell).insets(insets);
+        make.top.bottom.left.equalTo(roleCell).insets(insets);
+        make.right.equalTo(roleCell).insets(insets);
+        //make.right.equalTo(groupButton.mas_left).offset(-10);
     }];
+//    [groupButton mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.top.right.bottom.equalTo(roleCell).insets(insets);
+//    }];
+    
     [self.sumTextField mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.equalTo(sumCell).insets(insets);
     }];
+    
     [self.descriptionTextField mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.equalTo(infoCell).insets(insets);
     }];
+    
     [self.createdTextField mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.equalTo(createdCell).insets(insets);
     }];
+    
     [self.closedTextField mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.equalTo(closedCell).insets(insets);
     }];
@@ -273,7 +285,7 @@
             self.readonlyMode = YES;
             
             self.navigationItem.rightBarButtonItem = nil;
-            ((UITableViewCell*)self.nameTextField.superview).accessoryType = UITableViewCellAccessoryCheckmark;
+            ((UITableViewCell*)self.nameTextField.superview.superview).accessoryType = UITableViewCellAccessoryCheckmark;
         }
         else
         {
