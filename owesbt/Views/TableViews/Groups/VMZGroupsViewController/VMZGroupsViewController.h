@@ -8,6 +8,10 @@
 
 #import "VMZUITableViewController.h"
 
-@interface VMZGroupsViewController : VMZUITableViewController
+
+@protocol VMZOweDelegate;
+
+
+@interface VMZGroupsViewController : VMZUITableViewController <VMZOweDelegate>
 
 @end

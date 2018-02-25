@@ -224,20 +224,29 @@
         return obj.phone.copy;
     }];
     
+    [self saveManagedObjectContext];
+    [[VMZOweController sharedInstance] VMZOwesCoreDataDidUpdate];
+    
     return group;
+}
+
+- (void)deleteObjectsFromCoreData:(NSFetchRequest *)request
+{
+    [self.managedObjectContext performBlockAndWait:^{
+        NSError *error;
+        NSArray *results = [self.managedObjectContext executeFetchRequest:request error:&error];
+        for(NSManagedObject *obj in results)
+        {
+            [self.managedObjectContext deleteObject:obj];
+        }
+    }];
 }
 
 - (void)clearCoreData
 {
-    for (VMZOweData *owe in [self getOwesWithPredicate:nil])
-    {
-        [self.managedObjectContext deleteObject:owe];
-    }
-    
-    for (VMZOweAction *action in [self getActions])
-    {
-        [self.managedObjectContext deleteObject:action];
-    }
+    [self deleteObjectsFromCoreData:[VMZOweData fetchRequest]];
+    [self deleteObjectsFromCoreData:[VMZOweAction fetchRequest]];
+    [self deleteObjectsFromCoreData:[VMZOweGroup fetchRequest]];
     
     [self saveManagedObjectContext];
 }

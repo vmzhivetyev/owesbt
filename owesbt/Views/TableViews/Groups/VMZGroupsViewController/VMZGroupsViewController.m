@@ -25,6 +25,9 @@ NSString * const VMZCellIdentifier = @"VMZGroupInfoCell";
 
 @implementation VMZGroupsViewController
 
+
+#pragma mark - Lifecycle
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -34,16 +37,27 @@ NSString * const VMZCellIdentifier = @"VMZGroupInfoCell";
                                                   target:self
                                                   action:@selector(addButtonTapped)];
     
-    [self.tableView registerClass:[UITableViewCell class]
-           forCellReuseIdentifier:VMZCellIdentifier];
+    //[self.tableView registerClass:[UITableViewCell class]
+    //       forCellReuseIdentifier:VMZCellIdentifier];
     
     self.cells = [[VMZOweController sharedInstance].coreDataManager groups];
+    
+    [VMZOweController sharedInstance].delegate = self;
 }
 
 - (void)addButtonTapped
 {
     UIViewController *newGroupViewController = [[VMZGroupViewController alloc] init];
     [self.navigationController pushViewController:newGroupViewController animated:YES];
+}
+
+
+#pragma mark - VMZOweDelegate
+
+- (void)VMZOwesCoreDataDidUpdate
+{
+    self.cells = [[VMZOweController sharedInstance].coreDataManager groups];
+    [self.tableView reloadData];
 }
 
 
@@ -85,9 +99,16 @@ NSString * const VMZCellIdentifier = @"VMZGroupInfoCell";
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:VMZCellIdentifier
-                                                            forIndexPath:indexPath];
+                                                            ];
     
+    if (!cell)
+    {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:VMZCellIdentifier];
+    }
+    
+    NSArray* members = (NSArray *)self.cells[indexPath.row].members;
     cell.textLabel.text = self.cells[indexPath.row].name;
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%ld", members.count];
     
     return cell;
 }

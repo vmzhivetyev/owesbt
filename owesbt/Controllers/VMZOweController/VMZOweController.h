@@ -33,7 +33,7 @@ static NSString *const VMZNotificationAuthSignedOut = @"VMZNotificationAuthSigne
  */
 - (void)VMZPhoneNumberCheckedWithResult:(BOOL)success;
 
-/* обновились данные в кордате для entity "Owe"
+/* обновились данные в кордате
  */
 - (void)VMZOwesCoreDataDidUpdate;
 

@@ -143,6 +143,8 @@
     NSString *name = self.groupNameCells[0].textField.text;
     
     [[VMZOweController sharedInstance].coreDataManager createGroupWithName:name members:members];
+    
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark - UI
