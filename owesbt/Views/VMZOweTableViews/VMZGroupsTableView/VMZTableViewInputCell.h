@@ -7,13 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "VMZUITextField.h"
+
+
+@class VMZUITextFieldController;
+
 
 @interface VMZTableViewInputCell : UITableViewCell <UITextFieldDelegate>
 
-@property (nonatomic, weak) UITextField *textField;
-
-@property (nonatomic, assign, readonly) BOOL readonly;
-@property (nonatomic, strong, readonly) NSCharacterSet *allowedCharacters;
+@property (nonatomic, weak) VMZUITextField *textField;
 
 @property (nonatomic, copy) NSString *sectionHeader;
 @property (nonatomic, copy) void (^accessoryTappedBlock)(NSIndexPath *);

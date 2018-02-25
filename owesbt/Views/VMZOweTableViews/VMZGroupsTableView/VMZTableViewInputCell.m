@@ -10,10 +10,7 @@
 
 #import <Masonry.h>
 
-
-@interface VMZTableViewInputCell ()
-
-@end
+#import "VMZUITextFieldController.h"
 
 
 @implementation VMZTableViewInputCell
@@ -30,54 +27,46 @@
 
 - (void)createUI:(const UIEdgeInsets *)insets keyboardType:(UIKeyboardType)keyboardType placeholder:(NSString *)placeholder
 {
-    UITextField *textField = [UITextField new];
+    VMZUITextField *textField = [[VMZUITextField alloc] init];
     _textField = textField;
     _textField.placeholder = placeholder;
     _textField.keyboardType = keyboardType;
-    _textField.delegate = self;
     [self.contentView addSubview:textField];
     
     [_textField mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.equalTo(self.contentView).insets(*insets);
     }];
-
-    if (_readonly)
-    {
-        _textField.inputView = [[UIView alloc] initWithFrame:CGRectZero];
-    }
 }
 
 - (instancetype)initWithPlaceholder:(NSString *)placeholder
                        keyboardType:(UIKeyboardType)keyboardType
                     textFieldInsets:(UIEdgeInsets)insets
                            readOnly:(BOOL)readonly
-                  allowedCharacters:(NSString *)characters
+                  allowedCharacters:(NSString *)allowedCharacters
 {
     self = [super init];
     if (self)
     {
-        _readonly = readonly;
-        _allowedCharacters = !characters ?
-                                     nil : [NSCharacterSet characterSetWithCharactersInString:characters];
+        [self createUI:&insets keyboardType:keyboardType placeholder:placeholder];
+        
+        NSCharacterSet *allowedCharactersSet = allowedCharacters ?
+            [NSCharacterSet characterSetWithCharactersInString:allowedCharacters] : nil;
+        
+        _textField.controller =
+            [[VMZUITextFieldController alloc] initWithTextField:_textField
+                                                       readonly:readonly
+                                              allowedCharacters:allowedCharactersSet];
+        
         _accessoryTappedBlock = ^void(NSIndexPath *indexPath){ };
         
-        [self createUI:&insets keyboardType:keyboardType placeholder:placeholder];
     }
     return self;
 }
 
-
-#pragma mark - UITextFieldDelegate
-
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+- (instancetype)init
 {
-    if (self.allowedCharacters)
-    {
-        NSCharacterSet *characterSetFromTextField = [NSCharacterSet characterSetWithCharactersInString:string];
-        
-        return [self.allowedCharacters isSupersetOfSet:characterSetFromTextField];
-    }
-    return !self.readonly;
+    self = nil;
+    return self;
 }
 
 @end
