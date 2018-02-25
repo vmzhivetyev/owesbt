@@ -8,19 +8,23 @@
 
 #import <UIKit/UIKit.h>
 
+#import "VMZUITextField.h"
+#import "VMZUITableViewController.h"
+
 
 @protocol CNContactPickerDelegate;
 
-
+/*
 @interface VMZGroupOweUIs
 
-@property (nonatomic, strong) UITextField *sumTextField;
-@property (nonatomic, strong) UITextField *descriptionTextField;
-@property (nonatomic, strong) UITextField *creditorTextField;
+@property (nonatomic, strong) VMZUITextField *sumTextField;
+@property (nonatomic, strong) VMZUITextField *descriptionTextField;
+@property (nonatomic, strong) VMZUITextField *creditorTextField;
 
-@end
+@end*/
 
-@interface VMZGroupsViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, CNContactPickerDelegate>
+
+@interface VMZGroupsViewController : VMZUITableViewController <CNContactPickerDelegate>
 
 @end
 

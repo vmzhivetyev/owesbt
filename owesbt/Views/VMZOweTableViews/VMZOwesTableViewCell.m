@@ -11,7 +11,7 @@
 
 #import "VMZOwesTableViewCell.h"
 #import "VMZOweData+CoreDataClass.h"
-#import "VMZContacts.h"
+#import "VMZContact.h"
 
 @interface VMZOwesTableViewCell ()
 

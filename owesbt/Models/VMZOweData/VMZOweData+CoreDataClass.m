@@ -10,14 +10,14 @@
 #import <Contacts/Contacts.h>
 
 #import "VMZOweData+CoreDataClass.h"
-#import "VMZContacts.h"
+#import "VMZContact.h"
 
 
 @implementation VMZOweData
 
 + (NSString *)stringFromStatus:(VMZOweStatus)status
 {
-    return @[@"active", @"requested", @"closed"][status];
+    return @[@"undefined", @"active", @"requested", @"closed"][status];
 }
 
 + (VMZOweStatus)statusFromName:(NSString *)name
@@ -34,9 +34,7 @@
     {
         return VMZOweStatusClosed;
     }
-    @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                   reason:[NSString stringWithFormat:@"The enum VMZOweStatus has no value %@", name]
-                                 userInfo:nil];
+    return VMZOweStatusUndefined;
 }
 
 - (NSString *)partner
@@ -94,8 +92,8 @@
 - (NSString *)findPartnerName
 {
     CNPhoneNumber *phone = nil;
-    CNContact* partnerContact = [VMZContacts contactWithPhoneNumber:self.partner phoneNumberRef:&phone];
-    return partnerContact ? [partnerContact valueForKey: @"fullName"] : self.partner;
+    CNContact* partnerContact = [VMZContact contactWithPhoneNumber:self.partner phoneNumberRef:&phone];
+    return partnerContact ? partnerContact.fullNameValue : self.partner;
 }
 
 - (BOOL)selfIsCreditor

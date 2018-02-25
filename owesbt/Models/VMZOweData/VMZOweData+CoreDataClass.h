@@ -15,6 +15,7 @@
 
 
 typedef enum {
+    VMZOweStatusUndefined,
     VMZOweStatusActive,
     VMZOweStatusRequested,
     VMZOweStatusClosed

@@ -16,8 +16,6 @@
 
 @interface VMZContactTableViewCell ()
 
-//@property (nonatomic, strong) NSMutableArray<VMZUITextFieldController *> *controllers;
-
 @end
 
 

@@ -14,6 +14,15 @@
 #import "VMZNavigationController.h"
 #import "VMZOweController.h"
 
+
+#define VMZ_DEBUG_LOAD_GROUPS_VIEW
+#ifdef VMZ_DEBUG_LOAD_GROUPS_VIEW
+
+#import "VMZGroupsViewController.h"
+
+#endif
+
+
 @implementation VMZUIController
 
 
@@ -69,7 +78,13 @@
 
 - (UIViewController *)signedInWithController
 {
-    return [[VMZNavigationController alloc] init];
+    VMZNavigationController *navigationController = [[VMZNavigationController alloc] init];
+    
+#ifdef VMZ_DEBUG_LOAD_GROUPS_VIEW
+    [navigationController pushViewController:[VMZGroupsViewController new] animated:YES];
+#endif
+    
+    return navigationController;
 }
 
 - (UIViewController *)phoneSetupViewController

@@ -16,7 +16,7 @@
 #import "VMZOweData+CoreDataClass.h"
 #import "UIViewController+MessagePrompt.h"
 #import "NSString+Formatting.h"
-#import "VMZContacts.h"
+#import "VMZContact.h"
 
 @interface VMZNewOweViewController ()
 
@@ -56,7 +56,7 @@
     CNPhoneNumber *phoneNumber = contactProperty.value;
     if (phoneNumber)
     {
-        self.nameTextField.text = [contactProperty.contact valueForKey:@"fullName"];
+        self.nameTextField.text = contactProperty.contact.fullNameValue;
         self.phoneTextField.text = phoneNumber.stringValue;
         //selectedContactPhoneNumberDigits = phoneNumber.digits
     }
@@ -252,9 +252,9 @@
             
             NSString *partnerPhone = [owe selfIsCreditor] ? owe.debtor : owe.creditor;
             CNPhoneNumber *phone = nil;
-            CNContact* partnerContact = [VMZContacts contactWithPhoneNumber:partnerPhone phoneNumberRef:&phone];
+            CNContact* partnerContact = [VMZContact contactWithPhoneNumber:partnerPhone phoneNumberRef:&phone];
             
-            self.nameTextField.text = partnerContact ? [partnerContact valueForKey: @"fullName"] : @"Unnamed";
+            self.nameTextField.text = partnerContact ? partnerContact.fullNameValue : @"Unnamed";
             self.phoneTextField.text = phone ? phone.stringValue : partnerPhone;
             self.sumTextField.text = owe.sum;
             self.descriptionTextField.text = owe.descr;
@@ -319,7 +319,7 @@
 {
     if (indexPath.section == 0 && indexPath.row == 0)
     {
-        CNContactPickerViewController *view = [VMZContacts contactPickerViewForPhoneNumber];
+        CNContactPickerViewController *view = [VMZContact contactPickerViewForPhoneNumber];
         view.delegate = self;
         [self presentViewController:view animated:YES completion:nil];
     }
