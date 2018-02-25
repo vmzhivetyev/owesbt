@@ -9,11 +9,47 @@
 #import <Contacts/Contacts.h>
 #import <ContactsUI/ContactsUI.h>
 
-#import "VMZContacts.h"
+#import "VMZContact.h"
 #import "NSString+Formatting.h"
 
 
-@implementation VMZContacts
+@implementation VMZContact
+
+
+- (BOOL)isEqualToContact:(VMZContact *)other
+{
+    if (!self.uid)
+    {
+        return YES;
+    }
+    
+    return [self.uid isEqualToString:other.uid];
+}
+
+
+#pragma mark - Lifecycle
+
+-   (instancetype)initWithName:(NSString *)name phone:(NSString *)phone uid:(NSString *)uid
+{
+    self = [self init];
+    if (self)
+    {
+        _name = name;
+        _phone = phone;
+        _uid = uid;
+    }
+    return self;
+}
+
+- (instancetype)initWithPhone:(CNPhoneNumber *)phone
+                    cnContact:(CNContact *)contact
+{
+    self = [self initWithName:contact.fullNameValue phone:phone.stringValue uid:contact.identifier];
+    return self;
+}
+
+
+#pragma mark - Class Methods
 
 + (NSArray *)fetchContacts
 {
@@ -78,7 +114,7 @@
 
 + (CNContactPickerViewController *)contactPickerViewForPhoneNumber
 {
-    CNContactPickerViewController *contactPicker = [CNContactPickerViewController new];
+    CNContactPickerViewController *contactPicker = [[CNContactPickerViewController alloc] init];
     
     contactPicker.displayedPropertyKeys = @[CNContactPhoneNumbersKey];
     contactPicker.predicateForEnablingContact = [NSPredicate predicateWithFormat:@"phoneNumbers.@count > 0"];
