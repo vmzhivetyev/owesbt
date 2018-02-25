@@ -13,8 +13,11 @@
 
 
 @protocol CNContactPickerDelegate;
+@class VMZOweGroup;
 
 
 @interface VMZGroupViewController : VMZUITableViewController <CNContactPickerDelegate>
+
+- (instancetype)initWithGroup:(VMZOweGroup *)group forceTouchActions:(NSArray *)actions;
 
 @end

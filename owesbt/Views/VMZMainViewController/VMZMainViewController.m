@@ -72,7 +72,7 @@
 
 - (void)presentChangePhoneView
 {
-    UIViewController* view = [[VMZOweController sharedInstance].uiController phoneSetupViewController];
+    UIViewController* view = [VMZUIController phoneSetupViewController];
     [view setModalTransitionStyle:UIModalTransitionStyleFlipHorizontal];
     [self presentViewController:view animated:YES completion:nil];
 }

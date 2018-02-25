@@ -10,7 +10,7 @@
 
 @implementation UITableView (UpdatesBlock)
 
-- (void)doUpdates:(void (^)(UITableView *tableView))updatesBlock
+- (void)ub_doUpdates:(void (^)(UITableView *tableView))updatesBlock
 {
     [self beginUpdates];
     updatesBlock(self);

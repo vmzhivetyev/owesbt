@@ -11,4 +11,9 @@
 
 @implementation VMZOweGroup
 
++ (instancetype)newInManagedObjectContext:(NSManagedObjectContext *)moc
+{
+    return [NSEntityDescription insertNewObjectForEntityForName:[self fetchRequest].entityName inManagedObjectContext:moc];
+}
+
 @end

@@ -17,7 +17,6 @@
 
 @property (nonatomic, weak) VMZUITextField *textField;
 
-@property (nonatomic, copy) NSString *sectionHeader;
 @property (nonatomic, copy) void (^accessoryTappedBlock)(NSIndexPath *);
 
 - (instancetype)initWithPlaceholder:(NSString *)placeholder

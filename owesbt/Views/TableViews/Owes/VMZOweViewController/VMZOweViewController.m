@@ -56,7 +56,7 @@
     CNPhoneNumber *phoneNumber = contactProperty.value;
     if (phoneNumber)
     {
-        self.nameTextField.text = contactProperty.contact.fullNameValue;
+        self.nameTextField.text = contactProperty.contact.fn_fullName;
         self.phoneTextField.text = phoneNumber.stringValue;
         //selectedContactPhoneNumberDigits = phoneNumber.digits
     }
@@ -254,7 +254,7 @@
             CNPhoneNumber *phone = nil;
             CNContact* partnerContact = [VMZContact contactWithPhoneNumber:partnerPhone phoneNumberRef:&phone];
             
-            self.nameTextField.text = partnerContact ? partnerContact.fullNameValue : @"Unnamed";
+            self.nameTextField.text = partnerContact ? partnerContact.fn_fullName : @"Unnamed";
             self.phoneTextField.text = phone ? phone.stringValue : partnerPhone;
             self.sumTextField.text = owe.sum;
             self.descriptionTextField.text = owe.descr;

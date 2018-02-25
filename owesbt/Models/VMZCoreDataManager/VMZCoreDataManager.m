@@ -9,9 +9,12 @@
 #import "VMZCoreDataManager.h"
 #import "VMZOweData+CoreDataClass.h"
 #import "VMZOweAction+CoreDataClass.h"
+#import "VMZOweGroup+CoreDataClass.h"
 #import "VMZOweController.h"
 #import "NSString+Formatting.h"
 #import "VMZOweNetworking.h"
+#import "VMZContact.h"
+#import "NSArray+LambdaSelect.h"
 
 @implementation VMZCoreDataManager
 
@@ -39,9 +42,6 @@
     return self;
 }
 
-
-#pragma mark - Public
-
 - (BOOL)saveManagedObjectContext
 {
     NSError *saveError = nil;
@@ -56,7 +56,43 @@
     }
 }
 
-- (NSArray *)owesForStatus:(NSString *)status selfIsDebtor:(BOOL)selfIsDebtor
+- (VMZOweData *)createNewOweObject
+{
+    return [VMZOweData newOweInManagedObjectContext:self.managedObjectContext];
+}
+
+- (NSArray<VMZOweData *> *)getOwesWithPredicate:(NSString*)predicate
+{
+    NSFetchRequest *fetchRequest = [VMZOweData fetchRequest];
+    if (predicate)
+    {
+        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:predicate]];
+    }
+    
+    NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"created" ascending:YES];
+    
+    NSError *error = nil;
+    NSArray *results = [self executeFetchRequest:fetchRequest
+                              withSortDescriptor:sort
+                                           error:&error];
+    
+    NSLog(@"Fetching error: %@", error);
+    
+    for (VMZOweData *owe in results)
+    {
+        if (!owe.partnerName)
+        {
+            [owe updatePartnerName];
+        }
+    }
+    
+    return results;
+}
+
+
+#pragma mark - Public
+
+- (NSArray<VMZOweData *> *)owesForStatus:(NSString *)status selfIsDebtor:(BOOL)selfIsDebtor
 {
     NSMutableString* predicate = [NSMutableString stringWithFormat:@"(status = '%@')", status];
     if (selfIsDebtor)
@@ -69,34 +105,6 @@
     }
     
     return [self getOwesWithPredicate:predicate];
-}
-
-- (NSArray *)getOwesWithPredicate:(NSString*)predicate {
-    __block NSArray *results = nil;
-    
-    NSFetchRequest *fetchRequest = [VMZOweData fetchRequest];
-    if (predicate)
-    {
-        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:predicate]];
-    }
-    NSSortDescriptor *sort = [[NSSortDescriptor alloc] initWithKey:@"created" ascending:NO];
-    [fetchRequest setSortDescriptors:@[sort]];
-    
-    [self.managedObjectContext performBlockAndWait:^{
-        NSError *error = nil;
-        results = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
-        NSLog(@"Fetching error: %@", error);
-    }];
-    
-    for (VMZOweData *owe in results)
-    {
-        if (!owe.partnerName)
-        {
-            [owe updatePartnerName];
-        }
-    }
-    
-    return results;
 }
 
 - (void)updateOwes:(NSArray*)owesArray status:(NSString *)status
@@ -131,11 +139,6 @@
     [[VMZOweController sharedInstance] VMZOwesCoreDataDidUpdate];
 }
 
-- (VMZOweData *)createNewOweObject
-{
-    return [VMZOweData newOweInManagedObjectContext:self.managedObjectContext];
-}
-
 - (void)addNewAction:(NSString *)action parameters:(NSDictionary *)params owe:(VMZOweData *)owe
 {
     [VMZOweAction createNewActionObject:action withParameters:params forOwe:owe managedObjectContext:self.managedObjectContext];
@@ -161,21 +164,31 @@
     [[VMZOweController sharedInstance] VMZOwesCoreDataDidUpdate];
 }
 
-- (NSArray *)getActions
+- (NSArray *)executeFetchRequest:(NSFetchRequest *)request
+              withSortDescriptor:(NSSortDescriptor *)sort
+                           error:(NSError * __autoreleasing *)error
 {
-    __block NSArray *results = nil;
+    __block NSArray *results = @[];
     
-    NSFetchRequest *fetchRequest = [VMZOweAction fetchRequest];
-    //fetchRequest.fetchLimit = 1;
-    NSSortDescriptor *sort = [[NSSortDescriptor alloc] initWithKey:@"created" ascending:YES];
-    [fetchRequest setSortDescriptors:@[sort]];
+    [request setSortDescriptors:@[sort]];
     
     [self.managedObjectContext performBlockAndWait:^{
-        NSError *error = nil;
-        results = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
-        NSLog(@"Fetching error: %@", error);
+        results = [self.managedObjectContext executeFetchRequest:request error:error];
     }];
     
+    return results;
+}
+
+- (NSArray *)getActions
+{
+    NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"created" ascending:YES];
+    
+    NSError *error = nil;
+    NSArray *results = [self executeFetchRequest:[VMZOweAction fetchRequest]
+                              withSortDescriptor:sort
+                                           error:&error];
+    
+    NSLog(@"Fetching error: %@", error);
     NSLog(@"ACTIONS: %ld", results.count);
     
     return results;
@@ -185,6 +198,33 @@
 {
     [self.managedObjectContext deleteObject:action];
     [self saveManagedObjectContext];
+}
+
+- (NSArray<VMZOweGroup *> *)groups
+{
+    NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"uid" ascending:YES];
+    
+    NSError *error = nil;
+    NSArray *results = [self executeFetchRequest:[VMZOweGroup fetchRequest]
+                              withSortDescriptor:sort
+                                           error:&error];
+    
+    NSLog(@"Fetching error: %@", error);
+    
+    return results;
+}
+
+- (VMZOweGroup *)createGroupWithName:(NSString *)name members:(NSArray<VMZContact *> *)members
+{
+    VMZOweGroup *group = [VMZOweGroup newInManagedObjectContext:self.managedObjectContext];
+    
+    group.name = name.copy;
+    group.uid = [NSUUID UUID].UUIDString;
+    group.members = [members ls_arrayWithSelect:^id(VMZContact *obj, NSUInteger idx) {
+        return obj.phone.copy;
+    }];
+    
+    return group;
 }
 
 - (void)clearCoreData

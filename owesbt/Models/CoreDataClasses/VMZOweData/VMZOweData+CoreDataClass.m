@@ -37,6 +37,11 @@
     return VMZOweStatusUndefined;
 }
 
++ (instancetype)newOweInManagedObjectContext:(NSManagedObjectContext *)moc
+{
+    return [NSEntityDescription insertNewObjectForEntityForName:@"Owe" inManagedObjectContext:moc];
+}
+
 - (NSString *)partner
 {
     return [self selfIsCreditor] ? self.debtor : self.creditor;
@@ -50,11 +55,6 @@
 - (void)setStatusType:(VMZOweStatus)status
 {
     self.status = [VMZOweData stringFromStatus:status];
-}
-
-+ (instancetype)newOweInManagedObjectContext:(NSManagedObjectContext *)moc
-{
-    return [NSEntityDescription insertNewObjectForEntityForName:@"Owe" inManagedObjectContext:moc];
 }
 
 - (void)loadFromDictionary:(NSDictionary * _Nonnull)dict
@@ -93,7 +93,7 @@
 {
     CNPhoneNumber *phone = nil;
     CNContact* partnerContact = [VMZContact contactWithPhoneNumber:self.partner phoneNumberRef:&phone];
-    return partnerContact ? partnerContact.fullNameValue : self.partner;
+    return partnerContact ? partnerContact.fn_fullName : self.partner;
 }
 
 - (BOOL)selfIsCreditor

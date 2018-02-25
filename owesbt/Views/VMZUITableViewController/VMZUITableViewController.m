@@ -8,6 +8,8 @@
 
 #import "VMZUITableViewController.h"
 
+#import <Masonry.h>
+
 
 @interface VMZUITableViewController ()
 
@@ -34,6 +36,10 @@
     self.tableView.allowsSelection = NO;
     
     [self.view addSubview:self.tableView];
+    
+    [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.equalTo(self.view);
+    }];
 }
 
 #pragma mark - UITableViewDataSource

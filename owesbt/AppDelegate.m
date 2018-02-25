@@ -33,7 +33,7 @@
 //    [[FIRAuth auth] signOut:nil];
     
     self.window = [UIWindow new];
-    self.window.rootViewController = [[VMZOweController sharedInstance].uiController mainViewController];
+    self.window.rootViewController = [VMZUIController mainViewController];
     [self.window makeKeyAndVisible];
     
     return YES;

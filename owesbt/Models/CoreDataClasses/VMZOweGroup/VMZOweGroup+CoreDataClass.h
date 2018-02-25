@@ -16,6 +16,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface VMZOweGroup : NSManagedObject
 
++ (instancetype)newInManagedObjectContext:(NSManagedObjectContext *)moc;
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -10,6 +10,6 @@
 
 @interface NSArray (IndexPath)
 
-- (id)objectAtIndexPath:(NSIndexPath *)indexPath;
+- (id)ip_objectAtIndexPath:(NSIndexPath *)indexPath;
 
 @end

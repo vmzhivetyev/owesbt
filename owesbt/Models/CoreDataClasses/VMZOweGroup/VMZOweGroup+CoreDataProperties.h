@@ -19,6 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, copy) NSString *uid;
 @property (nullable, nonatomic, retain) NSObject *members;
 @property (nullable, nonatomic, retain) NSObject *owes;
+@property (nullable, nonatomic, copy) NSString *name;
 
 @end
 

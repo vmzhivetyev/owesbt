@@ -18,5 +18,6 @@
 @dynamic uid;
 @dynamic members;
 @dynamic owes;
+@dynamic name;
 
 @end

@@ -10,7 +10,7 @@
 
 @implementation CNContact (FullName)
 
-- (NSString *)fullNameValue
+- (NSString *)fn_fullName
 {
     return [self valueForKey:@"fullName"];
 }

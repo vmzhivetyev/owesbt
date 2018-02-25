@@ -44,7 +44,7 @@
 - (instancetype)initWithPhone:(CNPhoneNumber *)phone
                     cnContact:(CNContact *)contact
 {
-    self = [self initWithName:contact.fullNameValue phone:phone.stringValue uid:contact.identifier];
+    self = [self initWithName:contact.fn_fullName phone:phone.stringValue uid:contact.identifier];
     return self;
 }
 

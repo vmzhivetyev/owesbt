@@ -12,15 +12,9 @@
 #import "VMZMainViewController.h"
 #import "VMZChangePhoneViewController.h"
 #import "VMZNavigationController.h"
-#import "VMZOweController.h"
-
-
-#define VMZ_DEBUG_LOAD_GROUPS_VIEW
-#ifdef VMZ_DEBUG_LOAD_GROUPS_VIEW
-
+#import "VMZOweViewController.h"
+#import "VMZGroupsViewController.h"
 #import "VMZGroupViewController.h"
-
-#endif
 
 
 @implementation VMZUIController
@@ -62,7 +56,7 @@
 
 #pragma mark - Public
 
-- (void)doTransitionToViewController:(UIViewController *)viewController withOptions:(UIViewAnimationOptions)options
++ (void)doTransitionToViewController:(UIViewController *)viewController withOptions:(UIViewAnimationOptions)options
 {
     UIWindow *window = [UIApplication sharedApplication].keyWindow;
     
@@ -71,40 +65,60 @@
                     } completion:nil];
 }
 
-- (UIViewController *)mainViewController
++ (UIViewController *)mainViewController
 {
     return [[VMZMainViewController alloc] init];
 }
 
-- (UIViewController *)signedInWithController
++ (UIViewController *)signedInViewController
 {
     VMZNavigationController *navigationController = [[VMZNavigationController alloc] init];
-    
-#ifdef VMZ_DEBUG_LOAD_GROUPS_VIEW
-    [navigationController pushViewController:[VMZGroupViewController new] animated:YES];
-#endif
     
     return navigationController;
 }
 
-- (UIViewController *)phoneSetupViewController
++ (UIViewController *)phoneSetupViewController
 {
     return [[VMZChangePhoneViewController alloc] init];
 }
 
++ (UIViewController *)newOweViewController
+{
+    return [[VMZOweViewController alloc] init];
+}
+
++ (UIViewController *)groupsViewController
+{
+    return [[VMZGroupsViewController alloc] init];
+}
+
++ (UIViewController *)newGroupViewController
+{
+    return [[VMZGroupViewController alloc] init];
+}
+
++ (UIViewController *)viewControllerForOwe:(VMZOweData *)owe
+{
+    return [[VMZOweViewController alloc] initWithOwe:owe forceTouchActions:nil];
+}
+
++ (UIViewController *)viewControllerForGroup:(VMZOweGroup *)group
+{
+    return [[VMZGroupViewController alloc] initWithGroup:group forceTouchActions:nil];
+}
 
 #pragma mark - NSNotificationCenter Selectors
 
 - (void)signedIn
 {
-    [self doTransitionToViewController:[self signedInWithController]
-                           withOptions:UIViewAnimationOptionTransitionCrossDissolve];
+    [[self class] doTransitionToViewController:[[self class] signedInViewController]
+                                   withOptions:UIViewAnimationOptionTransitionCrossDissolve];
 }
 
 - (void)signedOut
 {
-    [self doTransitionToViewController:[self mainViewController]
-                           withOptions:UIViewAnimationOptionTransitionNone];
+    [[self class] doTransitionToViewController:[[self class] mainViewController]
+                                   withOptions:UIViewAnimationOptionTransitionNone];
 }
 
 

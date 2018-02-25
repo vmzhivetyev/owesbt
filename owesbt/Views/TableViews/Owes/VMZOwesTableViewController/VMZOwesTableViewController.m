@@ -6,16 +6,20 @@
 //  Copyright © 2018 Вячеслав Живетьев. All rights reserved.
 //
 
+#import "VMZOwesTableViewController.h"
+
 #import <Masonry.h>
 
-#import "VMZOwesTableViewController.h"
 #import "VMZOweController.h"
+#import "VMZUIController.h"
 #import "VMZOweNetworking.h"
-#import "VMZOweData+CoreDataClass.h"
 #import "VMZCoreDataManager.h"
+
+#import "VMZOweData+CoreDataClass.h"
 #import "VMZOweTableViewCell.h"
-#import "UIViewController+MessagePrompt.h"
 #import "VMZOweViewController.h"
+
+#import "UIViewController+MessagePrompt.h"
 #import "NSString+Formatting.h"
 
 
@@ -292,7 +296,8 @@ NSString *const footerIdentifier = @"VMZReusableFooterId";
     return self;
 }
 
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     [super viewDidLoad];
     
     [self createUI];
@@ -352,7 +357,7 @@ NSString *const footerIdentifier = @"VMZReusableFooterId";
         return;
     }
     
-    UIViewController *view = [[VMZOweViewController alloc] initWithOwe:owe forceTouchActions:nil];
+    UIViewController *view = [VMZUIController viewControllerForOwe:owe];
     [self.navigationController pushViewController:view animated:YES];
 }
 

@@ -14,10 +14,14 @@
 
 #import "VMZInputTableViewCell.h"
 #import "NSArray+IndexPath.h"
+#import "NSArray+LambdaSelect.h"
 #import "VMZContact.h"
 #import "UIViewController+MessagePrompt.h"
 #import "UITableView+UpdatesBlock.h"
 #import "VMZContactTableViewCell.h"
+
+#import "VMZOweController.h"
+#import "VMZCoreDataManager.h"
 
 
 @interface VMZGroupViewController ()
@@ -30,12 +34,15 @@
 @property (nonatomic, strong) NSMutableArray<UITableViewCell *> *createGroupCells;
 
 //@property (nonatomic, weak) NSArray<VMZGroupOweUIs *> *owes;
-@property (nonatomic, weak) UIButton *addOweButton;
+//@property (nonatomic, weak) UIButton *addOweButton;
 
 @end
 
 
 @implementation VMZGroupViewController
+
+
+#pragma mark - Adding or removing members
 
 - (BOOL)isMemberAlreadyAdded:(VMZContact *)member
 {
@@ -49,37 +56,16 @@
     return NO;
 }
 
-- (VMZContactTableViewCell *)newCellForContact:(VMZContact *)member
-{
-    VMZContactTableViewCell *newCell = [[VMZContactTableViewCell alloc] init];
-    
-    [newCell showContact:member];
-    
-    return newCell;
-}
-
-- (BOOL)showCreateGroupButton
-{
-    return YES;
-}
-
-- (void)showOrHideCreateGroupButton
-{
-    UITableViewCell *createGroupButtonCell = [self.createGroupCells objectAtIndex:0];
-    
-    createGroupButtonCell.hidden = self.membersCells.count < 2;
-}
-
 - (void)addMember:(VMZContact *)member
 {
     VMZContactTableViewCell *newCell = [self newCellForContact:member];
     
     [self.membersCells addObject:newCell];
     
-    [self.tableView doUpdates:^(UITableView *tableView) {
+    [self.tableView ub_doUpdates:^(UITableView *tableView) {
         NSIndexPath *indexPathForNewMemberCell =
-            [NSIndexPath indexPathForRow:self.membersCells.count-1
-                               inSection:[self.cells indexOfObject:self.membersCells]];
+        [NSIndexPath indexPathForRow:self.membersCells.count-1
+                           inSection:[self.cells indexOfObject:self.membersCells]];
         
         [tableView insertRowsAtIndexPaths:@[ indexPathForNewMemberCell ]
                          withRowAnimation:UITableViewRowAnimationAutomatic];
@@ -93,7 +79,7 @@
     VMZContactTableViewCell *cell = (VMZContactTableViewCell *)[self tableView:self.tableView
                                                          cellForRowAtIndexPath:indexPath];
     
-    [self.tableView doUpdates:^(UITableView *tableView) {
+    [self.tableView ub_doUpdates:^(UITableView *tableView) {
         [self.membersCells removeObject:cell];
         
         [tableView deleteRowsAtIndexPaths:@[indexPath]
@@ -103,16 +89,23 @@
     }];
 }
 
-- (void)addButtonTapped
+
+#pragma mark - UI Macros
+
+- (VMZContactTableViewCell *)newCellForContact:(VMZContact *)member
 {
-    CNContactPickerViewController *view = [VMZContact contactPickerViewForPhoneNumber];
-    view.delegate = self;
-    [self presentViewController:view animated:YES completion:nil];
+    VMZContactTableViewCell *newCell = [[VMZContactTableViewCell alloc] init];
+    
+    [newCell showContact:member];
+    
+    return newCell;
 }
 
-- (void)createButtonTapped
+- (void)showOrHideCreateGroupButton
 {
+    UITableViewCell *createGroupButtonCell = [self.createGroupCells objectAtIndex:0];
     
+    createGroupButtonCell.hidden = self.membersCells.count < 2;
 }
 
 - (UITableViewCell *)cellWithButtonWithText:(NSString *)text action:(SEL)selector
@@ -132,46 +125,30 @@
     return cell;
 }
 
-- (UIView *)doneButton
+
+#pragma mark - UI Selectors
+
+- (void)addButtonTapped
 {
-    UIView *view = [UIView new];
-    view.backgroundColor = [UIColor whiteColor];
-    
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
-    [button setTitle:@"Create Group" forState:UIControlStateNormal];
-    [button addTarget:self action:@selector(createButtonTapped) forControlEvents:UIControlEventTouchUpInside];
-    
-    [view addSubview:button];
-    [button mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(view).offset(20);
-        make.left.bottom.right.equalTo(view);
-    }];
-    
-    return view;
+    CNContactPickerViewController *view = [VMZContact contactPickerViewForPhoneNumber];
+    view.delegate = self;
+    [self presentViewController:view animated:YES completion:nil];
 }
 
-#pragma mark - Lifecycle
+- (void)createGroupButtonTapped
+{
+    NSArray *members = [self.membersCells ls_arrayWithSelect:^id(VMZContactTableViewCell *obj, NSUInteger idx) {
+        return obj.contact;
+    }];
+    NSString *name = self.groupNameCells[0].textField.text;
+    
+    [[VMZOweController sharedInstance].coreDataManager createGroupWithName:name members:members];
+}
+
+#pragma mark - UI
 
 - (void)createUI
 {
-    /*UITableView* tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
-    _tableView = tableView;
-    
-    self.tableView.delegate = self;
-    self.tableView.dataSource = self;
-    
-    self.tableView.allowsSelection = NO;
-    
-    [self.view addSubview:self.tableView];*/
-    
-    /*UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
-                                                                                target:self
-                                                                                action:@selector(doneButtonClicked:)];
-    self.navigationItem.rightBarButtonItem = doneButton;
-     */
-    
-    // cells
-    
     self.title = @"New Group";
     
     UIEdgeInsets insets = UIEdgeInsetsMake(10, 20, 10, 10);
@@ -181,15 +158,6 @@
                                            textFieldInsets:insets
                                                   readOnly:NO
                                          allowedCharacters:nil];
-    groupNameCell.sectionHeader = @"Name";
-    
-    VMZInputTableViewCell *yourselfCell =
-        [[VMZInputTableViewCell alloc] initWithPlaceholder:nil
-                                              keyboardType:UIKeyboardTypeDefault
-                                           textFieldInsets:insets
-                                                  readOnly:NO
-                                         allowedCharacters:nil];
-    yourselfCell.textField.text = @"You";
     
     UITableViewCell *addMemberCell = [self cellWithButtonWithText:@"Add Member"
                                                            action:@selector(addButtonTapped)];
@@ -201,7 +169,7 @@
     
     UITableViewCell *buttonCell =
     [self cellWithButtonWithText:@"Create Group"
-                          action:@selector(createButtonTapped)];
+                          action:@selector(createGroupButtonTapped)];
     
     [self.createGroupCells addObject:buttonCell];
     
@@ -221,15 +189,31 @@
     return nameCell;
 }
 
-- (void)viewDidLoad {
+
+#pragma mark - Lifecycle
+
+
+- (instancetype)initWithGroup:(VMZOweGroup *)group forceTouchActions:(NSArray *)actions
+{
+    self = [self init];
+    if (self)
+    {
+        
+    }
+    return self;
+}
+
+- (void)viewDidLoad
+{
     [super viewDidLoad];
     
     [self createUI];
     
+    [self addMember:[[VMZContact alloc] initWithName:@"You" phone:@"phone" uid:@"self"]];
+    
 #define VMZ_DEBUG_LOAD_GROUPS_VIEW
 #ifdef VMZ_DEBUG_LOAD_GROUPS_VIEW
     
-    [self addMember:[[VMZContact alloc] initWithName:@"You" phone:@"phone" uid:@"self"]];
     [self addMember:[[VMZContact alloc] initWithName:@"Somebody" phone:@"88005553535" uid:@"o"]];
     
 #endif
@@ -269,29 +253,33 @@
 
 #pragma mark - UITableViewDelegate
 
-- (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(nonnull NSIndexPath *)indexPath
-{
-    return;
-    VMZInputTableViewCell* cell = [self.cells objectAtIndexPath:indexPath];
-    cell.accessoryTappedBlock(indexPath);
-}
+//- (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(nonnull NSIndexPath *)indexPath
+//{
+//    VMZInputTableViewCell* cell = [self.cells ip_objectAtIndexPath:indexPath];
+//    cell.accessoryTappedBlock(indexPath);
+//}r
 
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    return YES;
-    return indexPath.section == [self.cells indexOfObject:self.membersCells]
-        && indexPath.row > 0;
-}
+//- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    return YES;
+//}
 
-- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView
+           editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return indexPath.section == [self.cells indexOfObject:self.membersCells]
-    && indexPath.row > 0 ? UITableViewCellEditingStyleDelete : UITableViewCellEditingStyleInsert;
+        && indexPath.row > 0
+        ?
+        UITableViewCellEditingStyleDelete
+        : UITableViewCellEditingStyleNone;
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [self removeMemberAtIndexPath:indexPath];
+    if (editingStyle == UITableViewCellEditingStyleDelete)
+    {
+        [self removeMemberAtIndexPath:indexPath];
+    }
 }
 
 
@@ -311,14 +299,14 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    VMZInputTableViewCell *cell = [self.cells objectAtIndexPath:indexPath];
+    VMZInputTableViewCell *cell = [self.cells ip_objectAtIndexPath:indexPath];
     NSLog(@"cell %@", cell);
     return cell;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-    return @"";// self.cells[section][0].sectionHeader;
+    return @"";
 }
 
 @end

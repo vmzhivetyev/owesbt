@@ -10,6 +10,6 @@
 
 @interface CNContact (FullName)
 
-@property (nonatomic, copy, readonly) NSString *fullNameValue;
+@property (nonatomic, copy, readonly) NSString *fn_fullName;
 
 @end

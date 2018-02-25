@@ -10,6 +10,6 @@
 
 @interface UITableView (UpdatesBlock)
 
-- (void)doUpdates:(void (^_Nonnull)(UITableView *  _Nonnull tableView))updatesBlock;
+- (void)ub_doUpdates:(void (^_Nonnull)(UITableView *  _Nonnull tableView))updatesBlock;
 
 @end

@@ -15,7 +15,8 @@
 #import "VMZOwesActiveViewController.h"
 #import "VMZOwesRequestedViewController.h"
 #import "VMZOwesClosedViewController.h"
-#import "VMZGroupViewController.h"
+#import "VMZGroupsViewController.h"
+#import "VMZUIController.h"
 
 @interface VMZNavigationController ()
 
@@ -27,18 +28,20 @@
 @implementation VMZNavigationController
 
 
-#pragma mark - UI
+#pragma mark - UI Selectors
 
 - (void)plusButtonClicked:(UIBarButtonItem *)button
 {
-    UIViewController *view = [[VMZOweViewController alloc] init];
-    [self pushViewController:view animated:YES];
+    [self pushViewController:[VMZUIController newOweViewController] animated:YES];
 }
 
 - (void)groupButtonClicked:(UIBarButtonItem *)button
 {
-    [self pushViewController:[[VMZGroupViewController alloc] init] animated:YES];
+    [self pushViewController:[VMZUIController groupsViewController] animated:YES];
 }
+
+
+#pragma mark - UI
 
 - (void)dismissKeyboard
 {
