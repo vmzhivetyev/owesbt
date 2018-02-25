@@ -1,5 +1,5 @@
 //
-//  VMZTableViewInputCell.h
+//  VMZInputTableViewCell.h
 //  owesbt
 //
 //  Created by Вячеслав Живетьев on 07.02.2018.
@@ -13,7 +13,7 @@
 @class VMZUITextFieldController;
 
 
-@interface VMZTableViewInputCell : UITableViewCell <UITextFieldDelegate>
+@interface VMZInputTableViewCell : UITableViewCell <UITextFieldDelegate>
 
 @property (nonatomic, weak) VMZUITextField *textField;
 

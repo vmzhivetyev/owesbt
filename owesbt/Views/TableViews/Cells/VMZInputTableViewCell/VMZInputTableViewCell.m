@@ -1,19 +1,19 @@
 //
-//  VMZTableViewInputCell.m
+//  VMZInputTableViewCell.m
 //  owesbt
 //
 //  Created by Вячеслав Живетьев on 07.02.2018.
 //  Copyright © 2018 Вячеслав Живетьев. All rights reserved.
 //
 
-#import "VMZTableViewInputCell.h"
+#import "VMZInputTableViewCell.h"
 
 #import <Masonry.h>
 
 #import "VMZUITextFieldController.h"
 
 
-@implementation VMZTableViewInputCell
+@implementation VMZInputTableViewCell
 
 
 #pragma mark - Lifecycle

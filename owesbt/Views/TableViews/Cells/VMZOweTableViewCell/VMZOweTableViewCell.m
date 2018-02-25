@@ -1,5 +1,5 @@
 //
-//  VMZOwesTableViewCell.m
+//  VMZOweTableViewCell.m
 //  owesbt
 //
 //  Created by Вячеслав Живетьев on 12.01.2018.
@@ -9,11 +9,11 @@
 #import <Masonry.h>
 #import <Contacts/Contacts.h>
 
-#import "VMZOwesTableViewCell.h"
+#import "VMZOweTableViewCell.h"
 #import "VMZOweData+CoreDataClass.h"
 #import "VMZContact.h"
 
-@interface VMZOwesTableViewCell ()
+@interface VMZOweTableViewCell ()
 
 @property (nonatomic, weak, readonly) UILabel *sumLabel;
 @property (nonatomic, weak, readonly) UILabel *mainLabel;
@@ -23,7 +23,7 @@
 
 @end
 
-@implementation VMZOwesTableViewCell
+@implementation VMZOweTableViewCell
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {

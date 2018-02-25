@@ -1,5 +1,5 @@
 //
-//  VMZNewOweViewController.m
+//  VMZOweViewController.m
 //  owesbt
 //
 //  Created by Вячеслав Живетьев on 16.01.2018.
@@ -10,7 +10,7 @@
 #import <Contacts/Contacts.h>
 #import <ContactsUI/ContactsUI.h>
 
-#import "VMZNewOweViewController.h"
+#import "VMZOweViewController.h"
 #import "VMZOwesTableViewController.h"
 #import "VMZOweController.h"
 #import "VMZOweData+CoreDataClass.h"
@@ -18,7 +18,7 @@
 #import "NSString+Formatting.h"
 #import "VMZContact.h"
 
-@interface VMZNewOweViewController ()
+@interface VMZOweViewController ()
 
 @property (nonatomic, strong) NSArray *forceTouchActions;
 
@@ -38,7 +38,7 @@
 
 @end
 
-@implementation VMZNewOweViewController
+@implementation VMZOweViewController
 
 
 #pragma mark - VMZOweDelegate

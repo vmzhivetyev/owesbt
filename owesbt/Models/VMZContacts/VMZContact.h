@@ -23,6 +23,7 @@
 @property (nonatomic, copy, readonly) NSString *uid;
 
 - (BOOL)isEqualToContact:(VMZContact *)other;
+
 - (instancetype)initWithName:(NSString *)name
                        phone:(NSString *)phone
                          uid:(NSString *)uid;
@@ -32,7 +33,8 @@
 // class methods
 
 + (NSArray *)fetchContacts;
-+ (CNContact *)contactWithPhoneNumber:(NSString *)phoneNumber phoneNumberRef:(CNPhoneNumber **)ref;
++ (CNContact *)contactWithPhoneNumber:(NSString *)phoneNumber
+                       phoneNumberRef:(CNPhoneNumber **)ref;
 
 + (CNContactPickerViewController *)contactPickerViewForPhoneNumber;
 

@@ -13,9 +13,9 @@
 #import "VMZOweNetworking.h"
 #import "VMZOweData+CoreDataClass.h"
 #import "VMZCoreDataManager.h"
-#import "VMZOwesTableViewCell.h"
+#import "VMZOweTableViewCell.h"
 #import "UIViewController+MessagePrompt.h"
-#import "VMZNewOweViewController.h"
+#import "VMZOweViewController.h"
 #import "NSString+Formatting.h"
 
 
@@ -227,7 +227,7 @@ NSString *const footerIdentifier = @"VMZReusableFooterId";
     self.tableView.sectionHeaderHeight = 40;
     self.tableView.sectionFooterHeight = 30;
     
-    [self.tableView registerClass:[VMZOwesTableViewCell class] forCellReuseIdentifier:cellIdentifier];
+    [self.tableView registerClass:[VMZOweTableViewCell class] forCellReuseIdentifier:cellIdentifier];
     [self.tableView
      registerClass:[UITableViewHeaderFooterView class] forHeaderFooterViewReuseIdentifier:headerIdentifier];
     [self.tableView
@@ -250,8 +250,8 @@ NSString *const footerIdentifier = @"VMZReusableFooterId";
         {
             UITableViewCell *tableCell = [self.tableView cellForRowAtIndexPath:path];
             
-            VMZNewOweViewController *previewController =
-                [[VMZNewOweViewController alloc] initWithOwe:owe forceTouchActions:nil];
+            VMZOweViewController *previewController =
+                [[VMZOweViewController alloc] initWithOwe:owe forceTouchActions:nil];
             
             previewingContext.sourceRect = [self.view convertRect:tableCell.frame fromView:self.tableView];
             return previewController;
@@ -352,7 +352,7 @@ NSString *const footerIdentifier = @"VMZReusableFooterId";
         return;
     }
     
-    UIViewController *view = [[VMZNewOweViewController alloc] initWithOwe:owe forceTouchActions:nil];
+    UIViewController *view = [[VMZOweViewController alloc] initWithOwe:owe forceTouchActions:nil];
     [self.navigationController pushViewController:view animated:YES];
 }
 
@@ -379,7 +379,7 @@ NSString *const footerIdentifier = @"VMZReusableFooterId";
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    VMZOwesTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
+    VMZOweTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
     
     VMZOweData *owe = [self oweAtIndexPath:indexPath];
     [cell loadOweData:owe];

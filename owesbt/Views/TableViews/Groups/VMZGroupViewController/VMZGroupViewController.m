@@ -1,18 +1,18 @@
 //
-//  VMZGroupsViewController.m
+//  VMZGroupViewController.m
 //  owesbt
 //
 //  Created by Вячеслав Живетьев on 02.02.2018.
 //  Copyright © 2018 Вячеслав Живетьев. All rights reserved.
 //
 
-#import "VMZGroupsViewController.h"
+#import "VMZGroupViewController.h"
 
 #import <Masonry.h>
 #import <ContactsUI/ContactsUI.h>
 #import <Contacts/Contacts.h>
 
-#import "VMZTableViewInputCell.h"
+#import "VMZInputTableViewCell.h"
 #import "NSArray+IndexPath.h"
 #import "VMZContact.h"
 #import "UIViewController+MessagePrompt.h"
@@ -20,12 +20,12 @@
 #import "VMZContactTableViewCell.h"
 
 
-@interface VMZGroupsViewController ()
+@interface VMZGroupViewController ()
 
 @property (nonatomic, strong, readonly)  NSArray<NSArray<UITableViewCell *> *> *cells;
 
-@property (nonatomic, strong) NSArray<VMZTableViewInputCell *> *groupNameCells;
-@property (nonatomic, strong) NSArray<VMZTableViewInputCell *> *addMemberCells;
+@property (nonatomic, strong) NSArray<VMZInputTableViewCell *> *groupNameCells;
+@property (nonatomic, strong) NSArray<VMZInputTableViewCell *> *addMemberCells;
 @property (nonatomic, strong) NSMutableArray<VMZContactTableViewCell *> *membersCells;
 @property (nonatomic, strong) NSMutableArray<UITableViewCell *> *createGroupCells;
 
@@ -35,7 +35,7 @@
 @end
 
 
-@implementation VMZGroupsViewController
+@implementation VMZGroupViewController
 
 - (BOOL)isMemberAlreadyAdded:(VMZContact *)member
 {
@@ -175,16 +175,16 @@
     self.title = @"New Group";
     
     UIEdgeInsets insets = UIEdgeInsetsMake(10, 20, 10, 10);
-    VMZTableViewInputCell *groupNameCell =
-        [[VMZTableViewInputCell alloc] initWithPlaceholder:@"Group Name"
+    VMZInputTableViewCell *groupNameCell =
+        [[VMZInputTableViewCell alloc] initWithPlaceholder:@"Group Name"
                                               keyboardType:UIKeyboardTypeDefault
                                            textFieldInsets:insets
                                                   readOnly:NO
                                          allowedCharacters:nil];
     groupNameCell.sectionHeader = @"Name";
     
-    VMZTableViewInputCell *yourselfCell =
-        [[VMZTableViewInputCell alloc] initWithPlaceholder:nil
+    VMZInputTableViewCell *yourselfCell =
+        [[VMZInputTableViewCell alloc] initWithPlaceholder:nil
                                               keyboardType:UIKeyboardTypeDefault
                                            textFieldInsets:insets
                                                   readOnly:NO
@@ -208,12 +208,12 @@
     _cells = @[ _groupNameCells, _addMemberCells, _membersCells, _createGroupCells ];
 }
 
-- (VMZTableViewInputCell *)nameCell
+- (VMZInputTableViewCell *)nameCell
 {
     UIEdgeInsets insets = UIEdgeInsetsMake(10, 20, 10, 10);
     
-    VMZTableViewInputCell *nameCell =
-    [[VMZTableViewInputCell alloc] initWithPlaceholder:@"Person Name"
+    VMZInputTableViewCell *nameCell =
+    [[VMZInputTableViewCell alloc] initWithPlaceholder:@"Person Name"
                                           keyboardType:UIKeyboardTypeDefault
                                        textFieldInsets:insets
                                               readOnly:YES
@@ -272,7 +272,7 @@
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(nonnull NSIndexPath *)indexPath
 {
     return;
-    VMZTableViewInputCell* cell = [self.cells objectAtIndexPath:indexPath];
+    VMZInputTableViewCell* cell = [self.cells objectAtIndexPath:indexPath];
     cell.accessoryTappedBlock(indexPath);
 }
 
@@ -311,7 +311,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    VMZTableViewInputCell *cell = [self.cells objectAtIndexPath:indexPath];
+    VMZInputTableViewCell *cell = [self.cells objectAtIndexPath:indexPath];
     NSLog(@"cell %@", cell);
     return cell;
 }

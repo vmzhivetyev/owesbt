@@ -1,5 +1,5 @@
 //
-//  VMZOwesTableViewCell.h
+//  VMZOweTableViewCell.h
 //  owesbt
 //
 //  Created by Вячеслав Живетьев on 12.01.2018.
@@ -12,7 +12,7 @@
 @class VMZOweData;
 
 
-@interface VMZOwesTableViewCell : UITableViewCell
+@interface VMZOweTableViewCell : UITableViewCell
 
 - (void)loadOweData:(VMZOweData *)owe;
 

@@ -8,14 +8,14 @@
 
 #import "VMZNavigationController.h"
 #import "VMZOwesTableViewController.h"
-#import "VMZNewOweViewController.h"
+#import "VMZOweViewController.h"
 #import "VMZOweController.h"
 #import "VMZOweData+CoreDataClass.h"
 
 #import "VMZOwesActiveViewController.h"
 #import "VMZOwesRequestedViewController.h"
 #import "VMZOwesClosedViewController.h"
-#import "VMZGroupsViewController.h"
+#import "VMZGroupViewController.h"
 
 @interface VMZNavigationController ()
 
@@ -31,13 +31,13 @@
 
 - (void)plusButtonClicked:(UIBarButtonItem *)button
 {
-    UIViewController *view = [[VMZNewOweViewController alloc] init];
+    UIViewController *view = [[VMZOweViewController alloc] init];
     [self pushViewController:view animated:YES];
 }
 
 - (void)groupButtonClicked:(UIBarButtonItem *)button
 {
-    [self pushViewController:[[VMZGroupsViewController alloc] init] animated:YES];
+    [self pushViewController:[[VMZGroupViewController alloc] init] animated:YES];
 }
 
 - (void)dismissKeyboard

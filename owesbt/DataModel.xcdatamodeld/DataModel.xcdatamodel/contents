@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="13772" systemVersion="17C88" minimumToolsVersion="Automatic" sourceLanguage="Objective-C" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="13772" systemVersion="17D47" minimumToolsVersion="Automatic" sourceLanguage="Objective-C" userDefinedModelVersionIdentifier="">
+    <entity name="Group" representedClassName="VMZOweGroup" syncable="YES">
+        <attribute name="members" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="owes" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="uid" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
     <entity name="Owe" representedClassName="VMZOweData" syncable="YES">
         <attribute name="closed" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="created" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
@@ -20,5 +25,6 @@
     <elements>
         <element name="Owe" positionX="-54" positionY="-9" width="128" height="180"/>
         <element name="OweAction" positionX="-45" positionY="63" width="128" height="105"/>
+        <element name="Group" positionX="-54" positionY="63" width="128" height="90"/>
     </elements>
 </model>

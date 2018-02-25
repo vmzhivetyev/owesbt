@@ -1,5 +1,5 @@
 //
-//  VMZNewOweViewController.h
+//  VMZOweViewController.h
 //  owesbt
 //
 //  Created by Вячеслав Живетьев on 16.01.2018.
@@ -15,7 +15,7 @@
 @class VMZOweData;
 
 
-@interface VMZNewOweViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, VMZOweDelegate, UITextFieldDelegate, CNContactPickerDelegate>
+@interface VMZOweViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, VMZOweDelegate, UITextFieldDelegate, CNContactPickerDelegate>
 
 - (instancetype)initWithOwe:(VMZOweData *)owe forceTouchActions:(NSArray *)actions;
 

@@ -26,6 +26,8 @@
 		130F43AA20347078005BF9FC /* VMZContactTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 130F43A920347078005BF9FC /* VMZContactTableViewCell.m */; };
 		130F43AD20347BE9005BF9FC /* VMZUITextFieldController.m in Sources */ = {isa = PBXBuildFile; fileRef = 130F43AC20347BE9005BF9FC /* VMZUITextFieldController.m */; };
 		130F43B52034993E005BF9FC /* VMZUITextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 130F43B42034993E005BF9FC /* VMZUITextField.m */; };
+		131509E420423E80001F3077 /* VMZOweGroup+CoreDataClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 131509E220423E80001F3077 /* VMZOweGroup+CoreDataClass.m */; };
+		131509E520423E80001F3077 /* VMZOweGroup+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 131509E320423E80001F3077 /* VMZOweGroup+CoreDataProperties.m */; };
 		13197E51203C7AD0003697A3 /* VMZUITableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 13197E50203C7AD0003697A3 /* VMZUITableViewController.m */; };
 		131E767D1FFAAEDD00F8FA71 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 131E767C1FFAAEDD00F8FA71 /* AppDelegate.m */; };
 		131E76801FFAAEDD00F8FA71 /* VMZMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 131E767F1FFAAEDD00F8FA71 /* VMZMainViewController.m */; };
@@ -34,8 +36,8 @@
 		131E76941FFADAF900F8FA71 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 131E76931FFADAF900F8FA71 /* GoogleService-Info.plist */; };
 		131E769A1FFD3B2E00F8FA71 /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 131E76981FFD3B2E00F8FA71 /* DataModel.xcdatamodeld */; };
 		131E769D1FFEBCAF00F8FA71 /* VMZOweController.m in Sources */ = {isa = PBXBuildFile; fileRef = 131E769C1FFEBCAF00F8FA71 /* VMZOweController.m */; };
-		1373E2862025027B00CF5A95 /* VMZGroupsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1373E2852025027B00CF5A95 /* VMZGroupsViewController.m */; };
-		1373E289202B045F00CF5A95 /* VMZTableViewInputCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1373E288202B045F00CF5A95 /* VMZTableViewInputCell.m */; };
+		1373E2862025027B00CF5A95 /* VMZGroupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1373E2852025027B00CF5A95 /* VMZGroupViewController.m */; };
+		1373E289202B045F00CF5A95 /* VMZInputTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1373E288202B045F00CF5A95 /* VMZInputTableViewCell.m */; };
 		1373E28D202B164000CF5A95 /* NSArray+IndexPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 1373E28C202B164000CF5A95 /* NSArray+IndexPath.m */; };
 		13826B751FFFA5C900ACB7F2 /* VMZChangePhoneViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 13826B741FFFA5C900ACB7F2 /* VMZChangePhoneViewController.m */; };
 		13826B782006A71000ACB7F2 /* UIViewController+MessagePrompt.m in Sources */ = {isa = PBXBuildFile; fileRef = 13826B772006A71000ACB7F2 /* UIViewController+MessagePrompt.m */; };
@@ -50,8 +52,8 @@
 		13D715B62007F91F00B7CAA6 /* VMZOweData+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 13D715B42007F91F00B7CAA6 /* VMZOweData+CoreDataProperties.m */; };
 		13D715B92007F9A000B7CAA6 /* VMZOwesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 13D715B82007F9A000B7CAA6 /* VMZOwesTableViewController.m */; };
 		13D715BC20081F1400B7CAA6 /* VMZCoreDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 13D715BB20081F1400B7CAA6 /* VMZCoreDataManager.m */; };
-		13D715BF2008438100B7CAA6 /* VMZOwesTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 13D715BE2008438100B7CAA6 /* VMZOwesTableViewCell.m */; };
-		13D715C2200E289000B7CAA6 /* VMZNewOweViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 13D715C1200E289000B7CAA6 /* VMZNewOweViewController.m */; };
+		13D715BF2008438100B7CAA6 /* VMZOweTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 13D715BE2008438100B7CAA6 /* VMZOweTableViewCell.m */; };
+		13D715C2200E289000B7CAA6 /* VMZOweViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 13D715C1200E289000B7CAA6 /* VMZOweViewController.m */; };
 		9A6D641767896D3658626337 /* libPods-owesbt.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5E1D06296C3086E2EDF00CF /* libPods-owesbt.a */; };
 		C022D840AD137302836FDA40 /* libPods-owesbtTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C39C9CFB49A9EE611C36C6F3 /* libPods-owesbtTests.a */; };
 /* End PBXBuildFile section */
@@ -99,6 +101,10 @@
 		130F43AC20347BE9005BF9FC /* VMZUITextFieldController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VMZUITextFieldController.m; sourceTree = "<group>"; };
 		130F43B32034993E005BF9FC /* VMZUITextField.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VMZUITextField.h; sourceTree = "<group>"; };
 		130F43B42034993E005BF9FC /* VMZUITextField.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VMZUITextField.m; sourceTree = "<group>"; };
+		131509E020423E80001F3077 /* VMZOweGroup+CoreDataProperties.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "VMZOweGroup+CoreDataProperties.h"; sourceTree = "<group>"; };
+		131509E120423E80001F3077 /* VMZOweGroup+CoreDataClass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "VMZOweGroup+CoreDataClass.h"; sourceTree = "<group>"; };
+		131509E220423E80001F3077 /* VMZOweGroup+CoreDataClass.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "VMZOweGroup+CoreDataClass.m"; sourceTree = "<group>"; };
+		131509E320423E80001F3077 /* VMZOweGroup+CoreDataProperties.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "VMZOweGroup+CoreDataProperties.m"; sourceTree = "<group>"; };
 		13197E4F203C7AD0003697A3 /* VMZUITableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VMZUITableViewController.h; sourceTree = "<group>"; };
 		13197E50203C7AD0003697A3 /* VMZUITableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VMZUITableViewController.m; sourceTree = "<group>"; };
 		131E76781FFAAEDD00F8FA71 /* owesbt.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = owesbt.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -113,10 +119,10 @@
 		131E76991FFD3B2E00F8FA71 /* DataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DataModel.xcdatamodel; sourceTree = "<group>"; };
 		131E769B1FFEBCAF00F8FA71 /* VMZOweController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VMZOweController.h; sourceTree = "<group>"; };
 		131E769C1FFEBCAF00F8FA71 /* VMZOweController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VMZOweController.m; sourceTree = "<group>"; };
-		1373E2842025027B00CF5A95 /* VMZGroupsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VMZGroupsViewController.h; sourceTree = "<group>"; };
-		1373E2852025027B00CF5A95 /* VMZGroupsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VMZGroupsViewController.m; sourceTree = "<group>"; };
-		1373E287202B045F00CF5A95 /* VMZTableViewInputCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VMZTableViewInputCell.h; sourceTree = "<group>"; };
-		1373E288202B045F00CF5A95 /* VMZTableViewInputCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VMZTableViewInputCell.m; sourceTree = "<group>"; };
+		1373E2842025027B00CF5A95 /* VMZGroupViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VMZGroupViewController.h; sourceTree = "<group>"; };
+		1373E2852025027B00CF5A95 /* VMZGroupViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VMZGroupViewController.m; sourceTree = "<group>"; };
+		1373E287202B045F00CF5A95 /* VMZInputTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VMZInputTableViewCell.h; sourceTree = "<group>"; };
+		1373E288202B045F00CF5A95 /* VMZInputTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VMZInputTableViewCell.m; sourceTree = "<group>"; };
 		1373E28B202B164000CF5A95 /* NSArray+IndexPath.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSArray+IndexPath.h"; sourceTree = "<group>"; };
 		1373E28C202B164000CF5A95 /* NSArray+IndexPath.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSArray+IndexPath.m"; sourceTree = "<group>"; };
 		13826B731FFFA5C800ACB7F2 /* VMZChangePhoneViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VMZChangePhoneViewController.h; sourceTree = "<group>"; };
@@ -144,10 +150,10 @@
 		13D715B82007F9A000B7CAA6 /* VMZOwesTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VMZOwesTableViewController.m; sourceTree = "<group>"; };
 		13D715BA20081F1300B7CAA6 /* VMZCoreDataManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VMZCoreDataManager.h; sourceTree = "<group>"; };
 		13D715BB20081F1400B7CAA6 /* VMZCoreDataManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VMZCoreDataManager.m; sourceTree = "<group>"; };
-		13D715BD2008438100B7CAA6 /* VMZOwesTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VMZOwesTableViewCell.h; sourceTree = "<group>"; };
-		13D715BE2008438100B7CAA6 /* VMZOwesTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VMZOwesTableViewCell.m; sourceTree = "<group>"; };
-		13D715C0200E289000B7CAA6 /* VMZNewOweViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VMZNewOweViewController.h; sourceTree = "<group>"; };
-		13D715C1200E289000B7CAA6 /* VMZNewOweViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VMZNewOweViewController.m; sourceTree = "<group>"; };
+		13D715BD2008438100B7CAA6 /* VMZOweTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VMZOweTableViewCell.h; sourceTree = "<group>"; };
+		13D715BE2008438100B7CAA6 /* VMZOweTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VMZOweTableViewCell.m; sourceTree = "<group>"; };
+		13D715C0200E289000B7CAA6 /* VMZOweViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VMZOweViewController.h; sourceTree = "<group>"; };
+		13D715C1200E289000B7CAA6 /* VMZOweViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VMZOweViewController.m; sourceTree = "<group>"; };
 		25308D0FBE45B45C3EA65635 /* Pods-owesbt.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-owesbt.release.xcconfig"; path = "Pods/Target Support Files/Pods-owesbt/Pods-owesbt.release.xcconfig"; sourceTree = "<group>"; };
 		2BBB001AA2F4B164C73B1C61 /* Pods-owesbt.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-owesbt.debug.xcconfig"; path = "Pods/Target Support Files/Pods-owesbt/Pods-owesbt.debug.xcconfig"; sourceTree = "<group>"; };
 		6808E6EF728DF3B8FD3BAAB7 /* Pods-owesbtTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-owesbtTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-owesbtTests/Pods-owesbtTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -196,11 +202,10 @@
 		130EDAA02011003C0040AA32 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				131509F1204243B3001F3077 /* CoreDataClasses */,
 				1392874C201E387A008AFD8B /* VMZContacts */,
 				130EDAAD20110AA80040AA32 /* VMZOweNetworking */,
 				130EDAA4201101450040AA32 /* VMZCoreDataManager */,
-				130EDAA2201100530040AA32 /* VMZOweData */,
-				130EDAA1201100480040AA32 /* VMZOweAction */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -209,9 +214,9 @@
 			isa = PBXGroup;
 			children = (
 				130EDA94200E7E400040AA32 /* VMZOweAction+CoreDataProperties.h */,
+				130EDA97200E7E400040AA32 /* VMZOweAction+CoreDataProperties.m */,
 				130EDA95200E7E400040AA32 /* VMZOweAction+CoreDataClass.h */,
 				130EDA96200E7E400040AA32 /* VMZOweAction+CoreDataClass.m */,
-				130EDA97200E7E400040AA32 /* VMZOweAction+CoreDataProperties.m */,
 			);
 			path = VMZOweAction;
 			sourceTree = "<group>";
@@ -220,9 +225,9 @@
 			isa = PBXGroup;
 			children = (
 				13D715B12007F91F00B7CAA6 /* VMZOweData+CoreDataProperties.h */,
+				13D715B42007F91F00B7CAA6 /* VMZOweData+CoreDataProperties.m */,
 				13D715B22007F91F00B7CAA6 /* VMZOweData+CoreDataClass.h */,
 				13D715B32007F91F00B7CAA6 /* VMZOweData+CoreDataClass.m */,
-				13D715B42007F91F00B7CAA6 /* VMZOweData+CoreDataProperties.m */,
 			);
 			path = VMZOweData;
 			sourceTree = "<group>";
@@ -283,8 +288,7 @@
 				13928747201E37B0008AFD8B /* VMZMainViewController */,
 				13928748201E37C1008AFD8B /* VMZChangePhoneViewController */,
 				13928749201E37CC008AFD8B /* VMZNavigationController */,
-				1392874A201E37D9008AFD8B /* VMZOweTableViews */,
-				1392874B201E37F0008AFD8B /* VMZNewOweViewController */,
+				1392874A201E37D9008AFD8B /* TableViews */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -337,6 +341,130 @@
 			path = VMZUITextField;
 			sourceTree = "<group>";
 		};
+		131509DF20423E5E001F3077 /* VMZOweGroup */ = {
+			isa = PBXGroup;
+			children = (
+				131509E020423E80001F3077 /* VMZOweGroup+CoreDataProperties.h */,
+				131509E320423E80001F3077 /* VMZOweGroup+CoreDataProperties.m */,
+				131509E120423E80001F3077 /* VMZOweGroup+CoreDataClass.h */,
+				131509E220423E80001F3077 /* VMZOweGroup+CoreDataClass.m */,
+			);
+			path = VMZOweGroup;
+			sourceTree = "<group>";
+		};
+		131509E620423FC2001F3077 /* VMZGroupViewController */ = {
+			isa = PBXGroup;
+			children = (
+				1373E2842025027B00CF5A95 /* VMZGroupViewController.h */,
+				1373E2852025027B00CF5A95 /* VMZGroupViewController.m */,
+			);
+			path = VMZGroupViewController;
+			sourceTree = "<group>";
+		};
+		131509E720423FFD001F3077 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				131509EC20424262001F3077 /* VMZOweTableViewCell */,
+				131509E920424061001F3077 /* VMZContactTableViewCell */,
+				131509E820424019001F3077 /* VMZInputTableViewCell */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
+		131509E820424019001F3077 /* VMZInputTableViewCell */ = {
+			isa = PBXGroup;
+			children = (
+				1373E287202B045F00CF5A95 /* VMZInputTableViewCell.h */,
+				1373E288202B045F00CF5A95 /* VMZInputTableViewCell.m */,
+			);
+			path = VMZInputTableViewCell;
+			sourceTree = "<group>";
+		};
+		131509E920424061001F3077 /* VMZContactTableViewCell */ = {
+			isa = PBXGroup;
+			children = (
+				130F43A820347078005BF9FC /* VMZContactTableViewCell.h */,
+				130F43A920347078005BF9FC /* VMZContactTableViewCell.m */,
+			);
+			path = VMZContactTableViewCell;
+			sourceTree = "<group>";
+		};
+		131509EA204241E3001F3077 /* Owes */ = {
+			isa = PBXGroup;
+			children = (
+				131509EE20424324001F3077 /* Active */,
+				131509EF20424338001F3077 /* Requested */,
+				131509F020424342001F3077 /* Closed */,
+				131509ED204242DC001F3077 /* VMZOwesTableViewController */,
+				131509EB204241F8001F3077 /* VMZOweViewController */,
+			);
+			path = Owes;
+			sourceTree = "<group>";
+		};
+		131509EB204241F8001F3077 /* VMZOweViewController */ = {
+			isa = PBXGroup;
+			children = (
+				13D715C0200E289000B7CAA6 /* VMZOweViewController.h */,
+				13D715C1200E289000B7CAA6 /* VMZOweViewController.m */,
+			);
+			path = VMZOweViewController;
+			sourceTree = "<group>";
+		};
+		131509EC20424262001F3077 /* VMZOweTableViewCell */ = {
+			isa = PBXGroup;
+			children = (
+				13D715BD2008438100B7CAA6 /* VMZOweTableViewCell.h */,
+				13D715BE2008438100B7CAA6 /* VMZOweTableViewCell.m */,
+			);
+			path = VMZOweTableViewCell;
+			sourceTree = "<group>";
+		};
+		131509ED204242DC001F3077 /* VMZOwesTableViewController */ = {
+			isa = PBXGroup;
+			children = (
+				13D715B72007F9A000B7CAA6 /* VMZOwesTableViewController.h */,
+				13D715B82007F9A000B7CAA6 /* VMZOwesTableViewController.m */,
+			);
+			path = VMZOwesTableViewController;
+			sourceTree = "<group>";
+		};
+		131509EE20424324001F3077 /* Active */ = {
+			isa = PBXGroup;
+			children = (
+				1392873E201E2A96008AFD8B /* VMZOwesActiveViewController.h */,
+				1392873F201E2A96008AFD8B /* VMZOwesActiveViewController.m */,
+			);
+			path = Active;
+			sourceTree = "<group>";
+		};
+		131509EF20424338001F3077 /* Requested */ = {
+			isa = PBXGroup;
+			children = (
+				13928741201E3218008AFD8B /* VMZOwesRequestedViewController.h */,
+				13928742201E3218008AFD8B /* VMZOwesRequestedViewController.m */,
+			);
+			path = Requested;
+			sourceTree = "<group>";
+		};
+		131509F020424342001F3077 /* Closed */ = {
+			isa = PBXGroup;
+			children = (
+				13928744201E36FF008AFD8B /* VMZOwesClosedViewController.h */,
+				13928745201E36FF008AFD8B /* VMZOwesClosedViewController.m */,
+			);
+			path = Closed;
+			sourceTree = "<group>";
+		};
+		131509F1204243B3001F3077 /* CoreDataClasses */ = {
+			isa = PBXGroup;
+			children = (
+				130EDAA1201100480040AA32 /* VMZOweAction */,
+				130EDAA2201100530040AA32 /* VMZOweData */,
+				131509DF20423E5E001F3077 /* VMZOweGroup */,
+			);
+			path = CoreDataClasses;
+			sourceTree = "<group>";
+		};
 		13197E4E203C7AAB003697A3 /* VMZUITableViewController */ = {
 			isa = PBXGroup;
 			children = (
@@ -385,17 +513,12 @@
 			path = owesbt;
 			sourceTree = "<group>";
 		};
-		1373E2832025024B00CF5A95 /* VMZGroupsTableView */ = {
+		1373E2832025024B00CF5A95 /* Groups */ = {
 			isa = PBXGroup;
 			children = (
-				1373E2842025027B00CF5A95 /* VMZGroupsViewController.h */,
-				1373E2852025027B00CF5A95 /* VMZGroupsViewController.m */,
-				1373E287202B045F00CF5A95 /* VMZTableViewInputCell.h */,
-				1373E288202B045F00CF5A95 /* VMZTableViewInputCell.m */,
-				130F43A820347078005BF9FC /* VMZContactTableViewCell.h */,
-				130F43A920347078005BF9FC /* VMZContactTableViewCell.m */,
+				131509E620423FC2001F3077 /* VMZGroupViewController */,
 			);
-			path = VMZGroupsTableView;
+			path = Groups;
 			sourceTree = "<group>";
 		};
 		1373E28A202B160A00CF5A95 /* NSArray */ = {
@@ -434,31 +557,14 @@
 			path = VMZNavigationController;
 			sourceTree = "<group>";
 		};
-		1392874A201E37D9008AFD8B /* VMZOweTableViews */ = {
+		1392874A201E37D9008AFD8B /* TableViews */ = {
 			isa = PBXGroup;
 			children = (
-				1373E2832025024B00CF5A95 /* VMZGroupsTableView */,
-				13D715B72007F9A000B7CAA6 /* VMZOwesTableViewController.h */,
-				13D715B82007F9A000B7CAA6 /* VMZOwesTableViewController.m */,
-				1392873E201E2A96008AFD8B /* VMZOwesActiveViewController.h */,
-				1392873F201E2A96008AFD8B /* VMZOwesActiveViewController.m */,
-				13928741201E3218008AFD8B /* VMZOwesRequestedViewController.h */,
-				13928742201E3218008AFD8B /* VMZOwesRequestedViewController.m */,
-				13928744201E36FF008AFD8B /* VMZOwesClosedViewController.h */,
-				13928745201E36FF008AFD8B /* VMZOwesClosedViewController.m */,
-				13D715BD2008438100B7CAA6 /* VMZOwesTableViewCell.h */,
-				13D715BE2008438100B7CAA6 /* VMZOwesTableViewCell.m */,
+				131509EA204241E3001F3077 /* Owes */,
+				131509E720423FFD001F3077 /* Cells */,
+				1373E2832025024B00CF5A95 /* Groups */,
 			);
-			path = VMZOweTableViews;
-			sourceTree = "<group>";
-		};
-		1392874B201E37F0008AFD8B /* VMZNewOweViewController */ = {
-			isa = PBXGroup;
-			children = (
-				13D715C0200E289000B7CAA6 /* VMZNewOweViewController.h */,
-				13D715C1200E289000B7CAA6 /* VMZNewOweViewController.m */,
-			);
-			path = VMZNewOweViewController;
+			path = TableViews;
 			sourceTree = "<group>";
 		};
 		1392874C201E387A008AFD8B /* VMZContacts */ = {
@@ -742,18 +848,19 @@
 			buildActionMask = 2147483647;
 			files = (
 				131E76801FFAAEDD00F8FA71 /* VMZMainViewController.m in Sources */,
+				131509E520423E80001F3077 /* VMZOweGroup+CoreDataProperties.m in Sources */,
 				13928743201E3218008AFD8B /* VMZOwesRequestedViewController.m in Sources */,
 				130EDA98200E7E400040AA32 /* VMZOweAction+CoreDataClass.m in Sources */,
 				1392874F201E6441008AFD8B /* VMZOweAuth.m in Sources */,
 				1373E28D202B164000CF5A95 /* NSArray+IndexPath.m in Sources */,
-				1373E289202B045F00CF5A95 /* VMZTableViewInputCell.m in Sources */,
+				1373E289202B045F00CF5A95 /* VMZInputTableViewCell.m in Sources */,
 				130EDAAC201105350040AA32 /* VMZOweNetworking.m in Sources */,
 				130EDA9C200ED53A0040AA32 /* NSString+Formatting.m in Sources */,
 				131E769A1FFD3B2E00F8FA71 /* DataModel.xcdatamodeld in Sources */,
 				131E768B1FFAAEDD00F8FA71 /* main.m in Sources */,
 				13928740201E2A96008AFD8B /* VMZOwesActiveViewController.m in Sources */,
 				13928746201E36FF008AFD8B /* VMZOwesClosedViewController.m in Sources */,
-				13D715BF2008438100B7CAA6 /* VMZOwesTableViewCell.m in Sources */,
+				13D715BF2008438100B7CAA6 /* VMZOweTableViewCell.m in Sources */,
 				13826B782006A71000ACB7F2 /* UIViewController+MessagePrompt.m in Sources */,
 				13826B751FFFA5C900ACB7F2 /* VMZChangePhoneViewController.m in Sources */,
 				130F43B52034993E005BF9FC /* VMZUITextField.m in Sources */,
@@ -761,7 +868,7 @@
 				131E769D1FFEBCAF00F8FA71 /* VMZOweController.m in Sources */,
 				13D715BC20081F1400B7CAA6 /* VMZCoreDataManager.m in Sources */,
 				13826B7D2007B70C00ACB7F2 /* VMZNavigationController.m in Sources */,
-				1373E2862025027B00CF5A95 /* VMZGroupsViewController.m in Sources */,
+				1373E2862025027B00CF5A95 /* VMZGroupViewController.m in Sources */,
 				130EDA9F200F7ADC0040AA32 /* VMZContact.m in Sources */,
 				130F43A3203070C8005BF9FC /* UITableView+UpdatesBlock.m in Sources */,
 				130F43AD20347BE9005BF9FC /* VMZUITextFieldController.m in Sources */,
@@ -771,7 +878,8 @@
 				130F43A7203302D2005BF9FC /* CNContact+FullName.m in Sources */,
 				131E767D1FFAAEDD00F8FA71 /* AppDelegate.m in Sources */,
 				13197E51203C7AD0003697A3 /* VMZUITableViewController.m in Sources */,
-				13D715C2200E289000B7CAA6 /* VMZNewOweViewController.m in Sources */,
+				13D715C2200E289000B7CAA6 /* VMZOweViewController.m in Sources */,
+				131509E420423E80001F3077 /* VMZOweGroup+CoreDataClass.m in Sources */,
 				13D715B52007F91F00B7CAA6 /* VMZOweData+CoreDataClass.m in Sources */,
 				13D715B92007F9A000B7CAA6 /* VMZOwesTableViewController.m in Sources */,
 			);
