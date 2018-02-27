@@ -31,17 +31,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface VMZCoreDataManager (Owes)
 
-//creating
 - (void)addNewOweWithActionFor:(NSString *)partner
                  whichIsDebtor:(BOOL)partnerIsDebtor
                            sum:(NSString *)sum
                          descr:(NSString *)descr;
 
-//getting
 - (NSArray<VMZOweData *> *)owesForStatus:(NSString *)status
                             selfIsDebtor:(BOOL)selfIsDebtor;
 
-//updating
 - (void)updateOwes:(NSArray *)owesArray
             status:(NSString *)status;
 
@@ -51,14 +48,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface VMZCoreDataManager (Groups)
 
-//creating
 - (VMZOweGroup *)createGroupWithName:(NSString *)name
                              members:(NSArray<VMZContact *> *)members;
 
-//getting
 - (NSArray<VMZOweGroup *> *)groups;
 
-//updating
 - (void)updateGroups:(NSArray *)groupsArray;
 
 @end
@@ -66,15 +60,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface VMZCoreDataManager (Actions)
 
-//creating
 - (void)addNewAction:(NSString *)action
           parameters:(NSDictionary *)params
                  owe:(VMZOweData *)owe;
 
-//getting
 - (NSArray *)actions;
 
-//updating
 - (void)removeAction:(VMZOweAction *)action;
 
 @end

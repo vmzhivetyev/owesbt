@@ -56,6 +56,9 @@
     return self;
 }
 
+
+#pragma mark - Private
+
 - (BOOL)saveManagedObjectContext
 {
     NSError *saveError = nil;
@@ -69,6 +72,9 @@
         return YES;
     }
 }
+
+
+#pragma mark - Public
 
 - (void)clearCoreData
 {
@@ -85,7 +91,9 @@
 
 @implementation VMZCoreDataManager (Owes)
 
-//creating
+
+#pragma mark - Creating
+
 - (void)addNewOweWithActionFor:(NSString *)partner
                  whichIsDebtor:(BOOL)partnerIsDebtor
                            sum:(NSString*)sum
@@ -112,7 +120,9 @@
     [[VMZOweController sharedInstance] VMZOwesCoreDataDidUpdate];
 }
 
-//getting
+
+#pragma mark - Getters
+
 - (NSArray<VMZOweData *> *)owesForStatus:(NSString *)status selfIsDebtor:(BOOL)selfIsDebtor
 {
     NSMutableString* predicate = [NSMutableString stringWithFormat:@"(status = '%@')", status];
@@ -138,7 +148,9 @@
     return results;
 }
 
-//updating
+
+#pragma mark - Updaters
+
 - (void)updateOwes:(NSArray*)owesArray
             status:(NSString *)status
 {
@@ -179,12 +191,9 @@
 
 @implementation VMZCoreDataManager (Groups)
 
-- (NSArray<VMZOweGroup *> *)getGroupsWithPredicate:(NSString *)predicate
-{
-    return [self.oweGroupFetcher executeSortedFetchRequestWithPredicate:predicate];
-}
 
-//creating
+#pragma mark - Creating
+
 - (VMZOweGroup *)createGroupWithName:(NSString *)name
                              members:(NSArray<VMZContact *> *)members
 {
@@ -202,13 +211,17 @@
     return group;
 }
 
-//getting
+
+#pragma mark - Getters
+
 - (NSArray<VMZOweGroup *> *)groups
 {
     return [self.oweGroupFetcher executeSortedFetchRequestWithPredicate:nil];
 }
 
-//updating
+
+#pragma mark - Updaters
+
 - (void)updateGroups:(NSArray*)newArray
 {
     [self.oweGroupFetcher deleteObjectsFromCoreData];
@@ -228,7 +241,9 @@
 
 @implementation VMZCoreDataManager (Actions)
 
-//creating
+
+#pragma mark - Creating
+
 - (void)addNewAction:(NSString *)action
           parameters:(NSDictionary *)params
                  owe:(VMZOweData *)owe
@@ -237,13 +252,17 @@
     [[VMZOweController sharedInstance].networking doOweActionsAsync];
 }
 
-//getting
+
+#pragma mark - Getters
+
 - (NSArray<VMZOweAction *> *)actions
 {
     return [self.oweActionsFetcher executeSortedFetchRequestWithPredicate:nil];
 }
 
-//updating
+
+#pragma mark - Updaters
+
 - (void)removeAction:(VMZOweAction *)action
 {
     [self.managedObjectContext deleteObject:action];
