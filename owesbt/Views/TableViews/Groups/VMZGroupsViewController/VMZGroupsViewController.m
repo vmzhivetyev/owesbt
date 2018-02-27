@@ -26,6 +26,13 @@ NSString * const VMZCellIdentifier = @"VMZGroupInfoCell";
 @implementation VMZGroupsViewController
 
 
+- (void)updateData
+{
+    self.cells = [[VMZOweController sharedInstance].coreDataManager groups];
+    [self.tableView reloadData];
+}
+
+
 #pragma mark - Lifecycle
 
 - (void)viewDidLoad
@@ -40,9 +47,11 @@ NSString * const VMZCellIdentifier = @"VMZGroupInfoCell";
     //[self.tableView registerClass:[UITableViewCell class]
     //       forCellReuseIdentifier:VMZCellIdentifier];
     
-    self.cells = [[VMZOweController sharedInstance].coreDataManager groups];
+    self.title = @"Groups";
     
     [VMZOweController sharedInstance].delegate = self;
+    
+    [self updateData];
 }
 
 - (void)addButtonTapped
@@ -56,8 +65,7 @@ NSString * const VMZCellIdentifier = @"VMZGroupInfoCell";
 
 - (void)VMZOwesCoreDataDidUpdate
 {
-    self.cells = [[VMZOweController sharedInstance].coreDataManager groups];
-    [self.tableView reloadData];
+    [self updateData];
 }
 
 
@@ -80,7 +88,10 @@ NSString * const VMZCellIdentifier = @"VMZGroupInfoCell";
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    //[self removeMemberAtIndexPath:indexPath];
+    if (editingStyle == UITableViewCellEditingStyleDelete)
+    {
+        
+    }
 }
 
 
@@ -99,7 +110,8 @@ NSString * const VMZCellIdentifier = @"VMZGroupInfoCell";
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:VMZCellIdentifier
-                                                            ];
+                                                            //forIndexPath:indexPath
+                             ];
     
     if (!cell)
     {

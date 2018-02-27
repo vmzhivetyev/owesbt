@@ -30,6 +30,7 @@
 		131509E520423E80001F3077 /* VMZOweGroup+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 131509E320423E80001F3077 /* VMZOweGroup+CoreDataProperties.m */; };
 		131509F52042450E001F3077 /* VMZGroupsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 131509F42042450E001F3077 /* VMZGroupsViewController.m */; };
 		131509F820425048001F3077 /* NSArray+LambdaSelect.m in Sources */ = {isa = PBXBuildFile; fileRef = 131509F720425048001F3077 /* NSArray+LambdaSelect.m */; };
+		131509FB204452B0001F3077 /* VMZCoreDataFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 131509FA204452B0001F3077 /* VMZCoreDataFetcher.m */; };
 		13197E51203C7AD0003697A3 /* VMZUITableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 13197E50203C7AD0003697A3 /* VMZUITableViewController.m */; };
 		131E767D1FFAAEDD00F8FA71 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 131E767C1FFAAEDD00F8FA71 /* AppDelegate.m */; };
 		131E76801FFAAEDD00F8FA71 /* VMZMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 131E767F1FFAAEDD00F8FA71 /* VMZMainViewController.m */; };
@@ -111,6 +112,8 @@
 		131509F42042450E001F3077 /* VMZGroupsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VMZGroupsViewController.m; sourceTree = "<group>"; };
 		131509F620425048001F3077 /* NSArray+LambdaSelect.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSArray+LambdaSelect.h"; sourceTree = "<group>"; };
 		131509F720425048001F3077 /* NSArray+LambdaSelect.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSArray+LambdaSelect.m"; sourceTree = "<group>"; };
+		131509F9204452B0001F3077 /* VMZCoreDataFetcher.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VMZCoreDataFetcher.h; sourceTree = "<group>"; };
+		131509FA204452B0001F3077 /* VMZCoreDataFetcher.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VMZCoreDataFetcher.m; sourceTree = "<group>"; };
 		13197E4F203C7AD0003697A3 /* VMZUITableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VMZUITableViewController.h; sourceTree = "<group>"; };
 		13197E50203C7AD0003697A3 /* VMZUITableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VMZUITableViewController.m; sourceTree = "<group>"; };
 		131E76781FFAAEDD00F8FA71 /* owesbt.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = owesbt.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -208,6 +211,7 @@
 		130EDAA02011003C0040AA32 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				131509FF20454A24001F3077 /* VMZCoreDataFetcher */,
 				131509F1204243B3001F3077 /* CoreDataClasses */,
 				1392874C201E387A008AFD8B /* VMZContacts */,
 				130EDAAD20110AA80040AA32 /* VMZOweNetworking */,
@@ -478,6 +482,15 @@
 				131509F42042450E001F3077 /* VMZGroupsViewController.m */,
 			);
 			path = VMZGroupsViewController;
+			sourceTree = "<group>";
+		};
+		131509FF20454A24001F3077 /* VMZCoreDataFetcher */ = {
+			isa = PBXGroup;
+			children = (
+				131509F9204452B0001F3077 /* VMZCoreDataFetcher.h */,
+				131509FA204452B0001F3077 /* VMZCoreDataFetcher.m */,
+			);
+			path = VMZCoreDataFetcher;
 			sourceTree = "<group>";
 		};
 		13197E4E203C7AAB003697A3 /* VMZUITableViewController */ = {
@@ -866,6 +879,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				131509F52042450E001F3077 /* VMZGroupsViewController.m in Sources */,
+				131509FB204452B0001F3077 /* VMZCoreDataFetcher.m in Sources */,
 				131E76801FFAAEDD00F8FA71 /* VMZMainViewController.m in Sources */,
 				131509E520423E80001F3077 /* VMZOweGroup+CoreDataProperties.m in Sources */,
 				13928743201E3218008AFD8B /* VMZOwesRequestedViewController.m in Sources */,

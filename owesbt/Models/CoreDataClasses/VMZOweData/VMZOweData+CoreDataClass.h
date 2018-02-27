@@ -35,7 +35,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (VMZOweStatus)statusType;
 - (void)setStatusType:(VMZOweStatus)status;
 
-+ (instancetype)newOweInManagedObjectContext:(NSManagedObjectContext *)moc;
 - (void)loadFromDictionary:(NSDictionary *)dict;
 - (BOOL)selfIsCreditor;
 

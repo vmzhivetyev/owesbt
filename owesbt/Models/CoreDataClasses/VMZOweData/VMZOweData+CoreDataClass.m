@@ -37,11 +37,6 @@
     return VMZOweStatusUndefined;
 }
 
-+ (instancetype)newOweInManagedObjectContext:(NSManagedObjectContext *)moc
-{
-    return [NSEntityDescription insertNewObjectForEntityForName:@"Owe" inManagedObjectContext:moc];
-}
-
 - (NSString *)partner
 {
     return [self selfIsCreditor] ? self.debtor : self.creditor;

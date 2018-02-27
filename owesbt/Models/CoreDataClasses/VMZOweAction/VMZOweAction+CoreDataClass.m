@@ -13,7 +13,7 @@
 
 + (instancetype)createNewActionObject:(NSString*)action withParameters:(NSDictionary *)params forOwe:(VMZOweData *)owe managedObjectContext:(NSManagedObjectContext*)moc
 {
-    VMZOweAction *newAction = [NSEntityDescription insertNewObjectForEntityForName:@"OweAction" inManagedObjectContext:moc];
+    VMZOweAction *newAction = [NSEntityDescription insertNewObjectForEntityForName:[self class].entity.name inManagedObjectContext:moc];
     newAction.action = action;
     newAction.parameters = params;
     newAction.owe = owe;

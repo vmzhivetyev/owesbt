@@ -160,7 +160,7 @@
     }
     self.doingActions = YES;
     
-    NSArray *actions = [self.coreDataManager getActions];
+    NSArray *actions = [self.coreDataManager actions];
     if (actions.count == 0)
     {
         self.doingActions = NO;
@@ -218,7 +218,7 @@
         {
             break;
         }
-        actions = [self.coreDataManager getActions];
+        actions = [self.coreDataManager actions];
     }
     
     self.doingActions = NO;
@@ -284,26 +284,53 @@
     }];
 }
 
+- (void)passError:(NSError *)error
+     toCompletion:(void(^)(NSError *error))completion
+    andIfIsNotNil:(NSObject *)object
+      thenDoBlock:(void(^)(void))block
+{
+    if (object == nil)
+    {
+        if(completion)
+        {
+            completion(error);
+        }
+    }
+    else
+    {
+        block();
+        if (completion)
+        {
+            completion(nil);
+        }
+    }
+}
+
 - (void)downloadOwes:(NSString*)status completion:(void(^)(NSError *error))completion
 {
     [self callFirebaseCloudFunction:@"getOwes2" parameters:@{@"status":status} completion:^(NSDictionary * _Nullable data, NSError * _Nullable error) {
         
         NSArray *owesArray = [data objectForKey:@"result"];
-        if (!owesArray)
-        {
-            if(completion)
-            {
-                completion(error);
-            }
-        }
-        else
-        {
-            [self.coreDataManager updateOwes:owesArray status:status];
-            if (completion)
-            {
-                completion(nil);
-            }
-        }
+        [self passError:error
+           toCompletion:completion
+          andIfIsNotNil:owesArray
+            thenDoBlock:^{
+                [self.coreDataManager updateOwes:owesArray status:status];
+            }];
+    }];
+}
+
+- (void)downloadGroupsWithCompletion:(void(^)(NSError *error))completion
+{
+    [self callFirebaseCloudFunction:@"getGroups" parameters:@{} completion:^(NSDictionary * _Nullable data, NSError * _Nullable error) {
+        
+        NSArray *groupsArray = [data objectForKey:@"result"];
+        [self passError:error
+           toCompletion:completion
+          andIfIsNotNil:groupsArray
+            thenDoBlock:^{
+                [self.coreDataManager updateGroups:groupsArray];
+        }];
     }];
 }
 
