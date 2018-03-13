@@ -2,7 +2,7 @@
 //  VMZOweGroup+CoreDataProperties.m
 //  owesbt
 //
-//  Created by Вячеслав Живетьев on 25.02.2018.
+//  Created by Вячеслав Живетьев on 13.03.2018.
 //  Copyright © 2018 Вячеслав Живетьев. All rights reserved.
 //
 //
@@ -15,9 +15,10 @@
 	return [[NSFetchRequest alloc] initWithEntityName:@"Group"];
 }
 
-@dynamic uid;
 @dynamic members;
-@dynamic owes;
 @dynamic name;
+@dynamic owes;
+@dynamic uid;
+@dynamic created;
 
 @end

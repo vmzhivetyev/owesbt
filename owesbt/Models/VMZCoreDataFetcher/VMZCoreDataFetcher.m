@@ -76,11 +76,14 @@
     return results;
 }
 
-- (NSArray *)executeFetchRequestWithSortDescriptor:(NSSortDescriptor *)sort
+- (NSArray *)executeFetchRequest:(NSFetchRequest *)request
+              withSortDescriptor:(NSSortDescriptor *)sort
                                              error:(NSError * __autoreleasing *)error
 {
-    NSFetchRequest *request = [self fetchRequest];
-    [request setSortDescriptors:@[sort]];
+    if(sort)
+    {
+        [request setSortDescriptors:@[sort]];
+    }
     
     __block NSArray *results = @[];
     [self.managedObjectContext performBlockAndWait:^{
@@ -101,8 +104,9 @@
     NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"created" ascending:YES];
     
     NSError *error = nil;
-    NSArray *results = [self executeFetchRequestWithSortDescriptor:sort
-                                                             error:&error];
+    NSArray *results = [self executeFetchRequest:request
+                              withSortDescriptor:sort
+                                           error:&error];
     
     NSLog(@"Fetching error: %@", error);
     

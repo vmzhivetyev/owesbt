@@ -38,8 +38,9 @@
 - (NSArray<ObjectType> *)fetchObjects;
 - (ObjectType)fetchOrCreateUniqueObjectWithPredicate:(NSString *)predicate;
 - (NSArray<ObjectType> *)executeSortedFetchRequestWithPredicate:(NSString *)predicate;
-- (NSArray<ObjectType> *)executeFetchRequestWithSortDescriptor:(NSSortDescriptor *)sort
-                                             error:(NSError * __autoreleasing *)error;
+- (NSArray<ObjectType> *)executeFetchRequest:(NSFetchRequest *)request
+                          withSortDescriptor:(NSSortDescriptor *)sort
+                                       error:(NSError * __autoreleasing *)error;
 
 - (void)deleteObjectsFromCoreData;
 

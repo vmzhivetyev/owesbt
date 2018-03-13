@@ -38,6 +38,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)loadFromDictionary:(NSDictionary *)dict;
 - (BOOL)selfIsCreditor;
 
+- (void)log;
+
 @end
 
 NS_ASSUME_NONNULL_END

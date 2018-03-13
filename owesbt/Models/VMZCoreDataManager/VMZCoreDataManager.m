@@ -47,9 +47,17 @@
             else
             {
                 _managedObjectContext = _persistentContainer.viewContext;
+                
                 _oweDataFetcher = [[VMZCoreDataFetcher alloc]
-                                      initWithEntityName:VMZOweData.entity.name
-                                   managedObjectContext:self.managedObjectContext];
+                                   initWithEntityName:VMZOweData.entity.name
+                                   managedObjectContext:_managedObjectContext];
+                
+                _oweGroupFetcher = [[VMZCoreDataFetcher alloc]
+                                    initWithEntityName:VMZOweGroup.entity.name
+                                    managedObjectContext:_managedObjectContext];
+                
+                _oweActionsFetcher = [[VMZCoreDataFetcher alloc]
+                                      initWithEntityName:VMZOweAction.entity.name managedObjectContext:_managedObjectContext];
             }
         }];
     }
@@ -136,9 +144,11 @@
     }
     
     NSArray* results = [self.oweDataFetcher executeSortedFetchRequestWithPredicate:predicate];
+    NSLog(@"%@", results);
     
     for (VMZOweData *owe in results)
     {
+        //[owe log];
         if (!owe.partnerName)
         {
             [owe updatePartnerName];
