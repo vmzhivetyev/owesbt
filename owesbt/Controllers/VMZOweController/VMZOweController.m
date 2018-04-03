@@ -132,6 +132,11 @@
     [self.networking setMyPhone:phone completion:completion];
 }
 
+@end
+
+
+@implementation VMZOweController (ActionsWithOwes)
+
 - (void)refreshOwesWithStatus:(NSString *)status completion:(void(^)(NSError *error))completion
 {
     [self.networking downloadOwes:status completion:completion];
@@ -188,6 +193,28 @@
 - (void)addNewOweFor:(NSString *)partner whichIsDebtor:(BOOL)partnerIsDebtor sum:(NSString*)sum descr:(NSString *)descr
 {
     [self.coreDataManager addNewOweWithActionFor:partner whichIsDebtor:partnerIsDebtor sum:sum descr:descr];
+}
+
+@end
+
+
+@implementation VMZOweController (ActionsWithGroups)
+
+- (void)refreshGroupsWithCompletion:(void(^)(NSError *error))completion
+{
+    [self.networking downloadGroupsWithCompletion:completion];
+}
+
+- (void)createGroupWithName:(NSString *)name members:(NSArray<VMZContact *> *)members
+{
+    VMZOweGroup *group = [self.coreDataManager createGroupWithName:name members:members];
+    
+    [self.networking ];
+}
+
+- (void)deleteGroup:(VMZOweGroup *)group
+{
+    
 }
 
 @end

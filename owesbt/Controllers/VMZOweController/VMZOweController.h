@@ -8,14 +8,18 @@
 
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
 
 @protocol GIDSignInDelegate;
 @class FIRUser;
+
 @class VMZOweData;
+@class VMZOweGroup;
 @class VMZCoreDataManager;
 @class VMZOweNetworking;
 @class VMZOweAuth;
 @class VMZUIController;
+@class VMZContact;
 
 
 static NSString *const VMZNotificationAuthNilUser = @"VMZNotificationAuthNilUser";
@@ -56,11 +60,27 @@ static NSString *const VMZNotificationAuthSignedOut = @"VMZNotificationAuthSigne
 - (void)loggedInViewControllerDidLoad;
 
 - (void)setMyPhone:(NSString *)phone completion:(void(^)(NSString *errorText))completion;
+
+@end
+
+
+@interface VMZOweController (ActionsWithOwes)
+
 - (void)refreshOwesWithStatus:(NSString *)status completion:(void(^)(NSError *error))completion;
 - (void)closeOwe:(VMZOweData *)owe;
 - (void)confirmOwe:(VMZOweData *)owe;
 - (void)cancelOwe:(VMZOweData *)owe;
 - (void)addNewOweFor:(NSString *)partner whichIsDebtor:(BOOL)partnerIsDebtor sum:(NSString*)sum descr:(NSString *)descr;
 
+@end
+
+
+@interface VMZOweController (ActionsWithGroups)
+
+- (void)refreshGroupsWithCompletion:(void(^)(NSError *error))completion;
+- (void)createGroupWithName:(NSString *)name members:(NSArray<VMZContact *> *)members;
+- (void)deleteGroup:(VMZOweGroup *)group;
 
 @end
+
+NS_ASSUME_NONNULL_END

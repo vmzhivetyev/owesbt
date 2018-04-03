@@ -27,5 +27,6 @@ typedef void (^FirebaseRequestCallback)(NSDictionary *data, NSError *error);
 - (void)getMyPhoneWithCompletion:(void(^)(NSString *phone, NSError *error))completion;
 - (void)setMyPhone:(NSString *)phone completion:(void(^)(NSString *errorText))completion;
 - (void)downloadOwes:(NSString *)status completion:(void(^)(NSError *error))completion;
+- (void)downloadGroupsWithCompletion:(void (^)(NSError *))completion;
 
 @end

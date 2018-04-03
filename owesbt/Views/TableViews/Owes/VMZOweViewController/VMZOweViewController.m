@@ -88,7 +88,10 @@
     NSString *sum = self.sumTextField.text;
     NSString *descr = self.descriptionTextField.text;
     
-    [[VMZOweController sharedInstance] addNewOweFor:partner whichIsDebtor:partnerIsDebtor sum:sum descr:descr];
+    [[VMZOweController sharedInstance] addNewOweFor:partner
+                                      whichIsDebtor:partnerIsDebtor
+                                                sum:sum
+                                              descr:descr];
     
     [self.navigationController popViewControllerAnimated:YES];
 }

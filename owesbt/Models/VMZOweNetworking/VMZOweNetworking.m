@@ -322,7 +322,7 @@
 
 - (void)downloadGroupsWithCompletion:(void(^)(NSError *error))completion
 {
-    [self callFirebaseCloudFunction:@"getGroups" parameters:@{} completion:^(NSDictionary * _Nullable data, NSError * _Nullable error) {
+    [self callFirebaseCloudFunction:@"getGroups" parameters:nil completion:^(NSDictionary * _Nullable data, NSError * _Nullable error) {
         
         NSArray *groupsArray = [data objectForKey:@"result"];
         [self passError:error
