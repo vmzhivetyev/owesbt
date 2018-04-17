@@ -209,7 +209,8 @@
 {
     VMZOweGroup *group = [self.coreDataManager createGroupWithName:name members:members];
     
-    [self.networking ];
+    @throw [NSException new];
+    //[self.networking ];
 }
 
 - (void)deleteGroup:(VMZOweGroup *)group
