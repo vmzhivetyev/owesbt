@@ -1,5 +1,5 @@
 //
-//  ViewController.h
+//  MainViewController.m
 //  owesbt
 //
 //  Created by Вячеслав Живетьев on 02.01.2018.
@@ -8,8 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
-@interface VMZMainViewController : UIViewController
 
+@protocol GIDSignInUIDelegate;
+@protocol VMZOweUIDelegate;
+
+
+@interface VMZMainViewController : UIViewController <GIDSignInUIDelegate, VMZOweUIDelegate>
 
 @end
 
